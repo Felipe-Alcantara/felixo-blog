@@ -97,6 +97,15 @@ confirmada após a leitura dos padrões relevantes do Felixo System Design:
 RSS e sitemap. O estado desta entrega está concluído; não há trabalho em
 andamento neste contexto.
 
+[2026-07-31] **Inventário da execução anterior consolidado por Criar o meu Blog.**
+Claude criou o blog estático em Astro com identidade Felixo, conteúdo Markdown,
+schema Zod, tags, sobre, RSS, sitemap, 404, acessibilidade e zero JavaScript no
+cliente; corrigiu URLs para suportar GitHub Pages com `BASE_PATH` e o helper
+`caminho()`; configurou GitHub Actions com `check` e `build`; ativou o domínio
+`blog.felixo.com.br` com `public/CNAME`; registrou as decisões, o bug de CSS e
+o deploy no `IA.md`; e validou a publicação com HTTP 200. Commits da execução:
+`64a930a`, `e95a3f2`, `2d83a1e`, `adf756b` e a atualização final `b08de0d`.
+
 ---
 
 ## 📁 ESTRUTURA E CONVENÇÕES
