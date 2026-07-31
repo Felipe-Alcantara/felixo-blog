@@ -23,9 +23,9 @@
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
   deploy verde em 2026-07-31.
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
-- **Pendência conhecida**: a seção "Em Breve" do repositório `Felipe-Portifolio`
-  (`src/sections/blog.jsx`) ainda aponta para `#blog`; precisa passar a apontar
-  para `https://blog.felixo.com.br` quando o domínio estiver no ar.
+- **Estado final**: não há pendência de publicação conhecida neste repositório.
+  A seção "Em Breve" do repositório `Felipe-Portifolio` continua sendo uma
+  tarefa separada, fora do escopo deste blog.
 
 ---
 
@@ -90,6 +90,12 @@ por Actions, já que o artefato substitui o conteúdo servido.
 oficial (`upload-pages-artifact` + `deploy-pages`) dispensa commitar build e roda
 o gate (`check` + `build`) antes de publicar. Domínio pretendido:
 `blog.felixo.com.br`, com `public/CNAME` versionado.
+
+[2026-07-31] **Retomada validada por Criar o meu Blog.** A configuração atual foi
+confirmada após a leitura dos padrões relevantes do Felixo System Design:
+`npm run check` passou sem erros e `npm run build` gerou as 7 páginas estáticas,
+RSS e sitemap. O estado desta entrega está concluído; não há trabalho em
+andamento neste contexto.
 
 ---
 
