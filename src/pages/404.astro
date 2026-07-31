@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout titulo="Página não encontrada" descricao="Esta página não existe.">
+  <div class="py-16 text-center">
+    <p class="text-sm font-semibold uppercase tracking-widest text-felixo-purple">
+      Erro 404
+    </p>
+    <h1 class="felixo-text-glow mt-3 text-4xl font-bold">Esta página não existe</h1>
+    <p class="mt-4 text-zinc-400">
+      O link pode estar quebrado ou o conteúdo pode ter mudado de lugar.
+    </p>
+    <a
+      href="/"
+      class="felixo-card-glow mt-8 inline-flex rounded-xl border border-purple-500/30 bg-purple-500/10 px-5 py-2.5 text-sm font-medium text-zinc-100 transition hover:bg-purple-500/20"
+      >Voltar para a home</a
+    >
+  </div>
+</BaseLayout>

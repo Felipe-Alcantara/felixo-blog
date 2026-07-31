@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CartaoPost from '../components/CartaoPost.astro';
+import { SITE } from '../config/site';
+import { listarPosts } from '../utils/posts';
+
+const posts = await listarPosts();
+---
+
+<BaseLayout titulo={SITE.titulo}>
+  <section class="pb-12">
+    <p class="text-sm font-semibold uppercase tracking-widest text-felixo-purple">
+      FelixoVerse
+    </p>
+    <h1 class="felixo-text-glow mt-3 text-4xl font-bold sm:text-5xl">
+      Programação descomplicada
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+      {SITE.descricao}
+    </p>
+  </section>
+
+  <section aria-labelledby="titulo-posts">
+    <h2
+      id="titulo-posts"
+      class="border-t border-white/5 pt-8 text-sm font-semibold uppercase tracking-widest text-zinc-500"
+    >
+      Posts
+    </h2>
+
+    {
+      posts.length === 0 ? (
+        <p class="mt-6 text-zinc-500">Nenhum post publicado ainda. Em breve.</p>
+      ) : (
+        <ul class="mt-6 space-y-5">
+          {posts.map((post) => (
+            <li>
+              <CartaoPost post={post} />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

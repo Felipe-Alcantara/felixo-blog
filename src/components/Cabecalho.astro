@@ -1,0 +1,48 @@
+---
+import { LINKS_NAVEGACAO, SITE } from '../config/site';
+
+const caminhoAtual = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-40 border-b border-white/5 bg-black/70 backdrop-blur-md">
+  <nav
+    class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4"
+    aria-label="Navegação principal"
+  >
+    <a
+      href="/"
+      class="group inline-flex items-center gap-2 text-sm font-bold tracking-wide text-zinc-100"
+    >
+      <span
+        class="grid size-8 place-items-center rounded-lg border border-purple-500/30 bg-purple-500/10 text-felixo-purple transition group-hover:bg-purple-500/20"
+        aria-hidden="true">F</span
+      >
+      <span>{SITE.titulo}</span>
+    </a>
+
+    <ul class="flex items-center gap-1 text-sm">
+      {
+        LINKS_NAVEGACAO.map(({ rotulo, href }) => {
+          const ativo =
+            href === '/' ? caminhoAtual === '/' : caminhoAtual.startsWith(href);
+          return (
+            <li>
+              <a
+                href={href}
+                aria-current={ativo ? 'page' : undefined}
+                class:list={[
+                  'rounded-lg px-3 py-1.5 transition',
+                  ativo
+                    ? 'bg-purple-500/10 text-felixo-purple'
+                    : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100',
+                ]}
+              >
+                {rotulo}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { listarTags, slugDaTag } from '../../utils/posts';
+
+const tags = await listarTags();
+---
+
+<BaseLayout titulo="Tags" descricao="Todos os assuntos abordados no blog do Felixo.">
+  <h1 class="felixo-text-glow text-3xl font-bold sm:text-4xl">Tags</h1>
+  <p class="mt-3 text-zinc-400">Navegue pelos assuntos do blog.</p>
+
+  {
+    tags.length === 0 ? (
+      <p class="mt-8 text-zinc-500">Nenhuma tag ainda.</p>
+    ) : (
+      <ul class="mt-8 flex flex-wrap gap-3">
+        {tags.map(({ nome, total }) => (
+          <li>
+            <a
+              href={`/tags/${slugDaTag(nome)}/`}
+              class="felixo-card-glow inline-flex items-center gap-2 rounded-full border border-white/5 bg-zinc-950/60 px-4 py-2 text-sm text-zinc-300 transition hover:text-felixo-purple"
+            >
+              {nome}
+              <span class="text-xs text-zinc-500">{total}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

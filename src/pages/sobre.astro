@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site';
+---
+
+<BaseLayout titulo="Sobre" descricao={`Sobre ${SITE.autor} e o ${SITE.titulo}.`}>
+  <h1 class="felixo-text-glow text-3xl font-bold sm:text-4xl">Sobre</h1>
+
+  <div class="conteudo-post mt-8">
+    <p>
+      Oi, eu sou <strong>{SITE.autor}</strong>. Depois de alguns anos estudando e
+      construindo ferramentas, resolvi abrir um espaço para registrar o que aprendo pelo
+      caminho — de preferência de um jeito que qualquer pessoa consiga acompanhar.
+    </p>
+
+    <p>Por aqui você vai encontrar:</p>
+
+    <ul>
+      <li>
+        <strong>Programação descomplicada</strong> — explicações diretas, sem rodeio e sem jargão
+        desnecessário.
+      </li>
+      <li>
+        <strong>Boas práticas e automações</strong> — o que funciona no dia a dia, testado nos
+        meus próprios projetos.
+      </li>
+      <li>
+        <strong>FelixoVerse</strong> — bastidores do desenvolvimento, incluindo os ARGs.
+      </li>
+      <li>
+        <strong>Notícias de tecnologia</strong> — com opinião, quando vale a pena comentar.
+      </li>
+    </ul>
+
+    <h2>Onde mais me encontrar</h2>
+
+    <ul>
+      <li>
+        Portfólio: <a
+          href="https://felixo.com.br/"
+          target="_blank"
+          rel="noopener noreferrer">felixo.com.br</a
+        >
+      </li>
+      <li>
+        GitHub: <a
+          href="https://github.com/Felipe-Alcantara"
+          target="_blank"
+          rel="noopener noreferrer">@Felipe-Alcantara</a
+        >
+      </li>
+      <li>
+        Feed RSS: <a href="/rss.xml">/rss.xml</a>
+      </li>
+    </ul>
+  </div>
+</BaseLayout>

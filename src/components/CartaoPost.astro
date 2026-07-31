@@ -1,0 +1,43 @@
+---
+import { formatarDataISO, formatarDataLonga } from '../utils/datas';
+import { slugDaTag, type Post } from '../utils/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { titulo, descricao, publicadoEm, tags } = post.data;
+---
+
+<article class="felixo-card-glow rounded-2xl border border-white/5 bg-zinc-950/60 p-6">
+  <h2 class="text-xl font-bold text-zinc-100">
+    <a href={`/posts/${post.id}/`} class="transition hover:text-felixo-purple">
+      {titulo}
+    </a>
+  </h2>
+
+  <p class="mt-2 text-sm leading-relaxed text-zinc-400">{descricao}</p>
+
+  <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-500">
+    <time datetime={formatarDataISO(publicadoEm)}>
+      {formatarDataLonga(publicadoEm)}
+    </time>
+    {
+      tags.length > 0 && (
+        <ul class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li>
+              <a
+                href={`/tags/${slugDaTag(tag)}/`}
+                class="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-felixo-purple transition hover:bg-purple-500/20"
+              >
+                {tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</article>
