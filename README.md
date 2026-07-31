@@ -6,9 +6,7 @@ descomplicada, boas práticas, automações e bastidores do FelixoVerse.
 Site estático em **Astro + Tailwind CSS 4**, com posts em Markdown, publicado
 automaticamente no GitHub Pages a cada push na `main`.
 
-- **No ar agora**: https://felipe-alcantara.github.io/felixo-blog/
-- **Domínio final**: `blog.felixo.com.br` (aguardando DNS — ver
-  [Deploy](#deploy))
+- **No ar**: https://blog.felixo.com.br
 - **Identidade visual**: Felixo System Design (tema escuro, roxo `#C084FC`,
   Space Grotesk) — a mesma do portfólio.
 
@@ -75,24 +73,22 @@ sintaxe automaticamente.
 O workflow `.github/workflows/deploy.yml` roda `npm ci`, `npm run check`,
 `npm run build` e publica `dist/` no GitHub Pages a cada push na `main`.
 
-GitHub Pages já está ativado (Source = GitHub Actions), e o site está no ar em
-`felipe-alcantara.github.io/felixo-blog/` — uma **subpasta**, e é por isso que
-`astro.config.mjs` define `base: '/felixo-blog'`.
+Tudo já está configurado: Source = GitHub Actions, domínio próprio
+`blog.felixo.com.br` (registro `CNAME` de `blog` → `felipe-alcantara.github.io`
+no DNS do Registro.br) e `public/CNAME` versionado, que preserva o domínio a
+cada publicação.
 
-### Migrando para `blog.felixo.com.br`
+### Trocando de endereço
 
-1. No DNS de `felixo.com.br`, criar um registro `CNAME` de `blog` apontando para
-   `felipe-alcantara.github.io`. (O GitHub recusa configurar o domínio antes
-   disso — a API responde `The certificate does not exist yet`.)
-2. Em **Settings → Pages → Custom domain**, informar `blog.felixo.com.br` e
-   aguardar o certificado.
-3. No `astro.config.mjs`, trocar as duas constantes do topo:
-   `SITE = 'https://blog.felixo.com.br'` e `BASE = '/'`.
-4. Fazer push. O site passa a servir na raiz do domínio.
+`astro.config.mjs` concentra o endereço em duas constantes no topo (`SITE` e
+`BASE`), ambas sobrescrevíveis pelas variáveis de ambiente `SITE_URL` e
+`BASE_PATH`. Para servir numa subpasta — um preview em
+`felipe-alcantara.github.io/felixo-blog/`, por exemplo — basta
+`BASE_PATH=/felixo-blog`.
 
-Como todo link interno passa pelo helper `caminho()` (`src/utils/rotas.ts`), essa
-troca não exige mexer em nenhuma página. Alternativa sem editar o código: definir
-as variáveis de ambiente `SITE_URL` e `BASE_PATH` no workflow.
+Nenhuma página precisa mudar: todo link interno passa pelo helper `caminho()`
+(`src/utils/rotas.ts`). Ao trocar de domínio, atualize junto o `public/CNAME` e a
+constante `SITE.url` em `src/config/site.ts`.
 
 ## Estrutura
 

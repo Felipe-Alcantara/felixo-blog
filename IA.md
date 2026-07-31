@@ -22,12 +22,7 @@
 - **Conteúdo**: 1 post inaugural (`ola-mundo.md`).
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
   deploy verde em 2026-07-31.
-- **URL ativa**: `felipe-alcantara.github.io/felixo-blog/`, com design completo.
-- **Pendência do usuário (fora do código)**: criar o registro `CNAME` de `blog`
-  apontando para `felipe-alcantara.github.io` no DNS de `felixo.com.br`. A API
-  do Pages recusa configurar o domínio antes disso ("The certificate does not
-  exist yet"). Depois do DNS, a migração é trocar `SITE`/`BASE` no topo do
-  `astro.config.mjs` — passo a passo na seção Deploy do README.
+- **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
 - **Pendência conhecida**: a seção "Em Breve" do repositório `Felipe-Portifolio`
   (`src/sections/blog.jsx`) ainda aponta para `#blog`; precisa passar a apontar
   para `https://blog.felixo.com.br` quando o domínio estiver no ar.
@@ -80,6 +75,16 @@ falha cedo, no CI, não na cara do leitor.
 [2026-07-31] **Zero JavaScript no cliente.** Nenhuma página envia JS. Toda
 interação (hover, foco, navegação) é HTML e CSS. Manter assim é uma regra, não um
 acaso — está registrada no `AGENTS.md`.
+
+[2026-07-31] **Domínio próprio no ar.** `felixo.com.br` é gerido pelo DNS do
+Registro.br (nameservers `*.sec.dns.br`), onde o portfólio já vive no GitHub
+Pages (`www` → `felipe-alcantara.github.io`). O blog entrou pelo mesmo caminho:
+registro `CNAME` de `blog` → `felipe-alcantara.github.io`. Só **depois** do DNS
+resolver a API do Pages aceitou o `cname` — antes disso responde
+`The certificate does not exist yet`, que é a ordem obrigatória, não um erro
+transitório. Com o domínio ativo, `SITE`/`BASE` voltaram para a raiz e o
+`public/CNAME` foi restaurado: ele é o que preserva o domínio a cada publicação
+por Actions, já que o artefato substitui o conteúdo servido.
 
 [2026-07-31] **GitHub Pages via GitHub Actions**, não branch `gh-pages`. O deploy
 oficial (`upload-pages-artifact` + `deploy-pages`) dispensa commitar build e roda

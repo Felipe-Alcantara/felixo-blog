@@ -54,12 +54,15 @@ npm run build   # o build precisa passar; é o mesmo do CI
   links já compartilhados — só faça com pedido explícito.
 - `rascunho: true` esconde o post apenas no build de produção; em `npm run dev`
   ele continua visível. Não use isso como controle de segredo.
-- **Nunca escreva um link interno na mão** (`href="/tags"`). O site roda numa
-  subpasta (`/felixo-blog`) enquanto o domínio próprio não entra no ar, e
-  caminho absoluto quebra CSS e navegação — o sintoma é "a página só tem texto,
-  sem design". Use sempre `caminho()` de `src/utils/rotas.ts`.
+- **Nunca escreva um link interno na mão** (`href="/tags"`). Hoje o site serve na
+  raiz de `blog.felixo.com.br` e caminho absoluto até funcionaria, mas basta um
+  `BASE_PATH` (preview em subpasta) para tudo quebrar de uma vez — CSS e
+  navegação juntos, com o sintoma "a página só tem texto, sem design". Já
+  aconteceu uma vez; ver `IA.md`. Use sempre `caminho()` de
+  `src/utils/rotas.ts`.
 - Trocar de domínio é mexer nas constantes `SITE`/`BASE` no topo de
-  `astro.config.mjs` (ou nas variáveis `SITE_URL`/`BASE_PATH`) — e em
-  `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do README.
+  `astro.config.mjs` (ou nas variáveis `SITE_URL`/`BASE_PATH`), no
+  `public/CNAME` e em `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do
+  README.
 - Este repositório é **público**. Nada de token, `.env` ou dado pessoal de
   terceiros no conteúdo.

@@ -4,17 +4,15 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 /*
- * Endereço de publicação.
+ * Endereço de publicação: domínio próprio, servindo na raiz.
  *
- * Enquanto o DNS de `blog.felixo.com.br` não estiver configurado, o site vive em
- * `felipe-alcantara.github.io/felixo-blog/` — uma SUBPASTA, e por isso o `base`.
- *
- * Quando o domínio próprio entrar no ar, troque as duas constantes abaixo por
- * `'https://blog.felixo.com.br'` e `'/'`. Nada mais precisa mudar: todos os
- * links internos passam por `caminho()` (`src/utils/rotas.ts`).
+ * Se um dia o site voltar a rodar numa subpasta (ex.: preview em
+ * `felipe-alcantara.github.io/felixo-blog/`), basta definir as variáveis de
+ * ambiente `SITE_URL` e `BASE_PATH` — todos os links internos passam por
+ * `caminho()` (`src/utils/rotas.ts`) e se ajustam sozinhos.
  */
-const SITE = process.env.SITE_URL ?? 'https://felipe-alcantara.github.io';
-const BASE = process.env.BASE_PATH ?? '/felixo-blog';
+const SITE = process.env.SITE_URL ?? 'https://blog.felixo.com.br';
+const BASE = process.env.BASE_PATH ?? '/';
 
 export default defineConfig({
   site: SITE,
