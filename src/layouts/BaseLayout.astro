@@ -1,4 +1,5 @@
 ---
+import { caminho } from '../utils/rotas';
 import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
 import { SITE } from '../config/site';
@@ -32,12 +33,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
     <meta name="description" content={descricao} />
     <meta name="author" content={SITE.autor} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={caminho('/favicon.svg')} />
     <link
       rel="alternate"
       type="application/rss+xml"
       title={SITE.titulo}
-      href={new URL('rss.xml', Astro.site ?? SITE.url)}
+      href={caminho('/rss.xml')}
     />
     <meta name="generator" content={Astro.generator} />
 

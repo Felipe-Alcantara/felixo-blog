@@ -1,4 +1,5 @@
 ---
+import { caminho } from '../utils/rotas';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../config/site';
 ---
@@ -50,7 +51,7 @@ import { SITE } from '../config/site';
         >
       </li>
       <li>
-        Feed RSS: <a href="/rss.xml">/rss.xml</a>
+        Feed RSS: <a href={caminho('/rss.xml')}>/rss.xml</a>
       </li>
     </ul>
   </div>

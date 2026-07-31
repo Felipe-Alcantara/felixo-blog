@@ -1,4 +1,5 @@
 ---
+import { caminho } from '../../utils/rotas';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CartaoPost from '../../components/CartaoPost.astro';
@@ -50,7 +51,7 @@ const { nome, posts } = Astro.props as Props;
   </ul>
 
   <nav class="mt-12 text-sm">
-    <a href="/tags" class="text-felixo-purple transition hover:text-white"
+    <a href={caminho('/tags')} class="text-felixo-purple transition hover:text-white"
       >← Todas as tags</a
     >
   </nav>

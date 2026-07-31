@@ -1,4 +1,5 @@
 ---
+import { caminho } from '../utils/rotas';
 import BaseLayout from './BaseLayout.astro';
 import { formatarDataISO, formatarDataLonga, tempoDeLeitura } from '../utils/datas';
 import { slugDaTag, type Post } from '../utils/posts';
@@ -47,7 +48,7 @@ const minutos = tempoDeLeitura(corpo);
             {tags.map((tag) => (
               <li>
                 <a
-                  href={`/tags/${slugDaTag(tag)}/`}
+                  href={caminho(`/tags/${slugDaTag(tag)}/`)}
                   class="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-felixo-purple transition hover:bg-purple-500/20"
                 >
                   {tag}
@@ -65,7 +66,7 @@ const minutos = tempoDeLeitura(corpo);
   </article>
 
   <nav class="mt-16 border-t border-white/5 pt-6 text-sm">
-    <a href="/" class="text-felixo-purple transition hover:text-white"
+    <a href={caminho('/')} class="text-felixo-purple transition hover:text-white"
       >← Voltar para todos os posts</a
     >
   </nav>

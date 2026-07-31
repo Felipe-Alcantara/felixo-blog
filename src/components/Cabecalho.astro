@@ -1,7 +1,11 @@
 ---
+import { caminho } from '../utils/rotas';
 import { LINKS_NAVEGACAO, SITE } from '../config/site';
 
-const caminhoAtual = Astro.url.pathname;
+// Descarta o prefixo `base` para comparar com os hrefs de navegação, que são
+// escritos a partir da raiz do site ("/", "/tags"...).
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
 ---
 
 <header class="sticky top-0 z-40 border-b border-white/5 bg-black/70 backdrop-blur-md">
@@ -10,7 +14,7 @@ const caminhoAtual = Astro.url.pathname;
     aria-label="Navegação principal"
   >
     <a
-      href="/"
+      href={caminho('/')}
       class="group inline-flex items-center gap-2 text-sm font-bold tracking-wide text-zinc-100"
     >
       <span
@@ -28,7 +32,7 @@ const caminhoAtual = Astro.url.pathname;
           return (
             <li>
               <a
-                href={href}
+                href={caminho(href)}
                 aria-current={ativo ? 'page' : undefined}
                 class:list={[
                   'rounded-lg px-3 py-1.5 transition',

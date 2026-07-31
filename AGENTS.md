@@ -22,20 +22,20 @@ histórico de decisões.
 
 ## Onde mexer
 
-| O pedido é sobre… | Arquivo |
-| --- | --- |
-| Escrever ou editar um post | `src/content/posts/<slug>.md` |
-| Adicionar campo ao frontmatter | `src/content.config.ts` (schema Zod) |
-| Título, descrição, links de navegação/rodapé | `src/config/site.ts` |
-| Cores, fontes, tipografia do corpo do post | `src/styles/global.css` |
-| `<head>`, SEO, Open Graph, canonical | `src/layouts/BaseLayout.astro` |
-| Cabeçalho do post, tags, tempo de leitura | `src/layouts/PostLayout.astro` |
-| Home / listagem de posts | `src/pages/index.astro` |
-| Páginas de tag | `src/pages/tags/` |
-| Feed RSS | `src/pages/rss.xml.ts` |
-| Ordenação, filtro de rascunho, slug de tag | `src/utils/posts.ts` |
-| Domínio, sitemap, tema de realce de código | `astro.config.mjs` |
-| Deploy | `.github/workflows/deploy.yml` |
+| O pedido é sobre…                            | Arquivo                              |
+| -------------------------------------------- | ------------------------------------ |
+| Escrever ou editar um post                   | `src/content/posts/<slug>.md`        |
+| Adicionar campo ao frontmatter               | `src/content.config.ts` (schema Zod) |
+| Título, descrição, links de navegação/rodapé | `src/config/site.ts`                 |
+| Cores, fontes, tipografia do corpo do post   | `src/styles/global.css`              |
+| `<head>`, SEO, Open Graph, canonical         | `src/layouts/BaseLayout.astro`       |
+| Cabeçalho do post, tags, tempo de leitura    | `src/layouts/PostLayout.astro`       |
+| Home / listagem de posts                     | `src/pages/index.astro`              |
+| Páginas de tag                               | `src/pages/tags/`                    |
+| Feed RSS                                     | `src/pages/rss.xml.ts`               |
+| Ordenação, filtro de rascunho, slug de tag   | `src/utils/posts.ts`                 |
+| Domínio, sitemap, tema de realce de código   | `astro.config.mjs`                   |
+| Deploy                                       | `.github/workflows/deploy.yml`       |
 
 ## Gate de qualidade
 
@@ -54,7 +54,12 @@ npm run build   # o build precisa passar; é o mesmo do CI
   links já compartilhados — só faça com pedido explícito.
 - `rascunho: true` esconde o post apenas no build de produção; em `npm run dev`
   ele continua visível. Não use isso como controle de segredo.
-- `public/CNAME` precisa acompanhar qualquer troca de domínio, junto de `site`
-  em `astro.config.mjs` e `SITE.url` em `src/config/site.ts`.
+- **Nunca escreva um link interno na mão** (`href="/tags"`). O site roda numa
+  subpasta (`/felixo-blog`) enquanto o domínio próprio não entra no ar, e
+  caminho absoluto quebra CSS e navegação — o sintoma é "a página só tem texto,
+  sem design". Use sempre `caminho()` de `src/utils/rotas.ts`.
+- Trocar de domínio é mexer nas constantes `SITE`/`BASE` no topo de
+  `astro.config.mjs` (ou nas variáveis `SITE_URL`/`BASE_PATH`) — e em
+  `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do README.
 - Este repositório é **público**. Nada de token, `.env` ou dado pessoal de
   terceiros no conteúdo.

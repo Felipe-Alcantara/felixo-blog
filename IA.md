@@ -4,7 +4,7 @@
 > novo mantenedor, sem precisar reler todo o código ou o histórico de conversa.
 > Baseado no template de contexto do Felixo System Design.
 >
-> **Regra**: as seções datadas são *append-only* — acrescente registros novos, não
+> **Regra**: as seções datadas são _append-only_ — acrescente registros novos, não
 > reescreva os antigos. A exceção é o "ESTADO ATUAL", que é um resumo vivo.
 
 ---
@@ -22,14 +22,12 @@
 - **Conteúdo**: 1 post inaugural (`ola-mundo.md`).
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
   deploy verde em 2026-07-31.
+- **URL ativa**: `felipe-alcantara.github.io/felixo-blog/`, com design completo.
 - **Pendência do usuário (fora do código)**: criar o registro `CNAME` de `blog`
   apontando para `felipe-alcantara.github.io` no DNS de `felixo.com.br`. A API
   do Pages recusa configurar o domínio antes disso ("The certificate does not
-  exist yet"); assim que o DNS resolver, o `public/CNAME` versionado assume no
-  deploy seguinte. **Enquanto isso**, a URL provisória
-  `felipe-alcantara.github.io/felixo-blog/` serve o HTML mas quebra CSS e links,
-  porque o build usa caminhos a partir da raiz do domínio — comportamento
-  esperado, não bug.
+  exist yet"). Depois do DNS, a migração é trocar `SITE`/`BASE` no topo do
+  `astro.config.mjs` — passo a passo na seção Deploy do README.
 - **Pendência conhecida**: a seção "Em Breve" do repositório `Felipe-Portifolio`
   (`src/sections/blog.jsx`) ainda aponta para `#blog`; precisa passar a apontar
   para `https://blog.felixo.com.br` quando o domínio estiver no ar.
@@ -108,6 +106,23 @@ renomear quebra links já compartilhados.
 (`posts/[...id].astro` e `tags/[tag].astro`): o tipo `GetStaticPaths` não propaga
 as props para `Astro.props`. Resolvido declarando `interface Props` explícita em
 cada rota e anotando `Astro.props as Props`.
+
+[2026-07-31] **"A página só tem texto, sem design nenhum."** O primeiro deploy
+saiu com `site` apontando para `blog.felixo.com.br` e sem `base`, então todo
+caminho absoluto (`/_astro/...css`, `/posts/...`) dava 404 na URL real do GitHub
+Pages, que serve numa subpasta (`/felixo-blog/`). Como o DNS do domínio próprio
+ainda não existia, o site ficou só com o HTML.
+
+Correção: `base: '/felixo-blog'` no `astro.config.mjs` (com `SITE`/`BASE` em
+constantes trocáveis, também via env `SITE_URL`/`BASE_PATH`) e um helper
+`caminho()` em `src/utils/rotas.ts` por onde passam **todos** os links internos —
+incluindo favicon, feed RSS, links do rodapé e os `link` dos itens do RSS. O
+comparador de rota ativa do cabeçalho descarta o prefixo `base` antes de comparar.
+O `public/CNAME` foi removido do build: ele só faz sentido quando o domínio
+próprio entrar, e no mesmo momento em que `BASE` volta para `/`.
+
+**Lição registrada no `AGENTS.md`**: link interno escrito na mão é bug latente
+neste projeto; sempre `caminho()`.
 
 [2026-07-31] O npm 11 bloqueia scripts de pós-instalação por padrão, e o
 `esbuild` precisa do dele para baixar o binário da plataforma. Sem

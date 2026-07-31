@@ -1,7 +1,11 @@
 ---
 import { LINKS_EXTERNOS, SITE } from '../config/site';
+import { caminho } from '../utils/rotas';
 
 const ano = new Date().getFullYear();
+
+/** Links externos vão como estão; os internos precisam do prefixo `base`. */
+const ehExterno = (href: string) => href.startsWith('http');
 ---
 
 <footer class="mt-24 border-t border-white/5">
@@ -14,10 +18,10 @@ const ano = new Date().getFullYear();
         LINKS_EXTERNOS.map(({ rotulo, href }) => (
           <li>
             <a
-              href={href}
+              href={ehExterno(href) ? href : caminho(href)}
               class="transition hover:text-felixo-purple"
-              rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              target={href.startsWith('http') ? '_blank' : undefined}
+              rel={ehExterno(href) ? 'noopener noreferrer' : undefined}
+              target={ehExterno(href) ? '_blank' : undefined}
             >
               {rotulo}
             </a>
