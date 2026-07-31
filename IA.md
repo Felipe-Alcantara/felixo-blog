@@ -20,9 +20,16 @@
 - **Gate**: `npm run check` (0 erros) + `npm run build` (7 páginas) — ambos
   verdes em 2026-07-31.
 - **Conteúdo**: 1 post inaugural (`ola-mundo.md`).
-- **Pendência do usuário (fora do código)**: ligar GitHub Pages no repositório
-  (Source = GitHub Actions) e criar o `CNAME` de `blog` no DNS de
-  `felixo.com.br`. Até lá o site não responde no domínio.
+- **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
+  deploy verde em 2026-07-31.
+- **Pendência do usuário (fora do código)**: criar o registro `CNAME` de `blog`
+  apontando para `felipe-alcantara.github.io` no DNS de `felixo.com.br`. A API
+  do Pages recusa configurar o domínio antes disso ("The certificate does not
+  exist yet"); assim que o DNS resolver, o `public/CNAME` versionado assume no
+  deploy seguinte. **Enquanto isso**, a URL provisória
+  `felipe-alcantara.github.io/felixo-blog/` serve o HTML mas quebra CSS e links,
+  porque o build usa caminhos a partir da raiz do domínio — comportamento
+  esperado, não bug.
 - **Pendência conhecida**: a seção "Em Breve" do repositório `Felipe-Portifolio`
   (`src/sections/blog.jsx`) ainda aponta para `#blog`; precisa passar a apontar
   para `https://blog.felixo.com.br` quando o domínio estiver no ar.
