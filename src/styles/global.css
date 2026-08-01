@@ -77,9 +77,74 @@
   }
 
   .felixo-card-glow:hover {
-    box-shadow:
-      0 0 0 1px rgb(168 85 247 / 0.35),
-      0 0 32px rgb(168 85 247 / 0.18);
+    transform: translateY(-2px);
+    animation: felixo-respirar-brilho 2.5s ease-in-out infinite;
+  }
+
+  @keyframes felixo-respirar-brilho {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 1px rgb(168 85 247 / 0.3),
+        0 0 16px rgb(168 85 247 / 0.16);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px rgb(168 85 247 / 0.55),
+        0 0 34px rgb(168 85 247 / 0.35);
+    }
+  }
+
+  /* Botão em pílula com brilho e reflexo passando no hover — usado nas
+     chamadas de ação da home e da 404, no mesmo espírito do felixo.com.br. */
+  .felixo-botao {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid rgb(168 85 247 / 0.4);
+    background: rgb(168 85 247 / 0.1);
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    box-shadow: 0 0 20px rgb(168 85 247 / 0.3);
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .felixo-botao:hover {
+    background: rgb(168 85 247 / 0.2);
+    box-shadow: 0 0 28px rgb(168 85 247 / 0.45);
+    color: #fff;
+  }
+
+  .felixo-botao::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-120%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.25), transparent);
+    transition: transform 0.8s ease;
+  }
+
+  .felixo-botao:hover::before {
+    transform: translateX(120%);
+  }
+
+  /* Variante neutra do botão, para ações secundárias (ex.: RSS). */
+  .felixo-botao-fantasma {
+    border-color: rgb(255 255 255 / 0.25);
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: 0 0 20px rgb(255 255 255 / 0.12);
+  }
+
+  .felixo-botao-fantasma:hover {
+    background: rgb(255 255 255 / 0.1);
+    box-shadow: 0 0 24px rgb(255 255 255 / 0.2);
   }
 }
 

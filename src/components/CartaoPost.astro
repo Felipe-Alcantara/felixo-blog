@@ -11,7 +11,7 @@ const { post } = Astro.props;
 const { titulo, descricao, publicadoEm, tags } = post.data;
 ---
 
-<article class="felixo-card-glow rounded-2xl border border-white/5 bg-zinc-950/60 p-6">
+<article class="felixo-card-glow rounded-3xl border border-white/10 bg-zinc-950/60 p-6">
   <h2 class="text-xl font-bold text-zinc-100">
     <a href={caminho(`/posts/${post.id}/`)} class="transition hover:text-felixo-purple">
       {titulo}
@@ -31,7 +31,7 @@ const { titulo, descricao, publicadoEm, tags } = post.data;
             <li>
               <a
                 href={caminho(`/tags/${slugDaTag(tag)}/`)}
-                class="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-felixo-purple transition hover:bg-purple-500/20"
+                class="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-felixo-purple transition hover:bg-purple-500/20"
               >
                 {tag}
               </a>
