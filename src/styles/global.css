@@ -163,7 +163,9 @@
 
 .conteudo-post h2,
 .conteudo-post h3,
-.conteudo-post h4 {
+.conteudo-post h4,
+.conteudo-post h5,
+.conteudo-post h6 {
   color: rgb(250 250 250);
   font-weight: 700;
   line-height: 1.3;
@@ -178,6 +180,27 @@
 .conteudo-post h3 {
   margin-top: 2.25rem;
   font-size: 1.25rem;
+}
+
+.conteudo-post h4 {
+  margin-top: 1.75rem;
+  font-size: 1.1rem;
+}
+
+.conteudo-post h5 {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+}
+
+/* Título mais fundo do que qualquer post deveria precisar — tratado como
+   rótulo (maiúsculo, espaçado), no mesmo estilo dos "olhos" de seção usados
+   fora do conteúdo do post (home, tags, 404). */
+.conteudo-post h6 {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(192 132 252);
 }
 
 .conteudo-post a {
@@ -215,6 +238,20 @@
 
 .conteudo-post li::marker {
   color: rgb(168 85 247 / 0.8);
+}
+
+/* Lista de tarefas (GFM `- [ ]`): a caixa de marcação já basta como marcador,
+   então o bullet padrão da lista fica redundante — e o checkbox ganha a cor
+   de marca em vez do cinza padrão do navegador. */
+.conteudo-post li.task-list-item {
+  list-style: none;
+  margin-left: -1.5rem;
+}
+
+.conteudo-post li.task-list-item input[type='checkbox'] {
+  accent-color: #a855f7;
+  margin-right: 0.5rem;
+  vertical-align: middle;
 }
 
 .conteudo-post blockquote {

@@ -22,11 +22,13 @@
   usa `questionary`/`rich` para o menu — não entra no bundle do site.
 - **Gate**: `npm run check` (0 erros) + `npm run build` (7 páginas) — ambos
   verdes em 2026-08-01. `npm audit`: 0 vulnerabilidades.
-- **Conteúdo**: 1 post inaugural (`ola-mundo.md`).
+- **Conteúdo**: 1 post inaugural (`ola-mundo.md`). Existe também um post de
+  teste local (`testando-os-recursos-do-blog.md`, `rascunho: true`) usado só
+  para auditar a renderização de Markdown — **nunca commitado de propósito**,
+  fica de fora do controle de versão.
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
-  deploy verde em 2026-07-31. As mudanças de front e o `start_app.py` de
-  2026-08-01 ainda não foram publicados (deploy só acontece a partir da
-  `main`, via push).
+  deploy verde em 2026-07-31. A identidade visual e o `start_app.py` de
+  2026-08-01 já foram publicados (push feito, deploy verde).
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
 - **Estado final**: não há pendência de publicação conhecida neste repositório.
   A seção "Em Breve" do repositório `Felipe-Portifolio` continua sendo uma
@@ -211,3 +213,29 @@ neste projeto; sempre `caminho()`.
 `esbuild` precisa do dele para baixar o binário da plataforma. Sem
 `npm approve-scripts esbuild` o build falha. No CI o `npm ci` já respeita o campo
 `allowScripts` gravado no `package.json`.
+
+[2026-08-02] **Auditoria visual (Chromium headless via Playwright, instalado à
+parte) achou dois bugs reais**, verificados com um post de teste cobrindo todo
+o Markdown suportado (GFM completo, H2–H6, tabela com alinhamento, imagem,
+código com e sem linguagem):
+
+1. `src/pages/tags/[tag].astro` renderizava **"2posts"** sem espaço. Causa:
+   `{posts.length}` e a expressão seguinte (`'post'`/`'posts'`) em linhas
+   separadas — o Astro colapsa a quebra de linha entre expressões adjacentes,
+   igual JSX. Corrigido juntando as duas na mesma linha.
+2. `.conteudo-post` em `global.css` não estilizava **H5/H6** (saíam idênticos
+   a um parágrafo, sem negrito nem cor de título) e **H4** não tinha
+   `font-size` próprio (herdava o tamanho do corpo do texto, só com negrito).
+   Também faltava estilo para **lista de tarefas** do GFM (`- [ ]`): checkbox
+   com a cor padrão cinza do navegador, com um bullet redundante do lado.
+   Corrigido: H4/H5/H6 ganharam escala tipográfica própria (H6 tratado como
+   rótulo maiúsculo roxo, reaproveitando o padrão de "olho de seção" já usado
+   em outras páginas); `li.task-list-item` perdeu o bullet e o checkbox ganhou
+   `accent-color` da marca.
+
+Cada correção foi validada com estilo computado real via Playwright
+(`getComputedStyle`), não só inspeção visual do print — ex.:
+`accentColor: "rgb(168, 85, 247)"`, `listStyleType: "none"`,
+`textTransform: "uppercase"` no H6. `npm run check` e `npm run build`
+seguem verdes. O post de teste que gerou a auditoria ficou de fora do commit,
+de propósito (ver ESTADO ATUAL).
