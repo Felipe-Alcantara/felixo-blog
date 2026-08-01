@@ -1,0 +1,4 @@
+# Dependências do start_app.py (menu interativo). O blog em si é Node/Astro —
+# estes dois pacotes servem só para desenhar o menu no terminal.
+questionary>=2.0
+rich>=13.0

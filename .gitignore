@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# claude code local settings
+.claude/
+
+# cache do start_app.py (Python)
+__pycache__/
+*.pyc

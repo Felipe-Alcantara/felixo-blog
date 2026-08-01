@@ -12,6 +12,19 @@ automaticamente no GitHub Pages a cada push na `main`.
 
 ## Rodando localmente
 
+Forma mais simples — abre o menu interativo onde você instala, configura,
+inicia e verifica o blog, sem precisar decorar comando nenhum:
+
+```bash
+python3 start_app.py
+```
+
+No menu você escolhe: **Iniciar/Rodar**, **Instalar/Setup**, **Configurar**
+(`SITE_URL`/`BASE_PATH` para testar um preview em subpasta), **Verificar**
+(`check` + `format`) e **Status/Sair**.
+
+Ou, direto pelo npm:
+
 ```bash
 npm install
 npm run dev      # http://localhost:4321
