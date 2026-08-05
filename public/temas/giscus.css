@@ -1,0 +1,107 @@
+/*! Tema customizado do giscus para o Blog do Felixo.
+ * Base: tema "dark" oficial do giscus (MIT, Copyright (c) 2018 GitHub Inc.)
+ * https://github.com/giscus/giscus/blob/main/styles/themes/dark.css
+ * Sobrepõe acento/fundo/borda pra bater com o Felixo System Design
+ * (roxo #c084fc/#a855f7, fundo preto, ver src/styles/global.css).
+ */
+
+main {
+  --color-prettylights-syntax-comment: #8b949e;
+  --color-prettylights-syntax-constant: #79c0ff;
+  --color-prettylights-syntax-entity: #d2a8ff;
+  --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
+  --color-prettylights-syntax-entity-tag: #7ee787;
+  --color-prettylights-syntax-keyword: #ff7b72;
+  --color-prettylights-syntax-string: #a5d6ff;
+  --color-prettylights-syntax-variable: #ffa657;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+  --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+  --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+  --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+  --color-prettylights-syntax-carriage-return-bg: #b62324;
+  --color-prettylights-syntax-string-regexp: #7ee787;
+  --color-prettylights-syntax-markup-list: #f2cc60;
+  --color-prettylights-syntax-markup-heading: #a855f7;
+  --color-prettylights-syntax-markup-italic: #c9d1d9;
+  --color-prettylights-syntax-markup-bold: #c9d1d9;
+  --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+  --color-prettylights-syntax-markup-deleted-bg: #67060c;
+  --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+  --color-prettylights-syntax-markup-inserted-bg: #033a16;
+  --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+  --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+  --color-prettylights-syntax-markup-ignored-text: #c9d1d9;
+  --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+  --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+  --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
+  --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+
+  /* Botões: roxo da marca no lugar do verde padrão do GitHub */
+  --color-btn-text: #e4e4e7;
+  --color-btn-bg: rgb(255 255 255 / 5%);
+  --color-btn-border: rgb(255 255 255 / 10%);
+  --color-btn-shadow: 0 0 transparent;
+  --color-btn-inset-shadow: 0 0 transparent;
+  --color-btn-hover-bg: rgb(255 255 255 / 8%);
+  --color-btn-hover-border: rgb(192 132 252 / 40%);
+  --color-btn-active-bg: rgb(255 255 255 / 10%);
+  --color-btn-active-border: #a855f7;
+  --color-btn-selected-bg: rgb(168 85 247 / 15%);
+  --color-btn-primary-text: #fff;
+  --color-btn-primary-bg: #a855f7;
+  --color-btn-primary-border: rgb(255 255 255 / 10%);
+  --color-btn-primary-shadow: 0 0 transparent;
+  --color-btn-primary-inset-shadow: 0 0 transparent;
+  --color-btn-primary-hover-bg: #c084fc;
+  --color-btn-primary-hover-border: rgb(255 255 255 / 10%);
+  --color-btn-primary-selected-bg: #a855f7;
+  --color-btn-primary-selected-shadow: 0 0 transparent;
+  --color-btn-primary-disabled-text: rgb(255 255 255 / 50%);
+  --color-btn-primary-disabled-bg: rgb(168 85 247 / 40%);
+  --color-btn-primary-disabled-border: rgb(255 255 255 / 10%);
+  --color-action-list-item-default-hover-bg: rgb(192 132 252 / 8%);
+  --color-segmented-control-bg: rgb(255 255 255 / 5%);
+  --color-segmented-control-button-bg: #000;
+  --color-segmented-control-button-selected-border: #a855f7;
+
+  /* Texto e fundo: mesma escala de preto/zinc do resto do site */
+  --color-fg-default: #e4e4e7;
+  --color-fg-muted: #a1a1aa;
+  --color-fg-subtle: #71717a;
+  --color-canvas-default: #000;
+  --color-canvas-overlay: #09090b;
+  --color-canvas-inset: #000;
+  --color-canvas-subtle: #09090b;
+  --color-border-default: rgb(255 255 255 / 10%);
+  --color-border-muted: rgb(255 255 255 / 5%);
+  --color-neutral-muted: rgb(161 161 170 / 20%);
+
+  /* Acento: roxo da marca no lugar do azul padrão do GitHub */
+  --color-accent-fg: #c084fc;
+  --color-accent-emphasis: #a855f7;
+  --color-accent-muted: rgb(168 85 247 / 40%);
+  --color-accent-subtle: rgb(168 85 247 / 10%);
+
+  --color-success-fg: #3fb950;
+  --color-attention-fg: #d29922;
+  --color-attention-muted: rgb(187 128 9 / 40%);
+  --color-attention-subtle: rgb(187 128 9 / 15%);
+  --color-danger-fg: #f85149;
+  --color-danger-muted: rgb(248 81 73 / 40%);
+  --color-danger-subtle: rgb(248 81 73 / 10%);
+  --color-primer-shadow-inset: 0 0 transparent;
+  --color-scale-gray-7: rgb(255 255 255 / 8%);
+  --color-scale-blue-8: rgb(168 85 247 / 25%);
+
+  --color-social-reaction-bg-hover: var(--color-scale-gray-7);
+  --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-8);
+}
+
+main .pagination-loader-container {
+  background-image: url('https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg');
+}
+
+main .gsc-loading-image {
+  background-image: url('https://github.githubassets.com/images/mona-loading-dark.gif');
+}

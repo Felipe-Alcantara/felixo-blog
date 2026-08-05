@@ -32,4 +32,6 @@ export const GISCUS = {
   categoriaId: 'DIC_kwDOTpm1O84DCwaM',
   mapeamento: 'pathname',
   idioma: 'pt',
+  /** Tema customizado (public/temas/giscus.css) pra bater com o Felixo System Design. */
+  temaUrl: `${SITE.url}/temas/giscus.css`,
 } as const;
