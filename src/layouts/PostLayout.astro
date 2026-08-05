@@ -1,6 +1,7 @@
 ---
 import { caminho } from '../utils/rotas';
 import BaseLayout from './BaseLayout.astro';
+import Comentarios from '../components/Comentarios.astro';
 import { formatarDataISO, formatarDataLonga, tempoDeLeitura } from '../utils/datas';
 import { slugDaTag, type Post } from '../utils/posts';
 
@@ -64,6 +65,8 @@ const minutos = tempoDeLeitura(corpo);
       <slot />
     </div>
   </article>
+
+  <Comentarios />
 
   <nav class="mt-16 border-t border-white/5 pt-6 text-sm">
     <a href={caminho('/')} class="text-felixo-purple transition hover:text-white"

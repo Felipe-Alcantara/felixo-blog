@@ -1,0 +1,46 @@
+---
+/**
+ * Comentários do post via giscus (GitHub Discussions).
+ * Sem backend próprio: os dados moram nas Discussions do repositório
+ * felixo-blog. Ver GISCUS em src/config/site.ts para os IDs.
+ */
+import { GISCUS } from '../config/site';
+---
+
+<section class="mt-16 border-t border-white/5 pt-10" aria-labelledby="comentarios-titulo">
+  <h2 id="comentarios-titulo" class="felixo-text-glow text-xl font-bold">Comentários</h2>
+  <p class="mt-2 text-sm text-zinc-500">
+    Os comentários usam sua conta do GitHub e ficam salvos como uma
+    <a
+      href={`https://github.com/${GISCUS.repo}/discussions`}
+      class="text-felixo-purple underline decoration-purple-500/40 underline-offset-2 transition hover:text-white"
+      target="_blank"
+      rel="noopener noreferrer">Discussion pública do repositório</a
+    >.
+  </p>
+
+  <div class="mt-6">
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={GISCUS.repo}
+      data-repo-id={GISCUS.repoId}
+      data-category={GISCUS.categoria}
+      data-category-id={GISCUS.categoriaId}
+      data-mapping={GISCUS.mapeamento}
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="dark_dimmed"
+      data-lang={GISCUS.idioma}
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async></script>
+    <noscript>
+      <p class="text-sm text-zinc-500">
+        Ative o JavaScript para ver e deixar comentários (via giscus/GitHub Discussions).
+      </p>
+    </noscript>
+  </div>
+</section>

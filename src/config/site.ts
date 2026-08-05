@@ -19,3 +19,17 @@ export const LINKS_EXTERNOS = [
   { rotulo: 'GitHub', href: 'https://github.com/Felipe-Alcantara' },
   { rotulo: 'RSS', href: '/rss.xml' },
 ] as const;
+
+/**
+ * Configuração do giscus (comentários via GitHub Discussions).
+ * IDs obtidos com `gh api graphql` sobre o repositório felixo-blog — não são
+ * segredo: aparecem no HTML renderizado de qualquer site que usa giscus.
+ */
+export const GISCUS = {
+  repo: 'Felipe-Alcantara/felixo-blog',
+  repoId: 'R_kgDOTpm1Ow',
+  categoria: 'Announcements',
+  categoriaId: 'DIC_kwDOTpm1O84DCwaM',
+  mapeamento: 'pathname',
+  idioma: 'pt',
+} as const;
