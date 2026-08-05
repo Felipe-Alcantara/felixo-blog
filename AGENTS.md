@@ -22,20 +22,21 @@ histórico de decisões.
 
 ## Onde mexer
 
-| O pedido é sobre…                            | Arquivo                              |
-| -------------------------------------------- | ------------------------------------ |
-| Escrever ou editar um post                   | `src/content/posts/<slug>.md`        |
-| Adicionar campo ao frontmatter               | `src/content.config.ts` (schema Zod) |
-| Título, descrição, links de navegação/rodapé | `src/config/site.ts`                 |
-| Cores, fontes, tipografia do corpo do post   | `src/styles/global.css`              |
-| `<head>`, SEO, Open Graph, canonical         | `src/layouts/BaseLayout.astro`       |
-| Cabeçalho do post, tags, tempo de leitura    | `src/layouts/PostLayout.astro`       |
-| Home / listagem de posts                     | `src/pages/index.astro`              |
-| Páginas de tag                               | `src/pages/tags/`                    |
-| Feed RSS                                     | `src/pages/rss.xml.ts`               |
-| Ordenação, filtro de rascunho, slug de tag   | `src/utils/posts.ts`                 |
-| Domínio, sitemap, tema de realce de código   | `astro.config.mjs`                   |
-| Deploy                                       | `.github/workflows/deploy.yml`       |
+| O pedido é sobre…                            | Arquivo                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| Escrever ou editar um post                   | `src/content/posts/<slug>.md`                                        |
+| Adicionar campo ao frontmatter               | `src/content.config.ts` (schema Zod)                                 |
+| Título, descrição, links de navegação/rodapé | `src/config/site.ts`                                                 |
+| Cores, fontes, tipografia do corpo do post   | `src/styles/global.css`                                              |
+| `<head>`, SEO, Open Graph, canonical         | `src/layouts/BaseLayout.astro`                                       |
+| Cabeçalho do post, tags, tempo de leitura    | `src/layouts/PostLayout.astro`                                       |
+| Home / listagem de posts                     | `src/pages/index.astro`                                              |
+| Páginas de tag                               | `src/pages/tags/`                                                    |
+| Feed RSS                                     | `src/pages/rss.xml.ts`                                               |
+| Ordenação, filtro de rascunho, slug de tag   | `src/utils/posts.ts`                                                 |
+| Domínio, sitemap, tema de realce de código   | `astro.config.mjs`                                                   |
+| Deploy                                       | `.github/workflows/deploy.yml`                                       |
+| Comentários (giscus)                         | `src/components/Comentarios.astro`, `GISCUS` em `src/config/site.ts` |
 
 ## Gate de qualidade
 
