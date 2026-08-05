@@ -11,24 +11,28 @@
 
 ## 📊 ESTADO ATUAL (RESUMO VIVO)
 
-Última atualização: [2026-08-01]
+Última atualização: [2026-08-05]
 
-- **Fase**: v1 entregue + revisão de front + auditoria de qualidade
-  concluídas. Blog estático funcionando ponta a ponta — home, post, tags,
-  sobre, RSS, sitemap, 404 e deploy automatizado — com identidade visual
-  alinhada à do `Felipe-Portifolio` e `start_app.py` como porta de entrada.
+- **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
+  via giscus** concluídos. Blog estático funcionando ponta a ponta — home, post,
+  tags, sobre, RSS, sitemap, 404, comentários e deploy automatizado — com
+  identidade visual alinhada à do `Felipe-Portifolio` e `start_app.py` como
+  porta de entrada.
 - **Stack**: Astro 7 + Tailwind CSS 4 (via `@tailwindcss/vite`), TypeScript
-  estrito, zero JavaScript no cliente. `start_app.py` (Python, só dev-tooling)
+  estrito, zero JavaScript no cliente **exceto** o script de terceiro do giscus
+  (comentários), inerentemente dinâmico. `start_app.py` (Python, só dev-tooling)
   usa `questionary`/`rich` para o menu — não entra no bundle do site.
 - **Gate**: `npm run check` (0 erros) + `npm run build` (7 páginas) — ambos
-  verdes em 2026-08-01. `npm audit`: 0 vulnerabilidades.
+  verdes em 2026-08-05. `npm audit`: 0 vulnerabilidades.
 - **Conteúdo**: 1 post inaugural (`ola-mundo.md`). Existe também um post de
   teste local (`testando-os-recursos-do-blog.md`, `rascunho: true`) usado só
   para auditar a renderização de Markdown — **nunca commitado de propósito**,
   fica de fora do controle de versão.
+- **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
+  "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
-  deploy verde em 2026-07-31. A identidade visual e o `start_app.py` de
-  2026-08-01 já foram publicados (push feito, deploy verde).
+  deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
+  via giscus já publicados (push feito, deploy verde em 2026-08-05).
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
 - **Estado final**: não há pendência de publicação conhecida neste repositório.
   A seção "Em Breve" do repositório `Felipe-Portifolio` continua sendo uma
@@ -164,6 +168,82 @@ mínimo foi encontrada: responsabilidades já separadas, contratos (`caminho()`,
 schema Zod) preservados, segurança de frontend (seção 10 do design system)
 já coberta — todo link `target="_blank"` já usava `rel="noopener noreferrer"`.
 Estado desta entrega: concluído.
+
+[2026-08-05] **Comentários via giscus, não Disqus nem back-end próprio.**
+Pergunta de origem: como o `akitaonrails.com` (referência declarada no objetivo
+do projeto) tem comentários com repositório público. Investigação: o blog do
+Akita usa **Disqus** — um iframe (`layouts/partials/components/comments.html`)
+aponta pra um shortname público; todo o armazenamento vive nos servidores do
+Disqus, nada de segredo no repo dele.
+
+**Alternativas consideradas:**
+
+1. **Disqus** (igual ao Akita) — descartado: injeta anúncios/rastreamento no
+   plano gratuito, e os dados de comentário ficam presos numa empresa fechada,
+   sem export natural pro próprio repositório — contraria o espírito "blog
+   open source" do projeto.
+2. **Back-end próprio** (API + banco hospedados, ex. Railway) — mais controle,
+   mas exige manter servidor, moderação e spam por conta própria. Adiado: sem
+   necessidade real hoje (regra 4 do Guia Mínimo — simplicidade verificável).
+3. **giscus** (escolhido) — usa GitHub Discussions do próprio repo como
+   armazenamento. Zero servidor, zero conta de terceiro além do GitHub que o
+   projeto já usa, dados portáveis (visíveis/exportáveis via API do GitHub a
+   qualquer momento, sem lock-in).
+
+**Trade-off aceito**: exige que o visitante tenha conta GitHub pra comentar —
+filtra o público geral, mas o público-alvo declarado (devs, acompanhando o
+FelixoVerse) majoritariamente já tem conta. Caminho de evolução combinado com
+o usuário: migrar pra back-end próprio no futuro caso essa barreira vire
+problema real; os comentários do giscus não se perdem nessa transição, ficam
+arquiváveis via API do GitHub.
+
+**Implementação:** `has_discussions` habilitado via API do GitHub
+(`gh api -X PATCH .../felixo-blog -f has_discussions=true`); categoria de
+Discussion usada: **"Announcements"** (padrão do repo, formato que só permite
+mantenedor/app criar discussão — o mesmo formato que o giscus recomenda pra
+evitar discussão solta criada por visitantes). Não criei uma categoria
+"Comentários" dedicada porque a API do GitHub **não expõe mutation** pra criar
+categoria de Discussion (só a interface web) — registrado aqui como limitação
+conhecida, não pendência esquecida.
+
+Componente novo: `src/components/Comentarios.astro`, plugado no fim do
+`PostLayout.astro`. Config centralizada em `GISCUS` (`src/config/site.ts`) —
+`repoId`/`categoriaId` não são segredo (aparecem no HTML renderizado de
+qualquer site que usa giscus). Tema customizado em `public/temas/giscus.css`
+(derivado do tema "dark" oficial do giscus, MIT) trocando o azul/verde padrão
+do GitHub pelo roxo `#C084FC`/`#A855F7` e o fundo cinza pelo preto/zinc do
+resto do site — o preset genérico (`dark_dimmed`) destoava visualmente do
+resto do blog.
+
+**Validado com evidência real de execução** (regra 8 do Guia Mínimo), em duas
+rodadas: (1) Chromium headless via Playwright abrindo `/posts/ola-mundo/` em
+`npm run dev`, confirmando o iframe do giscus carregado sem erro de "app não
+instalado" (`0 reações`, `0 comentários`, botão "Entre com GitHub"); um
+comentário real de teste (`@Iasminmins`) apareceu na Discussion
+[`#1`](https://github.com/Felipe-Alcantara/felixo-blog/discussions/1) logo
+depois, confirmando o ciclo completo funcionando em produção. (2) Após o tema
+customizado, novo screenshot **contra a URL de produção já publicada**
+(`blog.felixo.com.br`), confirmando visualmente o roxo da marca no botão e no
+fundo preto — o primeiro teste, contra `localhost`, deu falso-negativo (tema
+CSS ainda não publicado = 404 = giscus trava em opacidade baixa) e o segundo,
+apontando a `data-theme` pro próprio `localhost`, foi bloqueado por CORS
+(`private network access` do Chromium não deixa uma origem pública como
+`giscus.app` buscar um recurso em `localhost`) — por isso a validação final
+só é confiável contra o domínio real, publicado. `npm run check` e
+`npm run build` seguem verdes. Estado desta entrega: concluído.
+
+---
+
+## 🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS
+
+[2026-08-05] **giscus** (comentários via GitHub Discussions) —
+`src/config/site.ts` (`GISCUS`) e `src/components/Comentarios.astro`.
+Repositório: `Felipe-Alcantara/felixo-blog`, categoria `Announcements`.
+Requer o GitHub App [giscus](https://github.com/apps/giscus) instalado no
+repo (autorização manual, feita pelo dono do repo — nenhuma API cobre esse
+passo). Tema customizado servido em `/temas/giscus.css` (arquivo público,
+sem segredo). Nenhuma credencial ou variável de ambiente envolvida: todos os
+IDs usados (`repoId`, `categoriaId`) são públicos por natureza do protocolo.
 
 ---
 

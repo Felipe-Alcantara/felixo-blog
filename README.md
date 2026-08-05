@@ -71,6 +71,14 @@ propósito, em vez de publicar torto):
 Blocos de código com marcação de linguagem (` ```python `) recebem realce de
 sintaxe automaticamente.
 
+## Comentários
+
+Cada post tem uma seção de comentários via [giscus](https://giscus.app),
+usando as **Discussions do próprio repositório GitHub** como armazenamento —
+sem back-end, sem banco de dados. Comentar exige login com GitHub. Config em
+`GISCUS` (`src/config/site.ts`), componente em `src/components/Comentarios.astro`,
+tema customizado em `public/temas/giscus.css`.
+
 ## O que o site gera
 
 - `/` — lista de posts, do mais recente para o mais antigo
