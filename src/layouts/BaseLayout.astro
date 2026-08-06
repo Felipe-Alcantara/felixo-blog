@@ -64,14 +64,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
     />
   </head>
 
-  <body class="min-h-dvh text-zinc-300 antialiased">
+  <body class="relative min-h-dvh text-zinc-300 antialiased">
+    <div class="felixo-ambiente" aria-hidden="true"></div>
     <a
       href="#conteudo"
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white"
+      class="relative z-50 sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white"
       >Pular para o conteúdo</a
     >
     <Cabecalho />
-    <main id="conteudo" class="mx-auto max-w-3xl px-4 py-12">
+    <main id="conteudo" class="relative z-10 mx-auto max-w-7xl px-4 py-14 sm:px-6">
       <slot />
     </main>
     <Rodape />

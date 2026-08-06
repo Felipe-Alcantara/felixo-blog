@@ -11,6 +11,10 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
+:root {
+  --felixo-glow-intensity: 1;
+}
+
 @layer base {
   html {
     font-family: var(--font-sans);
@@ -25,6 +29,7 @@
     overflow-x: hidden;
     background-image: linear-gradient(to bottom, #000, rgb(9 9 11), #000);
     background-attachment: fixed;
+    isolation: isolate;
   }
 
   ::selection {
@@ -54,17 +59,105 @@
 }
 
 @layer components {
+  /* Ambiente visual em camadas, inspirado no fundo do portfólio e renderizado
+     em CSS para preservar o blog estático e sem JavaScript de interface. */
+  .felixo-ambiente {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 12% 0%, rgb(168 85 247 / 0.12), transparent 28rem),
+      radial-gradient(circle at 88% 30%, rgb(59 130 246 / 0.05), transparent 24rem);
+  }
+
+  .felixo-ambiente::before,
+  .felixo-ambiente::after {
+    position: absolute;
+    inset: -20%;
+    content: '';
+    pointer-events: none;
+  }
+
+  /* Pequenos pontos de luz que sobem lentamente, como as partículas do
+     FelixoVerse, sem inserir uma biblioteca ou script no cliente. */
+  .felixo-ambiente::before {
+    opacity: 0.28;
+    background-image:
+      radial-gradient(circle, rgb(216 180 254 / 0.8) 0 1px, transparent 1.5px),
+      radial-gradient(circle, rgb(192 132 252 / 0.6) 0 1px, transparent 1.5px);
+    background-position:
+      0 0,
+      80px 120px;
+    background-size:
+      180px 220px,
+      260px 300px;
+    animation: felixo-particulas-subir 20s linear infinite;
+    mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  }
+
+  .felixo-ambiente::after {
+    background:
+      radial-gradient(circle at 18% 72%, rgb(168 85 247 / 0.08), transparent 18rem),
+      radial-gradient(circle at 80% 12%, rgb(192 132 252 / 0.06), transparent 20rem);
+    filter: blur(24px);
+    animation: felixo-brilho-orbita 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes felixo-particulas-subir {
+    from {
+      transform: translate3d(0, 7%, 0);
+    }
+    to {
+      transform: translate3d(0, -7%, 0);
+    }
+  }
+
+  @keyframes felixo-brilho-orbita {
+    from {
+      transform: translate3d(-2%, 1%, 0) scale(1);
+    }
+    to {
+      transform: translate3d(2%, -2%, 0) scale(1.05);
+    }
+  }
+
   /* Texto com brilho de ametista — usado em títulos de destaque. */
   .felixo-text-glow {
     background-image: linear-gradient(
-      120deg,
-      #fff 10%,
-      var(--color-felixo-purple) 60%,
+      90deg,
+      #fff 0%,
+      var(--color-felixo-purple) 50%,
       #fff 100%
     );
+    background-size: 220% 220%;
     background-clip: text;
+    -webkit-background-clip: text;
     color: transparent;
-    text-shadow: 0 0 28px rgb(168 85 247 / 0.25);
+    text-shadow:
+      0 0 6px rgb(168 85 247 / 0.45),
+      0 0 34px rgb(168 85 247 / 0.25);
+    animation: felixo-gradiente-orbita 7.5s linear infinite;
+    will-change: background-position;
+  }
+
+  @keyframes felixo-gradiente-orbita {
+    0% {
+      background-position: 50% 0%;
+    }
+    25% {
+      background-position: 100% 50%;
+    }
+    50% {
+      background-position: 50% 100%;
+    }
+    75% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 50% 0%;
+    }
   }
 
   /* Brilho de respiração aplicado a cards e bordas. */
@@ -78,7 +171,7 @@
 
   .felixo-card-glow:hover {
     transform: translateY(-2px);
-    animation: felixo-respirar-brilho 2.5s ease-in-out infinite;
+    animation: felixo-respirar-brilho 3s ease-in-out infinite;
   }
 
   @keyframes felixo-respirar-brilho {
@@ -100,6 +193,7 @@
   .felixo-botao {
     position: relative;
     display: inline-flex;
+    isolation: isolate;
     align-items: center;
     gap: 0.5rem;
     overflow: hidden;
@@ -135,6 +229,11 @@
     transform: translateX(120%);
   }
 
+  .felixo-botao > * {
+    position: relative;
+    z-index: 1;
+  }
+
   /* Variante neutra do botão, para ações secundárias (ex.: RSS). */
   .felixo-botao-fantasma {
     border-color: rgb(255 255 255 / 0.25);
@@ -145,6 +244,40 @@
   .felixo-botao-fantasma:hover {
     background: rgb(255 255 255 / 0.1);
     box-shadow: 0 0 24px rgb(255 255 255 / 0.2);
+  }
+
+  /* Tratamento da foto do portfólio aplicado à página Sobre. */
+  .felixo-foto-perfil-glow {
+    background: linear-gradient(
+      135deg,
+      rgb(168 85 247 / 0.24),
+      rgb(255 255 255 / 0.04),
+      transparent
+    );
+    filter: blur(1.5rem);
+    opacity: 0.75;
+    animation: felixo-foto-respirar 5s ease-in-out infinite;
+    background-size: 200% 200%;
+  }
+
+  .felixo-foto-perfil-glow-claro {
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.12), transparent);
+    filter: blur(1rem);
+    opacity: 0.8;
+    animation-delay: 0.5s;
+    animation-direction: reverse;
+  }
+
+  @keyframes felixo-foto-respirar {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: scale(0.98);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.03);
+    }
   }
 }
 
@@ -283,10 +416,28 @@
 }
 
 .conteudo-post img {
+  display: block;
   max-width: 100%;
   height: auto;
-  border-radius: 1rem;
+  margin-inline: auto;
+  border-radius: 1.5rem;
   border: 1px solid rgb(255 255 255 / 0.08);
+  background: rgb(9 9 11 / 0.6);
+  box-shadow:
+    0 0 0 1px rgb(168 85 247 / 0.08),
+    0 0 24px rgb(168 85 247 / 0.12);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.conteudo-post img:hover {
+  transform: translateY(-2px);
+  border-color: rgb(192 132 252 / 0.35);
+  box-shadow:
+    0 0 0 1px rgb(168 85 247 / 0.18),
+    0 0 34px rgb(168 85 247 / 0.28);
 }
 
 .conteudo-post hr {
@@ -325,5 +476,11 @@
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .felixo-ambiente::before,
+  .felixo-ambiente::after,
+  .felixo-foto-perfil-glow {
+    animation: none !important;
   }
 }

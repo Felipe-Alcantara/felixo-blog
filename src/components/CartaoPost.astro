@@ -11,34 +11,41 @@ const { post } = Astro.props;
 const { titulo, descricao, publicadoEm, tags } = post.data;
 ---
 
-<article class="felixo-card-glow rounded-3xl border border-white/10 bg-zinc-950/60 p-6">
-  <h2 class="text-xl font-bold text-zinc-100">
-    <a href={caminho(`/posts/${post.id}/`)} class="transition hover:text-felixo-purple">
+<article
+  class="felixo-card-glow group relative rounded-3xl border border-white/10 bg-zinc-950/60 p-6"
+>
+  <a
+    href={caminho(`/posts/${post.id}/`)}
+    aria-label={`Ler o post: ${titulo}`}
+    class="absolute inset-0 z-0 rounded-3xl"></a>
+
+  <div class="relative z-10 pointer-events-none">
+    <h2 class="text-xl font-bold text-zinc-100 transition group-hover:text-felixo-purple">
       {titulo}
-    </a>
-  </h2>
+    </h2>
 
-  <p class="mt-2 text-sm leading-relaxed text-zinc-400">{descricao}</p>
+    <p class="mt-2 text-sm leading-relaxed text-zinc-400">{descricao}</p>
 
-  <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-500">
-    <time datetime={formatarDataISO(publicadoEm)}>
-      {formatarDataLonga(publicadoEm)}
-    </time>
-    {
-      tags.length > 0 && (
-        <ul class="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <li>
-              <a
-                href={caminho(`/tags/${slugDaTag(tag)}/`)}
-                class="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-felixo-purple transition hover:bg-purple-500/20"
-              >
-                {tag}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-500">
+      <time datetime={formatarDataISO(publicadoEm)}>
+        {formatarDataLonga(publicadoEm)}
+      </time>
+      {
+        tags.length > 0 && (
+          <ul class="pointer-events-auto flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <li>
+                <a
+                  href={caminho(`/tags/${slugDaTag(tag)}/`)}
+                  class="pointer-events-auto rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-felixo-purple transition hover:bg-purple-500/20"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
   </div>
 </article>

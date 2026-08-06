@@ -9,11 +9,11 @@ const posts = await listarPosts();
 ---
 
 <BaseLayout titulo={SITE.titulo}>
-  <section class="pb-12">
+  <section class="mx-auto max-w-5xl pb-16">
     <p class="text-sm font-semibold uppercase tracking-widest text-felixo-purple">
       FelixoVerse
     </p>
-    <h1 class="felixo-text-glow mt-3 text-4xl font-bold sm:text-5xl">
+    <h1 class="felixo-text-glow mt-3 max-w-4xl text-4xl font-bold sm:text-5xl">
       Programação descomplicada
     </h1>
     <p class="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
@@ -33,8 +33,8 @@ const posts = await listarPosts();
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M12 5v14" />
-          <path d="m19 12-7 7-7-7" />
+          <path d="M12 5v14"></path>
+          <path d="m19 12-7 7-7-7"></path>
         </svg>
         <span>Ver posts</span>
       </a>
@@ -55,9 +55,9 @@ const posts = await listarPosts();
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          <path d="M15 3h6v6" />
-          <path d="M10 14 21 3" />
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <path d="M15 3h6v6"></path>
+          <path d="M10 14 21 3"></path>
         </svg>
         <span>Ver portfólio</span>
       </a>
@@ -73,16 +73,16 @@ const posts = await listarPosts();
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M4 11a9 9 0 0 1 9 9" />
-          <path d="M4 4a16 16 0 0 1 16 16" />
-          <circle cx="5" cy="19" r="1" />
+          <path d="M4 11a9 9 0 0 1 9 9"></path>
+          <path d="M4 4a16 16 0 0 1 16 16"></path>
+          <circle cx="5" cy="19" r="1"></circle>
         </svg>
         <span>Assinar RSS</span>
       </a>
     </div>
   </section>
 
-  <section aria-labelledby="titulo-posts">
+  <section class="mx-auto max-w-5xl" aria-labelledby="titulo-posts">
     <h2
       id="titulo-posts"
       class="border-t border-white/5 pt-8 text-sm font-semibold uppercase tracking-widest text-zinc-500"

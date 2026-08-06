@@ -14,10 +14,11 @@
 Última atualização: [2026-08-05]
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
-  via giscus** concluídos. Blog estático funcionando ponta a ponta — home, post,
-  tags, sobre, RSS, sitemap, 404, comentários e deploy automatizado — com
-  identidade visual alinhada à do `Felipe-Portifolio` e `start_app.py` como
-  porta de entrada.
+  via giscus** + **alinhamento visual de frontend e imagens** concluídos. Blog
+  estático funcionando ponta a ponta — home, post, tags, sobre, RSS, sitemap,
+  404, comentários e deploy automatizado — com listagem de posts em coluna única
+  e quadros inteiros clicáveis, identidade visual alinhada à do
+  `Felipe-Portifolio` e `start_app.py` como porta de entrada.
 - **Stack**: Astro 7 + Tailwind CSS 4 (via `@tailwindcss/vite`), TypeScript
   estrito, zero JavaScript no cliente **exceto** o script de terceiro do giscus
   (comentários), inerentemente dinâmico. `start_app.py` (Python, só dev-tooling)
@@ -244,6 +245,30 @@ repo (autorização manual, feita pelo dono do repo — nenhuma API cobre esse
 passo). Tema customizado servido em `/temas/giscus.css` (arquivo público,
 sem segredo). Nenhuma credencial ou variável de ambiente envolvida: todos os
 IDs usados (`repoId`, `categoriaId`) são públicos por natureza do protocolo.
+
+[2026-08-05] **Alinhamento de Front-End e imagens por Alinhamento de Front-End.**
+O shell do blog passou a usar a composição ampla e responsiva do portfólio
+(`max-w-7xl`, grid mobile-first e cards em duas colunas quando há espaço), com
+ambiente visual em camadas de CSS, gradiente animado nos títulos e glow de foto
+inspirado no `Felixo-Portifolio`. O cabeçalho agora reutiliza o logo do
+portfólio (`public/imagens/logo-felixo.png`) e a página Sobre ganhou a foto de
+perfil (`public/imagens/foto-felipe.jpg`) com tratamento responsivo, vinheta e
+glow; imagens Markdown também receberam borda, sombra e estado de hover.
+Nenhuma dependência ou JavaScript de interface foi adicionado; `caminho()`,
+`aria-current`, skip link, foco visível e `prefers-reduced-motion` foram
+preservados. Validação concluída com `npm run format`, `npm run check`,
+`npm run build` e HTTP 200 nas rotas `/`, `/sobre`, `/posts/ola-mundo/`,
+`/tags/`, `/rss.xml` e nos dois assets. **Estado desta entrega: concluído.**
+
+[2026-08-05] **Listagem de posts em coluna única e quadro clicável por
+Alinhamento de Front-End.** A home e as páginas de tag voltaram para uma lista
+vertical; cada cartão agora tem um link de cobertura acessível que leva ao post
+inteiro ao clicar em qualquer área livre do quadro. Os badges de tag continuam
+com seus próprios links para não perder a navegação por assunto. `CartaoPost`
+mantém a semântica de artigo, foco visível e suporte a teclado. Validado com
+`npm run format`, `npm run check` e `npm run build`. A mesma validação corrigiu
+a separação visual da contagem de posts na página de tag (`1post` → `1 post`).
+**Estado desta entrega: concluído.**
 
 ---
 

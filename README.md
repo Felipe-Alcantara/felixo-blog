@@ -123,6 +123,10 @@ src/
 ├── pages/          # Rotas do site
 ├── styles/         # Tema Tailwind e tipografia do corpo dos posts
 └── utils/          # Listagem/ordenação de posts, tags, datas
+
+public/
+├── imagens/         # Logo e foto de perfil alinhados ao portfólio
+└── temas/           # Tema visual do giscus
 ```
 
 ## Licença
