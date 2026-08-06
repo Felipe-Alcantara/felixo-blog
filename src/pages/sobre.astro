@@ -5,54 +5,102 @@ import { SITE } from '../config/site';
 ---
 
 <BaseLayout titulo="Sobre" descricao={`Sobre ${SITE.autor} e o ${SITE.titulo}.`}>
-  <h1 class="felixo-text-glow text-3xl font-bold sm:text-4xl">Sobre</h1>
-
-  <div class="conteudo-post mt-8">
-    <p>
-      Oi, eu sou <strong>{SITE.autor}</strong>. Depois de alguns anos estudando e
-      construindo ferramentas, resolvi abrir um espaço para registrar o que aprendo pelo
-      caminho — de preferência de um jeito que qualquer pessoa consiga acompanhar.
-    </p>
-
-    <p>Por aqui você vai encontrar:</p>
-
-    <ul>
-      <li>
-        <strong>Programação descomplicada</strong> — explicações diretas, sem rodeio e sem jargão
-        desnecessário.
-      </li>
-      <li>
-        <strong>Boas práticas e automações</strong> — o que funciona no dia a dia, testado nos
-        meus próprios projetos.
-      </li>
-      <li>
-        <strong>FelixoVerse</strong> — bastidores do desenvolvimento, incluindo os ARGs.
-      </li>
-      <li>
-        <strong>Notícias de tecnologia</strong> — com opinião, quando vale a pena comentar.
-      </li>
-    </ul>
-
-    <h2>Onde mais me encontrar</h2>
-
-    <ul>
-      <li>
-        Portfólio: <a
-          href="https://felixo.com.br/"
-          target="_blank"
-          rel="noopener noreferrer">felixo.com.br</a
+  <section
+    class="mx-auto grid max-w-5xl items-start gap-10 md:grid-cols-[240px_minmax(0,1fr)] md:gap-12"
+  >
+    <div class="mx-auto w-full max-w-[240px] md:mx-0">
+      <div class="felixo-foto-perfil relative aspect-square">
+        <div
+          class="felixo-foto-perfil-glow absolute -inset-5 rounded-[2rem]"
+          aria-hidden="true"
         >
-      </li>
-      <li>
-        GitHub: <a
-          href="https://github.com/Felipe-Alcantara"
-          target="_blank"
-          rel="noopener noreferrer">@Felipe-Alcantara</a
+        </div>
+        <div
+          class="felixo-foto-perfil-glow felixo-foto-perfil-glow-claro absolute -inset-3 rounded-[1.75rem]"
+          aria-hidden="true"
         >
-      </li>
-      <li>
-        Feed RSS: <a href={caminho('/rss.xml')}>/rss.xml</a>
-      </li>
-    </ul>
-  </div>
+        </div>
+        <div
+          class="relative h-full overflow-hidden rounded-3xl border-2 border-zinc-700 bg-zinc-900 shadow-2xl"
+        >
+          <img
+            src={caminho('/imagens/foto-felipe.jpg')}
+            alt="Retrato de Felipe Alcântara"
+            width="720"
+            height="1089"
+            loading="eager"
+            decoding="async"
+            class="h-full w-full object-cover object-top"
+          />
+          <div
+            class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10"
+          >
+          </div>
+        </div>
+      </div>
+      <div
+        class="mt-5 h-px w-full bg-purple-400/30 shadow-[0_0_10px_rgba(192,132,252,0.5)]"
+      >
+      </div>
+      <p
+        class="mt-3 text-center text-xs font-semibold uppercase tracking-widest text-zinc-500 md:text-left"
+      >
+        FelixoVerse
+      </p>
+    </div>
+
+    <div>
+      <h1 class="felixo-text-glow text-3xl font-bold sm:text-4xl">Sobre</h1>
+
+      <div class="conteudo-post mt-8">
+        <p>
+          Oi, eu sou <strong>{SITE.autor}</strong>. Depois de alguns anos estudando e
+          construindo ferramentas, resolvi abrir um espaço para registrar o que aprendo
+          pelo caminho — de preferência de um jeito que qualquer pessoa consiga
+          acompanhar.
+        </p>
+
+        <p>Por aqui você vai encontrar:</p>
+
+        <ul>
+          <li>
+            <strong>Programação descomplicada</strong> — explicações diretas, sem rodeio e sem
+            jargão desnecessário.
+          </li>
+          <li>
+            <strong>Boas práticas e automações</strong> — o que funciona no dia a dia, testado
+            nos meus próprios projetos.
+          </li>
+          <li>
+            <strong>FelixoVerse</strong> — bastidores do desenvolvimento, incluindo os ARGs.
+          </li>
+          <li>
+            <strong>Notícias de tecnologia</strong> — com opinião, quando vale a pena comentar.
+          </li>
+        </ul>
+
+        <h2>Onde mais me encontrar</h2>
+
+        <ul>
+          <li>
+            Portfólio: <a
+              href="https://felixo.com.br/"
+              target="_blank"
+              rel="noopener noreferrer">felixo.com.br</a
+            >
+          </li>
+          <li>
+            GitHub: <a
+              href="https://github.com/Felipe-Alcantara"
+              target="_blank"
+              rel="noopener noreferrer">@Felipe-Alcantara</a
+            >
+          </li>
+          <li>
+            Feed RSS: <a href={caminho('/rss.xml')}>/rss.xml</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

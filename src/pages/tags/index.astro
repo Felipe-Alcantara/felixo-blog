@@ -14,7 +14,7 @@ const tags = await listarTags();
     tags.length === 0 ? (
       <p class="mt-8 text-zinc-500">Nenhuma tag ainda.</p>
     ) : (
-      <ul class="mt-8 flex flex-wrap gap-3">
+      <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tags.map(({ nome, total }) => (
           <li>
             <a
