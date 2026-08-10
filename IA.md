@@ -431,3 +431,35 @@ o portfólio assina "Felipe Martin". Não foi alterado por conta própria — é
 do dono, e escolher por ele seria passar do ponto. Se os dois sites devem ler
 como a mesma pessoa, o ajuste é de uma linha em `src/config/site.ts` e do `alt`
 do retrato em `src/pages/sobre.astro`.
+
+[2026-08-10] **Primeiro artigo de conteúdo escrito para o blog** (task do Notion
+"Reescrevendo a internet: Sendo otimista sobre IAs"). O texto nasceu na database
+de Artigos do Notion, que é a central de escrita, e chegou aqui como
+`src/content/posts/reescrevendo-a-internet.md` com **`rascunho: true`** — a
+publicação depende de revisão do dono, e a flag garante que ele fica fora do
+build de produção até lá (o build seguiu com 7 páginas, sem contar o novo post).
+
+Vale registrar o método, porque ele é o que o modelo de artigo da database
+manda e foi o que pegou dois erros meus: **fonte que não foi aberta não entra**.
+Três afirmações factuais sustentam o texto — a palavra do ano do Merriam-Webster,
+um estudo da Graphite sobre a proporção de artigos gerados por IA, e a
+atualização Panda de 2011 — e abrir as três, em vez de confiar no resumo da
+busca, mudou duas delas:
+
+1. A evolução do sentido da palavra "slop" que eu tinha escrito (lama mole →
+   restos de comida → lixo) só é sustentada em parte pela fonte, que fala de
+   "lama mole" e depois "algo de pouco valor". O trecho passou a dizer o que a
+   fonte diz.
+2. Search Engine Land e Search Engine Journal **divergem em um dia** sobre a
+   data do Panda (23 ou 24 de fevereiro de 2011). O texto passou a citar só o
+   mês, com a divergência registrada entre parênteses.
+
+Também entrou a formulação oficial do Google sobre o alvo do Panda ("reduzir o
+ranqueamento de sites de baixa qualidade"), com a nota de que *content farms*
+foi o alvo entendido e não o declarado.
+
+A renderização foi conferida no navegador com o servidor de desenvolvimento, que
+mostra rascunhos: 5 links no corpo, nenhum quebrado, listas ordenadas e ênfases
+corretas. O tempo de leitura da propriedade no Notion foi ajustado de 11 para 10
+para bater com o que o próprio blog calcula e mostra — onde os dois divergem,
+vale o número que o leitor vê.
