@@ -11,10 +11,11 @@
 
 ## 📊 ESTADO ATUAL (RESUMO VIVO)
 
-Última atualização: [2026-08-05]
+Última atualização: [2026-08-10]
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
-  via giscus** + **alinhamento visual de frontend e imagens** concluídos. Blog
+  via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
+  release (2026-08-10)** concluídos. Blog
   estático funcionando ponta a ponta — home, post, tags, sobre, RSS, sitemap,
   404, comentários e deploy automatizado — com listagem de posts em coluna única
   e quadros inteiros clicáveis, identidade visual alinhada à do
@@ -35,9 +36,15 @@
   deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
   via giscus já publicados (push feito, deploy verde em 2026-08-05).
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
-- **Estado final**: não há pendência de publicação conhecida neste repositório.
-  A seção "Em Breve" do repositório `Felipe-Portifolio` continua sendo uma
-  tarefa separada, fora do escopo deste blog.
+- **Compartilhamento**: cartão Open Graph próprio em `public/og-image.jpg`,
+  gerado por `scripts/gerar-og-image.py` (Playwright, sob demanda — não entra no
+  build). Regerar sempre que o título ou a chamada da home mudarem.
+- **Estado final**: pronto para divulgação. Não há pendência de publicação
+  conhecida neste repositório. Fica **uma decisão para o dono**: o blog assina
+  "Felipe Alcântara" e o portfólio assina "Felipe Martin" — os dois são ele, mas
+  quem lê os dois lado a lado vê dois nomes. A seção "Em Breve" do repositório
+  `Felipe-Portifolio` continua sendo uma tarefa separada, fora do escopo deste
+  blog.
 
 ---
 
@@ -344,3 +351,83 @@ Cada correção foi validada com estilo computado real via Playwright
 `textTransform: "uppercase"` no H6. `npm run check` e `npm run build`
 seguem verdes. O post de teste que gerou a auditoria ficou de fora do commit,
 de propósito (ver ESTADO ATUAL).
+
+[2026-08-10] **Revisão final de front antes da divulgação** (task do Notion
+"Revisar e finalizar o front do blog antes de divulgar"). A parte estrutural já
+estava sólida e a identidade já vinha alinhada das rodadas anteriores, então
+esta rodada foi de acabamento, com tudo verificado no navegador em vez de no
+olho — mesmo método da auditoria de 2026-08-02.
+
+**O que estava faltando de verdade, em ordem de gravidade:**
+
+1. **Nenhuma imagem de compartilhamento.** O `<head>` não tinha `og:image` nem
+   `twitter:image`: qualquer link do blog colado no WhatsApp, LinkedIn ou X sairia
+   como um retângulo vazio. Para uma tarefa cujo objetivo é _divulgar_, era o
+   defeito mais caro e o menos visível navegando no site. Criado
+   `scripts/gerar-og-image.py`, que **renderiza o cartão no próprio navegador**
+   (Playwright) em vez de desenhá-lo com uma biblioteca de imagem — assim o
+   cartão usa o mesmo gradiente, o mesmo brilho de ametista e a mesma Space
+   Grotesk do site, e não diverge no primeiro ajuste de marca. JPEG em vez de PNG:
+   64 kB contra 397 kB, sem diferença visível num gradiente escuro com texto.
+   Entraram junto `og:locale`, `og:image:alt`, dimensões e `twitter:site`
+   (`@Felixo_Tech`, o mesmo perfil do portfólio).
+
+2. **Contraste abaixo de AA em todo texto secundário.** `text-zinc-500` sobre o
+   fundo preto mede **4,35:1**, e o mínimo para texto normal é 4,5 — medido no
+   navegador, não estimado. Aparecia em data do post, rodapé, contadores de tag,
+   rótulos de seção e nos avisos do giscus. Trocado por `text-zinc-400` (8,01:1).
+   O `AGENTS.md` deste repositório lista contraste AA como obrigatório, então isto
+   era regressão de uma regra própria, não preferência.
+   A varredura final passou a acusar **0 falhas em 6 páginas**, com a pior razão
+   em 7,09:1.
+
+   _Nota de método_: a primeira versão do script de auditoria deu falso positivo
+   em tudo, porque lia `getComputedStyle().color` com uma expressão regular de
+   `rgb()` — e o Tailwind 4 emite `oklch()`. A versão que vale resolve a cor
+   pintando num `<canvas>` e lendo o pixel, deixando a conversão com o navegador.
+   Texto com `background-clip: text` (os títulos com brilho) é excluído de
+   propósito: a cor dele é `transparent` e não há razão de contraste a medir.
+
+3. **Cabeçalho cortado no celular.** Em 360px a marca e os três links não cabiam
+   na mesma linha e "Sobre" ficava clipado na borda. O `overflow-x-auto` que
+   existia "resolvia" virando um trilho de rolagem horizontal que ninguém percebe
+   que rola. Trocado por `flex-wrap`: a navegação cai para a linha de baixo, nada
+   é escondido. Verificado em 320, 360 e 414px — sem estouro horizontal e com o
+   último link dentro da tela nos três.
+
+**Ícones num conjunto só.** Já eram todos Lucide (a mesma família do
+`lucide-react` do portfólio), mas colados inline, com os dez atributos repetidos
+em cada um — e duas navegações usavam `←` de texto, que não é da família. Agora
+há `src/components/Icone.astro`: um registro único de formas, com grid de 24,
+traço 2 e pontas arredondadas fixos, e um `tamanho` restrito a 16 (junto de
+texto) ou 20 (junto de título). Sem dependência nova — o site continua sem
+JavaScript de interface, como manda o `AGENTS.md`.
+
+**Duplicação removida.** A pílula de tag estava escrita duas vezes, com a mesma
+lista de classes, no cartão da home e no cabeçalho do post; virou
+`src/components/Etiqueta.astro`. Saíram também `--felixo-glow-intensity`
+(declarada em `:root`, lida por ninguém — veio junto na cópia do portfólio, onde
+ela de fato controla o brilho) e a classe `felixo-foto-perfil`, usada na página
+Sobre e definida em lugar nenhum.
+
+**Build sem aviso.** `z` reexportado por `astro:content` está deprecado no Astro
+7; passou a vir de `astro/zod`, que é o caminho que os próprios tipos gerados
+usam. `npm run check` foi de 9 hints para **0 erros, 0 avisos, 0 hints**.
+
+**Uma correção de texto.** A home repetia "Programação descomplicada" no `h1` e
+nas primeiras palavras do parágrafo logo abaixo, porque o parágrafo reusava
+`SITE.descricao`. A descrição é escrita para buscador e cartão de
+compartilhamento, onde repetir o nome ajuda; na tela, incomoda. Criado
+`SITE.chamada` para a home, sem mexer na descrição.
+
+**Verificação lado a lado**: blog e portfólio abertos no mesmo navegador, mesma
+viewport, com print dos dois. Fonte computada idêntica (Space Grotesk), mesmo
+fundo preto com brilho roxo, mesma família de ícone, mesmo tratamento de título
+com gradiente. `npm run check`, `npm run build` (7 páginas) e `npm run format`
+verdes.
+
+**Pendência que não é código**: o blog assina "Felipe Alcântara" (`SITE.autor`) e
+o portfólio assina "Felipe Martin". Não foi alterado por conta própria — é o nome
+do dono, e escolher por ele seria passar do ponto. Se os dois sites devem ler
+como a mesma pessoa, o ajuste é de uma linha em `src/config/site.ts` e do `alt`
+do retrato em `src/pages/sobre.astro`.

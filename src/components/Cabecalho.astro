@@ -11,8 +11,12 @@ const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
 <header
   class="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/80 backdrop-blur-md"
 >
+  <!-- `flex-wrap`: em 360px a marca e os três links não cabem na mesma linha, e
+       o último ficava cortado na borda da tela. Quebrar para a linha de baixo
+       mantém tudo alcançável sem esconder o nome do blog nem virar um trilho
+       de rolagem horizontal, que ninguém percebe que rola. -->
   <nav
-    class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6"
+    class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6"
     aria-label="Navegação principal"
   >
     <a
@@ -35,7 +39,7 @@ const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
       <span>{SITE.titulo}</span>
     </a>
 
-    <ul class="flex items-center gap-1 overflow-x-auto text-sm">
+    <ul class="flex items-center gap-1 text-sm">
       {
         LINKS_NAVEGACAO.map(({ rotulo, href }) => {
           const ativo =

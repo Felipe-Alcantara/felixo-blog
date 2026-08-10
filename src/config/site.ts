@@ -4,8 +4,17 @@ export const SITE = {
   autor: 'Felipe Alcântara',
   descricao:
     'Programação descomplicada, boas práticas, automações e notícias de tecnologia — o blog do FelixoVerse.',
+  /**
+   * Subtítulo da home. Separado da `descricao` de propósito: aquela é escrita
+   * para buscador e cartão de compartilhamento, onde repetir o nome do blog
+   * ajuda; esta fica logo abaixo do título na tela, onde repetir incomoda.
+   */
+  chamada:
+    'Boas práticas, automações e bastidores das ferramentas que eu construo — explicadas de um jeito que dá para acompanhar.',
   idioma: 'pt-BR',
   url: 'https://blog.felixo.com.br',
+  /** Perfil usado no `twitter:site` do cartão — o mesmo do portfólio. */
+  twitter: '@Felixo_Tech',
 } as const;
 
 export const LINKS_NAVEGACAO = [

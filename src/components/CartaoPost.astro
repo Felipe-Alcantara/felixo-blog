@@ -1,7 +1,8 @@
 ---
 import { caminho } from '../utils/rotas';
+import Etiqueta from './Etiqueta.astro';
 import { formatarDataISO, formatarDataLonga } from '../utils/datas';
-import { slugDaTag, type Post } from '../utils/posts';
+import { type Post } from '../utils/posts';
 
 interface Props {
   post: Post;
@@ -26,7 +27,7 @@ const { titulo, descricao, publicadoEm, tags } = post.data;
 
     <p class="mt-2 text-sm leading-relaxed text-zinc-400">{descricao}</p>
 
-    <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-500">
+    <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-400">
       <time datetime={formatarDataISO(publicadoEm)}>
         {formatarDataLonga(publicadoEm)}
       </time>
@@ -35,12 +36,7 @@ const { titulo, descricao, publicadoEm, tags } = post.data;
           <ul class="pointer-events-auto flex flex-wrap gap-2">
             {tags.map((tag) => (
               <li>
-                <a
-                  href={caminho(`/tags/${slugDaTag(tag)}/`)}
-                  class="pointer-events-auto rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-felixo-purple transition hover:bg-purple-500/20"
-                >
-                  {tag}
-                </a>
+                <Etiqueta tag={tag} acimaDoLinkDoCartao />
               </li>
             ))}
           </ul>
