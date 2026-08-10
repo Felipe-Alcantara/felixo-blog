@@ -1,5 +1,8 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+// `z` reexportado por `astro:content` está deprecado no Astro 7; o caminho que
+// os próprios tipos gerados usam é `astro/zod`. Mesmo Zod, sem o aviso.
+import { z } from 'astro/zod';
 
 /**
  * Coleção de posts do blog.

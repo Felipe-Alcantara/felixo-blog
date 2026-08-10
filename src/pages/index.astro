@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CartaoPost from '../components/CartaoPost.astro';
+import Icone from '../components/Icone.astro';
 import { caminho } from '../utils/rotas';
 import { SITE } from '../config/site';
 import { listarPosts } from '../utils/posts';
@@ -16,26 +17,16 @@ const posts = await listarPosts();
     <h1 class="felixo-text-glow mt-3 max-w-4xl text-4xl font-bold sm:text-5xl">
       Programação descomplicada
     </h1>
+    <!-- Chamada própria, não `SITE.descricao`: a descrição começa com as mesmas
+         palavras do título, e reusá-la aqui fazia "Programação descomplicada"
+         aparecer duas vezes seguidas na primeira dobra. -->
     <p class="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
-      {SITE.descricao}
+      {SITE.chamada}
     </p>
 
     <div class="mt-6 flex flex-wrap gap-3">
       <a href="#titulo-posts" class="felixo-botao">
-        <svg
-          aria-hidden="true"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M12 5v14"></path>
-          <path d="m19 12-7 7-7-7"></path>
-        </svg>
+        <Icone nome="seta-baixo" />
         <span>Ver posts</span>
       </a>
       <a
@@ -44,39 +35,11 @@ const posts = await listarPosts();
         rel="noopener noreferrer"
         class="felixo-botao"
       >
-        <svg
-          aria-hidden="true"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <path d="M15 3h6v6"></path>
-          <path d="M10 14 21 3"></path>
-        </svg>
+        <Icone nome="link-externo" />
         <span>Ver portfólio</span>
       </a>
       <a href={caminho('/rss.xml')} class="felixo-botao felixo-botao-fantasma">
-        <svg
-          aria-hidden="true"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M4 11a9 9 0 0 1 9 9"></path>
-          <path d="M4 4a16 16 0 0 1 16 16"></path>
-          <circle cx="5" cy="19" r="1"></circle>
-        </svg>
+        <Icone nome="rss" />
         <span>Assinar RSS</span>
       </a>
     </div>
@@ -85,14 +48,14 @@ const posts = await listarPosts();
   <section class="mx-auto max-w-5xl" aria-labelledby="titulo-posts">
     <h2
       id="titulo-posts"
-      class="border-t border-white/5 pt-8 text-sm font-semibold uppercase tracking-widest text-zinc-500"
+      class="border-t border-white/5 pt-8 text-sm font-semibold uppercase tracking-widest text-zinc-400"
     >
       Posts
     </h2>
 
     {
       posts.length === 0 ? (
-        <p class="mt-6 text-zinc-500">Nenhum post publicado ainda. Em breve.</p>
+        <p class="mt-6 text-zinc-400">Nenhum post publicado ainda. Em breve.</p>
       ) : (
         <ul class="mt-6 space-y-5">
           {posts.map((post) => (

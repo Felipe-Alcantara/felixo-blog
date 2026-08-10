@@ -11,10 +11,6 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-:root {
-  --felixo-glow-intensity: 1;
-}
-
 @layer base {
   html {
     font-family: var(--font-sans);

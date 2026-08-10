@@ -12,7 +12,7 @@ const tags = await listarTags();
 
   {
     tags.length === 0 ? (
-      <p class="mt-8 text-zinc-500">Nenhuma tag ainda.</p>
+      <p class="mt-8 text-zinc-400">Nenhuma tag ainda.</p>
     ) : (
       <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tags.map(({ nome, total }) => (
@@ -22,7 +22,7 @@ const tags = await listarTags();
               class="felixo-card-glow inline-flex items-center gap-2 rounded-full border border-white/5 bg-zinc-950/60 px-4 py-2 text-sm text-zinc-300 transition hover:text-felixo-purple"
             >
               {nome}
-              <span class="text-xs text-zinc-500">{total}</span>
+              <span class="text-xs text-zinc-400">{total}</span>
             </a>
           </li>
         ))}

@@ -3,6 +3,7 @@ import { caminho } from '../../utils/rotas';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CartaoPost from '../../components/CartaoPost.astro';
+import Icone from '../../components/Icone.astro';
 import { listarPosts, slugDaTag, type Post } from '../../utils/posts';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -49,8 +50,12 @@ const rotuloQuantidade = `${posts.length} ${posts.length === 1 ? 'post' : 'posts
   </ul>
 
   <nav class="mt-12 text-sm">
-    <a href={caminho('/tags')} class="text-felixo-purple transition hover:text-white"
-      >← Todas as tags</a
+    <a
+      href={caminho('/tags')}
+      class="inline-flex items-center gap-2 text-felixo-purple transition hover:text-white"
     >
+      <Icone nome="seta-esquerda" />
+      <span>Todas as tags</span>
+    </a>
   </nav>
 </BaseLayout>

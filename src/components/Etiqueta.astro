@@ -1,0 +1,29 @@
+---
+/**
+ * Etiqueta de tag — a pílula roxa que leva para a página do assunto.
+ *
+ * Existe como componente porque o mesmo bloco de classes estava escrito duas
+ * vezes, no cartão da home e no cabeçalho do post. Duas cópias de uma pílula
+ * são duas pílulas que vão divergir no dia em que alguém ajustar só uma.
+ */
+import { caminho } from '../utils/rotas';
+import { slugDaTag } from '../utils/posts';
+
+interface Props {
+  tag: string;
+  /** `true` quando a etiqueta fica dentro de um cartão cujo link cobre tudo. */
+  acimaDoLinkDoCartao?: boolean;
+}
+
+const { tag, acimaDoLinkDoCartao = false } = Astro.props;
+---
+
+<a
+  href={caminho(`/tags/${slugDaTag(tag)}/`)}
+  class:list={[
+    'rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-felixo-purple transition hover:bg-purple-500/20',
+    acimaDoLinkDoCartao && 'pointer-events-auto relative',
+  ]}
+>
+  {tag}
+</a>

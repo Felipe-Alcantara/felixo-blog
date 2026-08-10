@@ -1,0 +1,53 @@
+---
+/**
+ * Conjunto único de ícones do blog.
+ *
+ * Todos vêm do Lucide — a mesma família que o portfólio usa via `lucide-react`
+ * — e são desenhados aqui com os mesmos atributos: grid de 24, traço de 2,
+ * pontas e junções arredondadas. É essa repetição que faz um conjunto parecer
+ * um conjunto, e era justamente ela que se perdia quando cada ícone era colado
+ * inline com os seus próprios atributos.
+ *
+ * Os caminhos entram à mão em vez de virem de um pacote porque o site é
+ * estático e sem JavaScript de interface por decisão (ver AGENTS.md): meia
+ * dúzia de ícones não paga uma dependência nova.
+ *
+ * `tamanho` é o tamanho óptico, não um valor livre: 16 acompanha texto (botões,
+ * links de navegação) e 20 acompanha títulos. Sair dessa escala quebra o
+ * alinhamento com o peso do traço, que é fixo.
+ */
+const FORMAS = {
+  'seta-baixo': '<path d="M12 5v14" /><path d="m19 12-7 7-7-7" />',
+  'seta-esquerda': '<path d="m12 19-7-7 7-7" /><path d="M19 12H5" />',
+  'link-externo':
+    '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6" /><path d="M10 14 21 3" />',
+  rss: '<path d="M4 11a9 9 0 0 1 9 9" /><path d="M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" />',
+} as const;
+
+export type NomeDeIcone = keyof typeof FORMAS;
+
+interface Props {
+  nome: NomeDeIcone;
+  /** Tamanho óptico em px: 16 junto de texto, 20 junto de título. */
+  tamanho?: 16 | 20;
+  class?: string;
+}
+
+const { nome, tamanho = 16, class: classe } = Astro.props;
+---
+
+<svg
+  aria-hidden="true"
+  focusable="false"
+  width={tamanho}
+  height={tamanho}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={classe}
+>
+  <Fragment set:html={FORMAS[nome]} />
+</svg>
