@@ -230,6 +230,40 @@
     z-index: 1;
   }
 
+  /* Barra de pesquisa dos posts, no mesmo espírito visual do filtro de
+     projetos do portfólio: campo escuro, borda sutil e ícone à esquerda. */
+  .felixo-busca {
+    position: relative;
+  }
+
+  .felixo-busca svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-felixo-purple);
+    pointer-events: none;
+  }
+
+  .felixo-busca input {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.5);
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .felixo-busca input::placeholder {
+    color: rgb(161 161 170);
+  }
+
+  .felixo-busca input:focus-visible {
+    outline: 2px solid var(--color-felixo-purple);
+    outline-offset: 2px;
+  }
+
   /* Variante neutra do botão, para ações secundárias (ex.: RSS). */
   .felixo-botao-fantasma {
     border-color: rgb(255 255 255 / 0.25);

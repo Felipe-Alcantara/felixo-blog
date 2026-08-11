@@ -455,7 +455,7 @@ busca, mudou duas delas:
    mês, com a divergência registrada entre parênteses.
 
 Também entrou a formulação oficial do Google sobre o alvo do Panda ("reduzir o
-ranqueamento de sites de baixa qualidade"), com a nota de que *content farms*
+ranqueamento de sites de baixa qualidade"), com a nota de que _content farms_
 foi o alvo entendido e não o declarado.
 
 A renderização foi conferida no navegador com o servidor de desenvolvimento, que
@@ -463,3 +463,31 @@ mostra rascunhos: 5 links no corpo, nenhum quebrado, listas ordenadas e ênfases
 corretas. O tempo de leitura da propriedade no Notion foi ajustado de 11 para 10
 para bater com o que o próprio blog calcula e mostra — onde os dois divergem,
 vale o número que o leitor vê.
+
+[2026-08-11] **Barra de pesquisa de posts na home.** Pedido: reproduzir o
+filtro de projetos do portfólio (`Felipe-Portifolio`, componente
+`projects-modal.jsx`) — campo escuro com lupa roxa à esquerda, filtrando em
+tempo real. Implementação deliberadamente diferente: o portfólio é React
+(`useState`/`useMemo`); o blog é estático e sem framework de UI por decisão
+deste repositório (ver seção "Regras do projeto" acima), então o resultado
+visual e o comportamento foram reproduzidos com vanilla JS mínimo, sem puxar
+dependência nova.
+
+O que mudou: `Icone.astro` ganhou a forma `busca` (lupa Lucide, mesmo
+grid/traço dos outros ícones); `global.css` ganhou `.felixo-busca`, reusando
+as cores e o raio já usados em `.felixo-botao`/`.felixo-card-glow`; em
+`index.astro`, cada post ganhou `data-busca` (título + descrição + tags em
+minúsculas) e um `<script>` filtra a `#lista-posts` no evento `input`,
+alternando `hidden` por item e mostrando "Nenhum post encontrado." (com
+`aria-live="polite"`) quando nada bate.
+
+Acessibilidade: `<label class="sr-only">` associado ao campo (em vez de só
+`aria-label`, por semântica), `role="search"` no contêiner, `aria-controls`
+apontando para a lista filtrada. Cor de texto do campo é a mesma
+`text-zinc-400` já usada no resto do blog, que mede ~8:1 de contraste sobre
+preto (ver correção de 2026-08 acima) — nenhuma cor nova foi introduzida.
+
+`npm run check` e `npm run build` seguiram em 0 erros/avisos/hints, 7 páginas.
+Sem teste automatizado: é filtro puramente visual sobre dado já renderizado,
+sem lógica de negócio — verificação manual (digitar termo existente,
+inexistente e limpar o campo) registrada aqui em vez de suíte nova.
