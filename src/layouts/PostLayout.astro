@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets';
 import { caminho } from '../utils/rotas';
 import BaseLayout from './BaseLayout.astro';
 import Comentarios from '../components/Comentarios.astro';
@@ -14,8 +15,17 @@ interface Props {
 }
 
 const { post, corpo } = Astro.props;
-const { titulo, descricao, publicadoEm, atualizadoEm, tags } = post.data;
+const { titulo, descricao, publicadoEm, atualizadoEm, tags, capa } = post.data;
 const minutos = tempoDeLeitura(corpo);
+
+// Capa em tamanho de cartão Open Graph (1200×630) — mesma proporção do
+// cartão genérico gerado por `scripts/gerar-og-image.py`.
+const capaOtimizada = capa
+  ? await getImage({ src: capa, width: 1200, height: 630, fit: 'cover' })
+  : undefined;
+const imagemCapa = capaOtimizada
+  ? { src: capaOtimizada.src, width: 1200, height: 630 }
+  : undefined;
 ---
 
 <BaseLayout
@@ -23,6 +33,7 @@ const minutos = tempoDeLeitura(corpo);
   descricao={descricao}
   tipoOG="article"
   publicadoEm={publicadoEm}
+  imagemCapa={imagemCapa}
 >
   <article class="mx-auto max-w-3xl">
     <header class="border-b border-white/5 pb-8">

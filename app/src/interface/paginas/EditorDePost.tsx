@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { derivarSlug, slugValido } from '../../principal/posts/slug';
 
 interface Props {
@@ -17,6 +17,7 @@ interface EstadoDoFormulario {
   tags: string; // separadas por vírgula na UI, viram array ao salvar
   rascunho: boolean;
   corpo: string;
+  capa: string;
 }
 
 function paraDataInput(data: Date): string {
@@ -31,6 +32,7 @@ const ESTADO_VAZIO: EstadoDoFormulario = {
   tags: '',
   rascunho: true,
   corpo: '',
+  capa: '',
 };
 
 const estiloCampo: React.CSSProperties = {
@@ -42,6 +44,8 @@ const estiloCampo: React.CSSProperties = {
   color: 'var(--cor-texto)',
   fontFamily: 'inherit',
 };
+
+let contadorDeImagem = 0;
 
 export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props): JSX.Element {
   const [estado, setEstado] = useState<EstadoDoFormulario>(
@@ -56,8 +60,11 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
   );
   const [carregando, setCarregando] = useState(slugInicial !== null);
   const [salvando, setSalvando] = useState(false);
+  const [enviandoImagem, setEnviandoImagem] = useState(false);
+  const [gerandoCapa, setGerandoCapa] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [mensagem, setMensagem] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (!slugInicial) return;
@@ -72,6 +79,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
           tags: post.frontmatter.tags.join(', '),
           rascunho: post.frontmatter.rascunho,
           corpo: post.corpo,
+          capa: post.frontmatter.capa ?? '',
         });
       })
       .catch((e: unknown) => setErro(e instanceof Error ? e.message : String(e)))
@@ -79,6 +87,82 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
   }, [slugInicial]);
 
   const slugFinal = slugInicial ?? (estado.slug || derivarSlug(estado.titulo));
+
+  function inserirNoCorpoNaPosicaoDoCursor(trecho: string): void {
+    const area = textareaRef.current;
+    if (!area) {
+      setEstado((atual) => ({ ...atual, corpo: `${atual.corpo}\n\n${trecho}` }));
+      return;
+    }
+    const inicio = area.selectionStart;
+    const fim = area.selectionEnd;
+    setEstado((atual) => ({
+      ...atual,
+      corpo: atual.corpo.slice(0, inicio) + trecho + atual.corpo.slice(fim),
+    }));
+  }
+
+  async function enviarImagem(arquivo: File): Promise<void> {
+    if (!slugValido(slugFinal)) {
+      setErro('Defina um título (ou slug) válido antes de inserir imagem.');
+      return;
+    }
+    setErro(null);
+    setEnviandoImagem(true);
+    try {
+      contadorDeImagem += 1;
+      const bytes = await arquivo.arrayBuffer();
+      const nomeBase = `imagem-${String(contadorDeImagem).padStart(2, '0')}`;
+      const caminhoRelativo = await window.felixoEditor.salvarImagemDoPost(slugFinal, nomeBase, bytes);
+      inserirNoCorpoNaPosicaoDoCursor(`![](${caminhoRelativo})`);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : String(e));
+    } finally {
+      setEnviandoImagem(false);
+    }
+  }
+
+  function aoColar(evento: React.ClipboardEvent<HTMLTextAreaElement>): void {
+    const item = [...evento.clipboardData.items].find((i) => i.type.startsWith('image/'));
+    if (!item) return;
+    const arquivo = item.getAsFile();
+    if (!arquivo) return;
+    evento.preventDefault();
+    void enviarImagem(arquivo);
+  }
+
+  function aoSoltar(evento: React.DragEvent<HTMLTextAreaElement>): void {
+    const arquivo = [...evento.dataTransfer.files].find((f) => f.type.startsWith('image/'));
+    if (!arquivo) return;
+    evento.preventDefault();
+    void enviarImagem(arquivo);
+  }
+
+  async function gerarCapa(): Promise<void> {
+    if (!slugValido(slugFinal)) {
+      setErro('Defina um título (ou slug) válido antes de gerar a capa.');
+      return;
+    }
+    if (!estado.titulo) {
+      setErro('Preencha o título antes de gerar a capa.');
+      return;
+    }
+    setErro(null);
+    setGerandoCapa(true);
+    try {
+      const caminhoRelativo = await window.felixoEditor.gerarCapaDoPost(
+        slugFinal,
+        estado.titulo,
+        estado.descricao,
+      );
+      setEstado((atual) => ({ ...atual, capa: caminhoRelativo }));
+      setMensagem('Capa gerada.');
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : String(e));
+    } finally {
+      setGerandoCapa(false);
+    }
+  }
 
   async function salvar(): Promise<void> {
     setErro(null);
@@ -104,6 +188,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
           publicadoEm: estado.publicadoEm,
           tags,
           rascunho: estado.rascunho,
+          capa: estado.capa || undefined,
         },
         estado.corpo,
       );
@@ -192,14 +277,40 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
         Rascunho (fica fora do build de produção)
       </label>
 
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <button
+          type="button"
+          onClick={gerarCapa}
+          disabled={gerandoCapa}
+          style={{
+            background: 'transparent',
+            border: '1px solid var(--cor-roxo)',
+            borderRadius: '0.375rem',
+            padding: '0.4rem 0.9rem',
+            color: 'var(--cor-roxo)',
+            cursor: gerandoCapa ? 'default' : 'pointer',
+          }}
+        >
+          {gerandoCapa ? 'Gerando capa…' : 'Gerar capa'}
+        </button>
+        {estado.capa && (
+          <span style={{ color: 'var(--cor-texto-fraco)', fontSize: '0.8rem' }}>{estado.capa}</span>
+        )}
+      </div>
+
       <label>
-        Corpo (Markdown)
+        Corpo (Markdown) — cole ou arraste uma imagem aqui para inseri-la
         <textarea
+          ref={textareaRef}
+          onPaste={aoColar}
+          onDrop={aoSoltar}
+          onDragOver={(e) => e.preventDefault()}
           style={{ ...estiloCampo, minHeight: 320, resize: 'vertical', fontFamily: 'var(--font-mono, monospace)' }}
           value={estado.corpo}
           onChange={(e) => setEstado({ ...estado, corpo: e.target.value })}
         />
       </label>
+      {enviandoImagem && <span style={{ color: 'var(--cor-texto-fraco)', fontSize: '0.8rem' }}>Enviando imagem…</span>}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <button

@@ -15,8 +15,11 @@ describe('paridade entre o schema do app e o schema do Astro', () => {
     const caminho = join(__dirname, '../../src/content.config.ts');
     const texto = await readFile(caminho, 'utf-8');
 
-    const blocoSchema = texto.match(/schema:\s*z\.object\(\{([\s\S]*?)\}\),?\s*\}\);/);
-    expect(blocoSchema, 'não encontrei o bloco "schema: z.object({...})" em content.config.ts').not.toBeNull();
+    // Tolerante à forma `schema: z.object({...})` e à forma com o helper de
+    // imagem `schema: ({ image }) => z.object({...})` — captura o primeiro
+    // `z.object({...})` do arquivo, que é sempre o schema da coleção.
+    const blocoSchema = texto.match(/z\.object\(\{([\s\S]*?)\}\)/);
+    expect(blocoSchema, 'não encontrei "z.object({...})" em content.config.ts').not.toBeNull();
 
     const camposDoAstro = [...blocoSchema![1].matchAll(/^\s*(\w+):/gm)].map((m) => m[1]);
     expect(camposDoAstro.length).toBeGreaterThan(0);

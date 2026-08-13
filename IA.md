@@ -16,11 +16,13 @@
 - **Em implementação**: "Felixo Editor", app desktop em `app/` para
   criar/editar posts e publicar a partir da database de Artigos do Notion.
   Fatias 1 (esqueleto Electron), 2 (CRUD de posts `.md`), 3 (conexão com o
-  Notion) e 4 (importação de artigos como Markdown) concluídas e commitadas;
-  fatia 5 (templates + mídia completa) é a próxima. **Pendência do dono**:
-  preencher `app/.env` (token + ID da database) para validar a conexão e a
-  importação de verdade. Ver os registros datados `[2026-08-13]` no fim deste
-  arquivo.
+  Notion), 4 (importação de artigos como Markdown) e 5 (templates + mídia +
+  capa por post) concluídas e commitadas; fatia 6 (publicação: gate + git +
+  status no Notion) é a próxima. Post agora aceita `capa` opcional no
+  frontmatter (`content.config.ts`), que vira a imagem Open Graph do post.
+  **Pendência do dono**: preencher `app/.env` (token + ID da database) para
+  validar a conexão e a importação de verdade. Ver os registros datados
+  `[2026-08-13]` no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -45,9 +47,13 @@
   deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
   via giscus já publicados (push feito, deploy verde em 2026-08-05).
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
-- **Compartilhamento**: cartão Open Graph próprio em `public/og-image.jpg`,
+- **Compartilhamento**: cartão Open Graph genérico em `public/og-image.jpg`,
   gerado por `scripts/gerar-og-image.py` (Playwright, sob demanda — não entra no
-  build). Regerar sempre que o título ou a chamada da home mudarem.
+  build). Regerar sempre que o título ou a chamada da home mudarem. Desde
+  2026-08-13 (fatia 5 do Felixo Editor) o script também aceita
+  `--titulo`/`--descricao`/`--saida` para gerar capa **por post**
+  (`capa` opcional no frontmatter, ver `content.config.ts`); sem capa, o post
+  cai no cartão genérico.
 - **Estado final**: pronto para divulgação. Não há pendência de publicação
   conhecida neste repositório. Fica **uma decisão para o dono**: o blog assina
   "Felipe Alcântara" e o portfólio assina "Felipe Martin" — os dois são ele, mas
@@ -678,3 +684,63 @@ verdes (7 páginas, 0 vulnerabilidades).
 do dono). Próxima: fatia 5, templates (página de template da database) e
 mídia completa (colar/arrastar no editor, webp, capa/OG via
 `scripts/gerar-og-image.py`).
+
+[2026-08-13] **Felixo Editor, fatia 5: templates, mídia (colar/arrastar +
+webp) e capa por post.** Três entregas:
+
+1. **Templates**: decisão registrada, sem código novo. A "página de
+   template" mencionada pelo dono é um artigo comum dentro da própria
+   database Artigos — a tela "Importar do Notion" da fatia 4 já cobre isso,
+   sem precisar de mecanismo separado.
+2. **Colar/arrastar imagem no editor**: `principal/midia/otimizacao.ts`
+   redimensiona (máx. 1600px, nunca alarga) e converte para webp via `sharp`
+   antes de gravar em `src/content/posts/<slug>/`. `EditorDePost.tsx` ganhou
+   `onPaste`/`onDrop` na textarea, inserindo `![](./slug/imagem-NN.webp)` na
+   posição do cursor.
+3. **Capa por post**: aqui o plano original errou e foi corrigido **antes**
+   de construir em cima do erro — `scripts/gerar-og-image.py` gerava só UMA
+   imagem para o site inteiro, e o schema de post não tinha campo de capa.
+   Perguntei ao dono como seguir; a resposta foi "construir do zero agora".
+   Mudança negociada, fora do "só posts" combinado no alinhamento:
+   - `content.config.ts`: campo `capa` opcional via `image()` (helper de
+     assets do Astro — capa fica otimizada e com hash como qualquer imagem
+     de post, não um caminho cru).
+   - `BaseLayout.astro`/`PostLayout.astro`: post com capa usa ela no
+     `og:image`; sem capa, cai no cartão genérico de sempre.
+   - `scripts/gerar-og-image.py` ganhou `argparse` (`--titulo`, `--descricao`,
+     `--saida`), **compatível com o uso original** (sem argumentos continua
+     gerando `public/og-image.jpg` com o texto padrão). Título gera fonte
+     menor quando passa de 40 caracteres, senão estoura a largura do cartão.
+   - `principal/midia/capa.ts`: chama o script via `child_process.spawn`,
+     erro claro se faltar Python/Playwright (não trava em silêncio).
+
+**Validação real, não presumida**:
+- Blog: `npm run check`/`build` limpos. Testei o pipeline de capa de ponta a
+  ponta com um post temporário **não commitado** (criado e apagado nesta
+  sessão): `npm run dev` mostrou o endpoint de imagem do Astro reconhecendo
+  a capa (1200×630, webp, `fit=cover`); `npm run build` gerou
+  `capa.D2lF3dHJ_YpWqf.webp` de verdade (13kB→2kB) com `og:image` apontando
+  pra URL certa.
+- `scripts/gerar-og-image.py --titulo ... --descricao ...` rodado de
+  verdade (Playwright já estava instalado neste ambiente; Chromium precisou
+  ser baixado com `playwright install chromium` — dependência "sob demanda"
+  que já existia antes deste app). Card gerado e conferido visualmente:
+  identidade correta, fonte reduzida no título longo. Uso sem argumentos
+  testado e revertido (`git checkout -- public/og-image.jpg`) para não
+  sujar o binário versionado com uma recompressão JPEG não-idêntica byte a
+  byte (mesmo conteúdo, encoding varia).
+- App: 40 testes (11 arquivos, 7 novos) — `sharp` redimensionando/convertendo
+  de verdade (sem mock: cria PNG em memória, confere formato/dimensão
+  reais), `gerarCapa` com `child_process.spawn` mockado (sucesso, código de
+  saída != 0, `ENOENT` do `python3`). `npm run check` limpo, build limpo,
+  `npm audit`: 0 vulnerabilidades.
+- **Risco verificado, não hand-waved**: `sharp` emite aviso de
+  incompatibilidade Electron/Linux ao subir (binário pensado para Node, não
+  para o runtime do Electron). Testei de verdade rodando `sharp` dentro do
+  processo do Electron (`ELECTRON_RUN_AS_NODE=1`) nesta máquina — funcionou
+  (gerou webp real). Fica registrado como ponto de atenção para outras
+  distros/versões de Electron, não como certeza universal.
+
+**Estado**: fatia 5 concluída e commitada. Próxima: fatia 6, publicação
+(gate `check`+`build`, `git add` seletivo, commit, push, status de volta no
+Notion).

@@ -11,6 +11,8 @@ interface Props {
   /** Tipo Open Graph: `website` para páginas, `article` para posts. */
   tipoOG?: 'website' | 'article';
   publicadoEm?: Date;
+  /** Capa do post (já otimizada pelo Astro), quando o post tiver uma. */
+  imagemCapa?: { src: string; width: number; height: number };
 }
 
 const {
@@ -18,15 +20,19 @@ const {
   descricao = SITE.descricao,
   tipoOG = 'website',
   publicadoEm,
+  imagemCapa,
 } = Astro.props;
 
 const tituloCompleto = titulo === SITE.titulo ? titulo : `${titulo} · ${SITE.titulo}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
 
 // Cartão de compartilhamento. A URL precisa ser absoluta: WhatsApp, LinkedIn e
-// X buscam a imagem a partir do HTML cru, sem resolver caminho relativo.
-// Gerada por `scripts/gerar-og-image.py`.
-const imagemCompartilhamento = new URL(caminho('/og-image.jpg'), Astro.site ?? SITE.url);
+// X buscam a imagem a partir do HTML cru, sem resolver caminho relativo. Post
+// com capa própria usa ela; sem capa, cai no cartão genérico do site (gerado
+// por `scripts/gerar-og-image.py`).
+const imagemCompartilhamento = imagemCapa
+  ? new URL(imagemCapa.src, Astro.site ?? SITE.url)
+  : new URL(caminho('/og-image.jpg'), Astro.site ?? SITE.url);
 ---
 
 <!doctype html>
@@ -54,8 +60,8 @@ const imagemCompartilhamento = new URL(caminho('/og-image.jpg'), Astro.site ?? S
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:image" content={imagemCompartilhamento} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={String(imagemCapa?.width ?? 1200)} />
+    <meta property="og:image:height" content={String(imagemCapa?.height ?? 630)} />
     <meta property="og:image:alt" content={`${SITE.titulo} — ${SITE.descricao}`} />
     {
       publicadoEm && (

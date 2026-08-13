@@ -1,7 +1,7 @@
-"""Gera a imagem de compartilhamento (Open Graph) do blog.
+"""Gera a imagem de compartilhamento (Open Graph) do blog ou de um post.
 
 A imagem é o cartão que aparece quando um link do blog é colado no WhatsApp,
-LinkedIn ou X. Sem ela, o post compartilhado sai como um retângulo vazio — que
+LinkedIn ou X. Sem ela, o link compartilhado sai como um retângulo vazio — que
 é exatamente o que não pode acontecer no dia da divulgação.
 
 Por que renderizar no navegador em vez de desenhar com uma biblioteca de
@@ -10,22 +10,36 @@ brilho de ametista, Space Grotesk vinda do Google Fonts). Desenhar à mão com
 PIL exigiria reimplementar o gradiente e a fonte, e a imagem divergiria do site
 no primeiro ajuste de marca.
 
-Roda sob demanda, não no build: a imagem é um artefato versionado em
-`public/og-image.jpg`, e o build do site continua sem dependência de navegador.
+Roda sob demanda, não no build: a imagem é um artefato versionado, e o build
+do site continua sem dependência de navegador.
+
+Sem argumentos, gera o cartão genérico do site (`public/og-image.jpg`) — uso
+original deste script:
 
     python scripts/gerar-og-image.py
+
+Com `--titulo`, gera a capa de um post específico (usado pelo Felixo Editor
+ao importar/criar um post):
+
+    python scripts/gerar-og-image.py --titulo "..." --descricao "..." --saida caminho/capa.jpg
 """
 
 from __future__ import annotations
 
+import argparse
 import base64
 import os
 import sys
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-SAIDA = RAIZ / "public" / "og-image.jpg"
+SAIDA_PADRAO = RAIZ / "public" / "og-image.jpg"
 LOGO = RAIZ / "public" / "imagens" / "logo-felixo.png"
+
+TITULO_PADRAO = "Programação descomplicada"
+DESCRICAO_PADRAO = (
+    "Boas práticas, automações e notícias de tecnologia — o blog do FelixoVerse."
+)
 
 LARGURA, ALTURA = 1200, 630
 
@@ -104,7 +118,7 @@ GABARITO = """
       h1 {
         position: relative;
         max-width: 900px;
-        font-size: 78px;
+        font-size: __TAMANHO_TITULO__px;
         font-weight: 700;
         line-height: 1.1;
         background-image: linear-gradient(90deg, #fff 0%, #c084fc 55%, #fff 100%);
@@ -137,27 +151,64 @@ GABARITO = """
       <img src="__LOGO__" alt="" />
       <span>Blog do Felixo</span>
     </div>
-    <h1>Programação descomplicada</h1>
-    <p>
-      Boas práticas, automações e notícias de tecnologia — o blog do FelixoVerse.
-    </p>
+    <h1>__TITULO__</h1>
+    <p>__DESCRICAO__</p>
     <div class="rodape">blog.felixo.com.br</div>
   </body>
 </html>
 """
 
 
-def montar_html() -> str:
-    """Embute o logo como data URI para o navegador não depender de servidor."""
+def _escapar_html(texto: str) -> str:
+    return (
+        texto.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
+
+
+def montar_html(titulo: str, descricao: str) -> str:
+    """Embute o logo como data URI para o navegador não depender de servidor.
+
+    Título mais longo (capa de post, em geral mais comprida que a chamada do
+    site) usa fonte menor — senão o texto estoura os 900px de largura máxima.
+    """
     logo_base64 = base64.b64encode(LOGO.read_bytes()).decode("ascii")
+    tamanho_titulo = 78 if len(titulo) <= 40 else 56
     return (
         GABARITO.replace("__LARGURA__", str(LARGURA))
         .replace("__ALTURA__", str(ALTURA))
         .replace("__LOGO__", f"data:image/png;base64,{logo_base64}")
+        .replace("__TITULO__", _escapar_html(titulo))
+        .replace("__DESCRICAO__", _escapar_html(descricao))
+        .replace("__TAMANHO_TITULO__", str(tamanho_titulo))
     )
 
 
-def main() -> int:
+def _analisar_argumentos(argv: list[str] | None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--titulo",
+        default=TITULO_PADRAO,
+        help="Título do cartão (padrão: chamada do site).",
+    )
+    parser.add_argument(
+        "--descricao",
+        default=DESCRICAO_PADRAO,
+        help="Descrição do cartão (padrão: descrição do site).",
+    )
+    parser.add_argument(
+        "--saida",
+        type=Path,
+        default=SAIDA_PADRAO,
+        help="Caminho do arquivo gerado (padrão: public/og-image.jpg).",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _analisar_argumentos(argv)
+
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -168,6 +219,8 @@ def main() -> int:
         )
         return 1
 
+    args.saida.parent.mkdir(parents=True, exist_ok=True)
+
     with sync_playwright() as p:
         # `PLAYWRIGHT_CHROMIUM` permite apontar um Chromium já baixado quando a
         # build que o pacote espera não é a que está na máquina — foi o caso
@@ -175,17 +228,17 @@ def main() -> int:
         executavel = os.environ.get("PLAYWRIGHT_CHROMIUM") or None
         navegador = p.chromium.launch(executable_path=executavel)
         pagina = navegador.new_page(viewport={"width": LARGURA, "height": ALTURA})
-        pagina.set_content(montar_html(), wait_until="networkidle")
+        pagina.set_content(montar_html(args.titulo, args.descricao), wait_until="networkidle")
         # A fonte vem do Google Fonts: sem esperar por ela, o cartão sai
         # renderizado na fonte de sistema — o erro mais fácil de não notar.
         pagina.wait_for_function("document.fonts.ready.then(() => true)")
         # JPEG em vez de PNG: o cartão é um gradiente escuro com texto, onde a
         # compressão com perda não aparece a olho nu e o arquivo cai de ~400 kB
         # para ~60 kB. É imagem que todo compartilhamento vai baixar.
-        pagina.screenshot(path=str(SAIDA), type="jpeg", quality=92)
+        pagina.screenshot(path=str(args.saida), type="jpeg", quality=92)
         navegador.close()
 
-    print(f"Imagem gerada: {SAIDA.relative_to(RAIZ)} ({SAIDA.stat().st_size // 1024} kB)")
+    print(f"Imagem gerada: {args.saida} ({args.saida.stat().st_size // 1024} kB)")
     return 0
 
 

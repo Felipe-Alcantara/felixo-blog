@@ -17,6 +17,8 @@ export const esquemaFrontmatter = z.object({
   atualizadoEm: z.coerce.date().optional(),
   tags: z.array(z.string()).default([]),
   rascunho: z.boolean().default(false),
+  /** Caminho da capa, relativo ao `.md` (ex.: `./meu-post/capa.jpg`). Ver content.config.ts. */
+  capa: z.string().optional(),
 });
 
 export type Frontmatter = z.infer<typeof esquemaFrontmatter>;
@@ -29,4 +31,5 @@ export const CAMPOS_FRONTMATTER = [
   'atualizadoEm',
   'tags',
   'rascunho',
+  'capa',
 ] as const satisfies readonly (keyof Frontmatter)[];
