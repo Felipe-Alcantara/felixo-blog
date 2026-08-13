@@ -962,3 +962,38 @@ implementei agora porque a fatia 4 decidiu deliberadamente não presumir
 nomes de propriedade além do `title` estrutural — "Resumo" é específico
 desta database, não garantido em outra. Fica como ideia de contribuição
 futura, não como pendência.
+
+[2026-08-13] **Erro de validação passou a mostrar passo a passo na tela, com
+foco automático no campo errado.** Pedido direto do dono depois de ver a
+mensagem "descricao: Descrição não pode ser vazia" (já legível, fatia
+anterior) mas ainda como texto solto — queria orientação acionável, não só
+mensagem.
+
+`interface/erros.ts` (novo): `limparMensagemDoIpc` remove o embrulho padrão
+do Electron (`Error invoking remote method '...': Error: ...`);
+`interpretarErroDeValidacao` reconhece o formato `campo: motivo` (um ou mais,
+separados por `;`) que `PostInvalidoError` usa, e devolve `null` para
+qualquer outro formato de erro (rede, git, Notion) — nunca força uma
+interpretação errada em cima de erro que não é de validação.
+`mensagemDeErro(erro: unknown)` substitui o padrão repetido
+`e instanceof Error ? e.message : String(e)` nas 4 telas do app, já limpo do
+embrulho do Electron.
+
+`EditorDePost.tsx`: quando o erro é interpretável, mostra um painel
+("Não deu para salvar — corrija antes de tentar de novo:") com um item por
+campo, cada um um botão que foca aquele input; o primeiro campo errado
+recebe foco automaticamente assim que o erro aparece (via `useEffect`).
+Erro não interpretável (rede, git) continua caindo no texto simples de
+sempre — o fallback não desapareceu.
+
+Validado: 6 testes novos em `interface-erros.teste.ts` (embrulho do
+Electron, campo único, múltiplos campos, `null` para erro de rede/git e para
+campo desconhecido) — 70 testes no total, todos verdes. `npm run check`
+limpo, build limpo, `npm audit`: 0 vulnerabilidades. Janela aberta de
+verdade confirmando que o build sobe sem crash (sem repetir clique/foco por
+teclado desta vez — a lógica já está coberta por teste unitário real,
+inclusive com o texto exato de erro que apareceu na tela do dono).
+
+**Pendência**: confirmação visual do painel de correção em uso real (o dono
+preencher a Descrição do template e ver o foco automático funcionando) ainda
+não foi feita — fica para quando o dono testar de novo.
