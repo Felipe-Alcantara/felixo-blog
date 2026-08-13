@@ -1,15 +1,21 @@
 import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { RAIZ_DO_BLOG } from '../posts/caminhos';
 
 /**
  * Lembra de qual página do Notion cada post local veio, para a escrita de
  * volta (status + URL) depois de publicar saber em qual página mexer.
  *
  * Fica num JSON local fora do repositório versionado (mesma pasta do
- * `.env`) — não é conteúdo do blog, é estado interno do app.
+ * `.env`) — não é conteúdo do blog, é estado interno do app. Deriva de
+ * `RAIZ_DO_BLOG` em vez de contar `../..` a partir deste arquivo — ver o
+ * comentário equivalente em `config/armazenamento.ts` (bug real encontrado
+ * testando contra o Notion: o electron-vite empacota o processo principal
+ * inteiro num único arquivo, então `__dirname` local não reflete a posição
+ * original do código-fonte).
  */
-export const CAMINHO_ASSOCIACOES_PADRAO = join(__dirname, '..', '..', '..', '.notion-associacoes.json');
+export const CAMINHO_ASSOCIACOES_PADRAO = join(RAIZ_DO_BLOG, 'app', '.notion-associacoes.json');
 
 type Associacoes = Record<string, string>; // slug -> pageId
 

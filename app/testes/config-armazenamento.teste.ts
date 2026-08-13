@@ -3,10 +3,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
+  CAMINHO_ENV_PADRAO,
   carregarConfiguracao,
   lerConfiguracaoAtual,
   salvarConfiguracao,
 } from '../src/principal/config/armazenamento';
+import { RAIZ_DO_BLOG } from '../src/principal/posts/caminhos';
 
 // Sempre grava num .env temporário — nunca no .env real de quem roda a suíte.
 let pastaTemp: string;
@@ -55,5 +57,18 @@ describe('salvarConfiguracao + carregarConfiguracao', () => {
   it('carregarConfiguracao não lança erro se o .env não existir', () => {
     expect(() => carregarConfiguracao(join(pastaTemp, 'nao-existe.env'))).not.toThrow();
     expect(lerConfiguracaoAtual()).toEqual({ notionToken: '', notionDatabaseId: '' });
+  });
+});
+
+describe('CAMINHO_ENV_PADRAO', () => {
+  // Regressão: electron-vite empacota o processo principal inteiro num
+  // único dist-electron/principal/index.js, então __dirname é o mesmo para
+  // todo módulo bundlado ali — contar "../.." a partir de um arquivo
+  // específico (como este) dá caminho errado (achado testando contra o
+  // Notion de verdade: o .env era procurado na raiz do repo, não em app/).
+  // Este teste ancora o cálculo em RAIZ_DO_BLOG, a fonte única de verdade.
+  it('aponta para app/.env dentro da raiz do blog, não para a raiz do repositório', () => {
+    expect(CAMINHO_ENV_PADRAO).toBe(join(RAIZ_DO_BLOG, 'app', '.env'));
+    expect(CAMINHO_ENV_PADRAO).not.toBe(join(RAIZ_DO_BLOG, '.env'));
   });
 });
