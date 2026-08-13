@@ -892,3 +892,51 @@ publicação via git contra o repositório real. A conversão de blocos foi
 validada com o repertório de um artigo (parágrafo/heading/lista/negrito/
 itálico/link) — código, quote, callout e imagem seguem cobertos só por
 teste com fixture, não por artigo real do Notion que os use.
+
+[2026-08-13] **Bug real encontrado usando o app pela primeira vez: `.env`
+procurado no lugar errado.** O dono configurou `app/.env` e testou "Importar
+do Notion" pelo app de verdade → `Error: NOTION_TOKEN não configurado`. Não
+era timing (processo aberto antes do `.env` existir) — era cálculo de
+caminho errado.
+
+Causa raiz: `electron-vite` empacota o processo principal inteiro num único
+`dist-electron/principal/index.js` (confirmado: a pasta só tem esse
+arquivo, nenhuma subpasta `config/`). Isso significa que `__dirname`, dentro
+de qualquer módulo incluído nesse bundle, é sempre `dist-electron/principal`
+— **não** o caminho do arquivo-fonte original. `config/armazenamento.ts` e
+`notion/associacoes.ts` contavam `../../..` a partir de si mesmos supondo
+execução "por arquivo" (verdade em teste unitário/tsx, falso no app
+empacotado de verdade), e isso resolvia pra **raiz do repositório**, não
+`app/`. `janela.ts` e `posts/caminhos.ts` não tinham esse bug — o primeiro
+porque usa `__dirname` corretamente (é a mesma pasta do bundle mesmo), o
+segundo porque coincidentemente precisa mesmo chegar na raiz do repo.
+
+Por que nenhum teste pegou isso: todo teste desses dois arquivos passa um
+caminho explícito (diretório temporário) — nenhum testava o valor *padrão*
+de verdade. E a validação manual mais cedo (fatia 3/4, via `tsx`) chamava
+`criarClienteNotion` direto com o token, sem passar por
+`carregarConfiguracao`/`CAMINHO_ENV_PADRAO` — o caminho exato que tinha o
+bug nunca foi exercitado antes do dono testar pela UI real.
+
+**Correção**: os dois arquivos passaram a derivar o caminho de
+`RAIZ_DO_BLOG` (`join(RAIZ_DO_BLOG, 'app', '.env')` /
+`join(RAIZ_DO_BLOG, 'app', '.notion-associacoes.json')`) em vez de contar
+`../..` de si mesmos — uma fonte única de verdade já validada contra o app
+real (a listagem de posts sempre funcionou, prova que `RAIZ_DO_BLOG` estava
+certo). Teste novo em `config-armazenamento.teste.ts` trava essa relação —
+registrado com a ressalva honesta de que ele não teria pego o bug original
+sozinho (roda sob `vitest`, que não empacota como o `electron-vite`; a
+proteção real é arquitetural — nunca mais contar `__dirname` relativo por
+arquivo neste processo).
+
+Validado: `npm run check` limpo, 63 testes (1 novo) verdes. Rebuild
+completo, app reaberto (via `electron .` direto, não pela sessão do dono) —
+subiu sem erro. **Não cliquei em "Importar do Notion" para confirmar
+visualmente** desta vez: percebi uma instância separada de `start_app.py`
+rodando (aparentemente do dono, testando em paralelo) e preferi não
+arriscar interferir tocando teclado/mouse na tela compartilhada. Encerrei
+só o processo Electron que eu mesmo tinha aberto.
+
+**Pendência**: o dono precisa fechar e reabrir o Felixo Editor (o processo
+antigo continua com o bug em memória) e confirmar que "Importar do Notion"
+funciona agora.
