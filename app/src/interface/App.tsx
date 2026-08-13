@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
+import { ListaDePosts } from './paginas/ListaDePosts';
+import { EditorDePost } from './paginas/EditorDePost';
 
-/**
- * Casca inicial do Felixo Editor. Ainda não fala com Notion, git nem
- * arquivos — só prova que a janela sobe, o processo principal responde por
- * IPC e o isolamento de segurança (`ponte/`) está de pé. As telas de posts,
- * Notion e publicação chegam nas próximas fatias do plano.
- */
+type Tela = { nome: 'lista' } | { nome: 'editor'; slug: string | null };
+
 export function App(): JSX.Element {
   const [versao, setVersao] = useState<string | null>(null);
+  const [tela, setTela] = useState<Tela>({ nome: 'lista' });
 
   useEffect(() => {
     window.felixoEditor
@@ -17,24 +16,58 @@ export function App(): JSX.Element {
   }, []);
 
   return (
-    <main
+    <div
       style={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        gap: '0.75rem',
-        textAlign: 'center',
+        minHeight: '100%',
+        padding: '1.5rem',
       }}
     >
-      <h1 style={{ color: 'var(--cor-roxo)', margin: 0 }}>Felixo Editor</h1>
-      <p style={{ color: 'var(--cor-texto-fraco)', margin: 0 }}>
-        Esqueleto do app — Notion, posts e publicação chegam nas próximas fatias.
-      </p>
-      <p style={{ color: 'var(--cor-texto-fraco)', fontSize: '0.85rem', margin: 0 }}>
-        versão {versao ?? '…'}
-      </p>
-    </main>
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: '1.5rem',
+        }}
+      >
+        <h1 style={{ color: 'var(--cor-roxo)', margin: 0, fontSize: '1.25rem' }}>
+          Felixo Editor
+        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {tela.nome === 'lista' && (
+            <button
+              onClick={() => setTela({ nome: 'editor', slug: null })}
+              style={{
+                background: 'var(--cor-roxo-forte)',
+                border: 'none',
+                borderRadius: '0.375rem',
+                padding: '0.4rem 0.9rem',
+                color: '#000',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              + Novo post
+            </button>
+          )}
+          <span style={{ color: 'var(--cor-texto-fraco)', fontSize: '0.75rem' }}>
+            versão {versao ?? '…'}
+          </span>
+        </div>
+      </header>
+
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {tela.nome === 'lista' ? (
+          <ListaDePosts aoAbrir={(slug) => setTela({ nome: 'editor', slug })} />
+        ) : (
+          <EditorDePost
+            slugInicial={tela.slug}
+            aoVoltar={() => setTela({ nome: 'lista' })}
+          />
+        )}
+      </main>
+    </div>
   );
 }

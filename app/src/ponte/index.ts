@@ -8,6 +8,10 @@ import { CANAIS, type PonteFelixoEditor } from './contrato';
  */
 const ponte: PonteFelixoEditor = {
   obterVersaoApp: () => ipcRenderer.invoke(CANAIS.versaoApp),
+  listarPosts: () => ipcRenderer.invoke(CANAIS.postsListar),
+  lerPost: (slug) => ipcRenderer.invoke(CANAIS.postsLer, slug),
+  salvarPost: (slug, frontmatter, corpo) =>
+    ipcRenderer.invoke(CANAIS.postsSalvar, slug, frontmatter, corpo),
 };
 
 contextBridge.exposeInMainWorld('felixoEditor', ponte);

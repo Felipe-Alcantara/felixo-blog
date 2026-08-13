@@ -5,5 +5,5 @@
     "lib": ["ESNext"],
     "types": ["node"]
   },
-  "include": ["src/principal/**/*", "src/ponte/contrato.ts", "testes/**/*"]
+  "include": ["src/principal/**/*", "src/ponte/**/*", "testes/**/*"]
 }

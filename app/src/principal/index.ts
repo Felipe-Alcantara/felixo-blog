@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { criarJanelaPrincipal } from './janela';
 import { registrarCanaisApp } from './canais/appInfo';
+import { registrarCanaisPosts } from './canais/posts';
 
 /**
  * Ponto de entrada do processo principal (main) do Felixo Editor.
@@ -11,6 +12,7 @@ import { registrarCanaisApp } from './canais/appInfo';
  */
 void app.whenReady().then(() => {
   registrarCanaisApp();
+  registrarCanaisPosts();
   criarJanelaPrincipal();
 
   app.on('activate', () => {
