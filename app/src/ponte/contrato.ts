@@ -10,6 +10,8 @@
  * escapar para o sistema de arquivos.
  */
 import type { Frontmatter } from '../principal/posts/esquema';
+import type { ConfiguracaoNotion } from '../principal/config/armazenamento';
+import type { InfoDaDatabase } from '../principal/notion/descoberta';
 
 export interface ResumoDePost {
   slug: string;
@@ -20,12 +22,17 @@ export interface PostCompleto extends ResumoDePost {
   corpo: string;
 }
 
+export type { ConfiguracaoNotion, InfoDaDatabase };
+
 /** Nomes dos canais IPC. Um único lugar para não duplicar strings soltas. */
 export const CANAIS = {
   versaoApp: 'app:versao',
   postsListar: 'posts:listar',
   postsLer: 'posts:ler',
   postsSalvar: 'posts:salvar',
+  notionObterConfiguracao: 'notion:obterConfiguracao',
+  notionSalvarConfiguracao: 'notion:salvarConfiguracao',
+  notionTestarConexao: 'notion:testarConexao',
 } as const;
 
 /** Formato do objeto que `window.felixoEditor` expõe ao React. */
@@ -38,6 +45,12 @@ export interface PonteFelixoEditor {
   lerPost: (slug: string) => Promise<PostCompleto>;
   /** Valida e grava um post. Lança erro se o frontmatter não bater o schema. */
   salvarPost: (slug: string, frontmatter: unknown, corpo: string) => Promise<void>;
+  /** Lê o token/database ID salvos (não passa pelo repositório versionado). */
+  obterConfiguracaoNotion: () => Promise<ConfiguracaoNotion>;
+  /** Grava a configuração do Notion no `.env` local do app. */
+  salvarConfiguracaoNotion: (config: ConfiguracaoNotion) => Promise<void>;
+  /** Testa a conexão: busca a database configurada e lista suas propriedades. */
+  testarConexaoNotion: () => Promise<InfoDaDatabase>;
 }
 
 declare global {
