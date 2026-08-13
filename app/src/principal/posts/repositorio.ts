@@ -88,7 +88,13 @@ export async function salvarPost(
     );
   }
 
-  const frontmatter = esquemaFrontmatter.parse(frontmatterBruto);
+  const validado = esquemaFrontmatter.safeParse(frontmatterBruto);
+  if (!validado.success) {
+    throw new PostInvalidoError(
+      validado.error.issues.map((i) => `${i.path.join('.') || 'frontmatter'}: ${i.message}`).join('; '),
+    );
+  }
+  const frontmatter = validado.data;
 
   await mkdir(PASTA_DE_POSTS, { recursive: true });
   const arquivo = matter.stringify(`\n${corpo.trim()}\n`, frontmatter);
