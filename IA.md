@@ -15,11 +15,12 @@
 
 - **Em implementação**: "Felixo Editor", app desktop em `app/` para
   criar/editar posts e publicar a partir da database de Artigos do Notion.
-  Fatias 1 (esqueleto Electron), 2 (CRUD de posts `.md`) e 3 (conexão com o
-  Notion) concluídas e commitadas; fatia 4 (importação como Markdown) é a
-  próxima. **Pendência do dono**: preencher `app/.env` (token + ID da
-  database) para validar a conexão de verdade. Ver os registros datados
-  `[2026-08-13]` no fim deste arquivo.
+  Fatias 1 (esqueleto Electron), 2 (CRUD de posts `.md`), 3 (conexão com o
+  Notion) e 4 (importação de artigos como Markdown) concluídas e commitadas;
+  fatia 5 (templates + mídia completa) é a próxima. **Pendência do dono**:
+  preencher `app/.env` (token + ID da database) para validar a conexão e a
+  importação de verdade. Ver os registros datados `[2026-08-13]` no fim deste
+  arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -638,3 +639,42 @@ artigos do Notion como Markdown (conversão de blocos + download de imagens).
 Depende da fatia 3 estar validada pelo dono com credencial real antes de ter
 sentido testar import de verdade — sigo implementando com fixtures/mocks
 enquanto isso não acontece.
+
+[2026-08-13] **Felixo Editor, fatia 4: importação de artigos do Notion como
+Markdown.** `principal/notion/blocos.ts` converte blocos do Notion
+(parágrafo, headings, listas, citação, callout, código com linguagem,
+imagem, divisória) para Markdown, com rich text inline (negrito, itálico,
+código, tachado, link); bloco não suportado vira comentário HTML visível, não
+some em silêncio. `paginacao.ts` segue `has_more`/`next_cursor` da API.
+`midia/download.ts` baixa as imagens do Notion (URLs pré-assinadas do S3, que
+expiram) para a pasta do post e reescreve os links para o caminho relativo
+local `./<slug>/notion-NN.ext` — mesma convenção dos posts existentes.
+`paginasDaDatabase.ts` lista os artigos da database achando a propriedade do
+tipo `title` dinamicamente, sem presumir o nome dela.
+
+**Decisão de escopo tomada aqui, registrada em vez de escondida**: esta fatia
+não recursa em blocos aninhados (`has_children`) nem implementa a tela de
+mapeamento de propriedade → frontmatter do plano original. Título vem do
+Notion (a propriedade `title` é estrutural, existe em toda database, então dá
+para usar sem mapeamento); descrição, tags, data e rascunho continuam
+preenchidos por quem usa, no editor — que já reaproveita o formulário da
+fatia 2. Justificativa: sem uma database real para inspecionar, construir uma
+tela de mapeamento de propriedades arbitrárias seria adivinhar um schema que
+não existe ainda. Fica como próximo passo natural quando o dono validar a
+fatia 3 com credencial real e mostrar como a database está montada de
+verdade.
+
+Validado: 33 testes (9 arquivos, 11 novos) — conversão de blocos com
+fixtures no formato documentado da API (parágrafo/heading/lista/citação/
+código/imagem/bloco não suportado), download de imagem com `fetch` mockado
+(sucesso, falha HTTP, zero imagens), paginação de `databases.query` com
+`has_more` real. `npm run check` limpo, `npm run test` 33/33, build do app
+limpo, janela aberta de verdade confirmando por print o botão "Importar do
+Notion" sem crash. `npm run check`/`build`/`audit` da raiz e do app seguem
+verdes (7 páginas, 0 vulnerabilidades).
+
+**Estado**: fatia 4 concluída e commitada. Ainda sem validação de rede real
+(mesma pendência da fatia 3: falta `NOTION_TOKEN`/`NOTION_DATABASE_ID` reais
+do dono). Próxima: fatia 5, templates (página de template da database) e
+mídia completa (colar/arrastar no editor, webp, capa/OG via
+`scripts/gerar-og-image.py`).

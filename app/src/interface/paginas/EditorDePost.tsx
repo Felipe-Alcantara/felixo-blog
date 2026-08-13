@@ -4,6 +4,8 @@ import { derivarSlug, slugValido } from '../../principal/posts/slug';
 interface Props {
   /** `null` = post novo (ainda sem arquivo). */
   slugInicial: string | null;
+  /** Preenche o formulário ao abrir um post novo — usado após importar do Notion. */
+  rascunhoInicial?: { slug: string; titulo: string; corpo: string };
   aoVoltar: () => void;
 }
 
@@ -41,8 +43,17 @@ const estiloCampo: React.CSSProperties = {
   fontFamily: 'inherit',
 };
 
-export function EditorDePost({ slugInicial, aoVoltar }: Props): JSX.Element {
-  const [estado, setEstado] = useState<EstadoDoFormulario>(ESTADO_VAZIO);
+export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props): JSX.Element {
+  const [estado, setEstado] = useState<EstadoDoFormulario>(
+    rascunhoInicial
+      ? {
+          ...ESTADO_VAZIO,
+          slug: rascunhoInicial.slug,
+          titulo: rascunhoInicial.titulo,
+          corpo: rascunhoInicial.corpo,
+        }
+      : ESTADO_VAZIO,
+  );
   const [carregando, setCarregando] = useState(slugInicial !== null);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);

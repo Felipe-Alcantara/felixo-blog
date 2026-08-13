@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { ListaDePosts } from './paginas/ListaDePosts';
 import { EditorDePost } from './paginas/EditorDePost';
 import { ConfiguracaoNotion } from './paginas/ConfiguracaoNotion';
+import { ImportarDoNotion } from './paginas/ImportarDoNotion';
 
 type Tela =
   | { nome: 'lista' }
-  | { nome: 'editor'; slug: string | null }
-  | { nome: 'configuracao' };
+  | { nome: 'editor'; slug: string | null; rascunho?: { slug: string; titulo: string; corpo: string } }
+  | { nome: 'configuracao' }
+  | { nome: 'importar' };
 
 const estiloBotaoTopo: React.CSSProperties = {
   background: 'var(--cor-roxo-forte)',
@@ -62,6 +64,9 @@ export function App(): JSX.Element {
               <button onClick={() => setTela({ nome: 'configuracao' })} style={estiloBotaoTopoSecundario}>
                 Notion
               </button>
+              <button onClick={() => setTela({ nome: 'importar' })} style={estiloBotaoTopoSecundario}>
+                Importar do Notion
+              </button>
               <button onClick={() => setTela({ nome: 'editor', slug: null })} style={estiloBotaoTopo}>
                 + Novo post
               </button>
@@ -78,7 +83,11 @@ export function App(): JSX.Element {
           <ListaDePosts aoAbrir={(slug) => setTela({ nome: 'editor', slug })} />
         )}
         {tela.nome === 'editor' && (
-          <EditorDePost slugInicial={tela.slug} aoVoltar={() => setTela({ nome: 'lista' })} />
+          <EditorDePost
+            slugInicial={tela.slug}
+            rascunhoInicial={tela.rascunho}
+            aoVoltar={() => setTela({ nome: 'lista' })}
+          />
         )}
         {tela.nome === 'configuracao' && (
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -90,6 +99,12 @@ export function App(): JSX.Element {
             </button>
             <ConfiguracaoNotion />
           </div>
+        )}
+        {tela.nome === 'importar' && (
+          <ImportarDoNotion
+            aoVoltar={() => setTela({ nome: 'lista' })}
+            aoImportar={(rascunho) => setTela({ nome: 'editor', slug: null, rascunho })}
+          />
         )}
       </main>
     </div>

@@ -13,6 +13,12 @@
     "src/principal/posts/slug.ts",
     "src/principal/config/armazenamento.ts",
     "src/principal/notion/descoberta.ts",
-    "src/principal/notion/cliente.ts"
+    "src/principal/notion/cliente.ts",
+    "src/principal/notion/paginasDaDatabase.ts",
+    "src/principal/notion/importacao.ts",
+    "src/principal/notion/blocos.ts",
+    "src/principal/notion/paginacao.ts",
+    "src/principal/midia/download.ts",
+    "src/principal/posts/caminhos.ts"
   ]
 }
