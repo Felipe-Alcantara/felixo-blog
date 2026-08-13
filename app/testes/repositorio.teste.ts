@@ -132,4 +132,27 @@ describe('conteúdo gravado em disco', () => {
     expect(bruto).toContain('- b');
     expect(bruto.trim().startsWith('---')).toBe(true);
   });
+
+  it('salva com sucesso quando um campo opcional chega como undefined explícito (não ausente)', async () => {
+    // Reproduz o formato real que a interface envia quando um campo opcional
+    // fica vazio: `capa: estado.capa || undefined` cria a chave "capa" com
+    // valor undefined, em vez de omiti-la. gray-matter/js-yaml não sabem
+    // serializar undefined e lançavam YAMLException antes desta correção.
+    await salvarPost(
+      'sem-capa',
+      {
+        titulo: 'Sem capa',
+        descricao: 'd',
+        publicadoEm: '2026-08-13',
+        capa: undefined,
+      },
+      'corpo',
+    );
+
+    const post = await lerPost('sem-capa');
+    expect(post.frontmatter.capa).toBeUndefined();
+
+    const bruto = await readFile(join(pastaTemp, 'posts', 'sem-capa.md'), 'utf-8');
+    expect(bruto).not.toContain('capa:');
+  });
 });
