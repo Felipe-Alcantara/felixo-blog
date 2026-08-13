@@ -60,6 +60,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
   );
   const [carregando, setCarregando] = useState(slugInicial !== null);
   const [salvando, setSalvando] = useState(false);
+  const [publicando, setPublicando] = useState(false);
   const [enviandoImagem, setEnviandoImagem] = useState(false);
   const [gerandoCapa, setGerandoCapa] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -164,16 +165,13 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
     }
   }
 
-  async function salvar(): Promise<void> {
-    setErro(null);
-    setMensagem(null);
-
+  /** Devolve `true` em sucesso — usado por `publicar()` para saber se deve prosseguir. */
+  async function salvarInterno(): Promise<boolean> {
     if (!slugValido(slugFinal)) {
       setErro('Slug inválido — use apenas letras minúsculas, números e hífen.');
-      return;
+      return false;
     }
 
-    setSalvando(true);
     try {
       const tags = estado.tags
         .split(',')
@@ -192,11 +190,42 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
         },
         estado.corpo,
       );
-      setMensagem('Salvo.');
+      return true;
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : String(e));
+      return false;
+    }
+  }
+
+  async function salvar(): Promise<void> {
+    setErro(null);
+    setMensagem(null);
+    setSalvando(true);
+    const sucesso = await salvarInterno();
+    setSalvando(false);
+    if (sucesso) setMensagem('Salvo.');
+  }
+
+  async function publicar(): Promise<void> {
+    setErro(null);
+    setMensagem(null);
+    setPublicando(true);
+    try {
+      // Salva antes de publicar: publicar sem salvar publicaria a versão
+      // antiga do arquivo em disco, não o que está na tela.
+      const salvou = await salvarInterno();
+      if (!salvou) return;
+
+      const resultado = await window.felixoEditor.publicarPost(slugFinal, estado.titulo);
+      if (resultado.sucesso) {
+        setMensagem(resultado.semMudanca ? resultado.detalhe : `Publicado: ${resultado.detalhe}`);
+      } else {
+        setErro(`Falhou em "${resultado.etapaComFalha}": ${resultado.detalhe}`);
+      }
     } catch (e) {
       setErro(e instanceof Error ? e.message : String(e));
     } finally {
-      setSalvando(false);
+      setPublicando(false);
     }
   }
 
@@ -328,6 +357,23 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
           }}
         >
           {salvando ? 'Salvando…' : 'Salvar'}
+        </button>
+        <button
+          onClick={publicar}
+          disabled={publicando || salvando}
+          title="Roda check + build, faz commit só deste post e dá push"
+          style={{
+            background: 'transparent',
+            border: '1px solid #4ade80',
+            borderRadius: '0.375rem',
+            padding: '0.5rem 1.25rem',
+            color: '#4ade80',
+            fontWeight: 600,
+            cursor: publicando ? 'default' : 'pointer',
+            opacity: publicando ? 0.6 : 1,
+          }}
+        >
+          {publicando ? 'Publicando… (rodando check + build)' : 'Publicar'}
         </button>
         {mensagem && <span style={{ color: '#4ade80' }}>{mensagem}</span>}
         {erro && <span style={{ color: '#f87171' }}>{erro}</span>}

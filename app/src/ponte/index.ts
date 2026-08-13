@@ -23,6 +23,7 @@ const ponte: PonteFelixoEditor = {
     ipcRenderer.invoke(CANAIS.midiaSalvarImagem, slug, nomeBase, bytes),
   gerarCapaDoPost: (slug, titulo, descricao) =>
     ipcRenderer.invoke(CANAIS.midiaGerarCapa, slug, titulo, descricao),
+  publicarPost: (slug, titulo) => ipcRenderer.invoke(CANAIS.publicarPost, slug, titulo),
 };
 
 contextBridge.exposeInMainWorld('felixoEditor', ponte);

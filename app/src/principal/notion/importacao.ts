@@ -5,6 +5,7 @@ import { listarTodosOsBlocos } from './paginacao';
 import { blocosParaMarkdown } from './blocos';
 import { baixarImagensDoArtigo } from '../midia/download';
 import { pastaDeMidiaDoPost } from '../posts/caminhos';
+import { registrarOrigemDoNotion } from './associacoes';
 
 export interface ArtigoImportado {
   titulo: string;
@@ -39,6 +40,8 @@ export async function importarArtigo(client: Client, pageId: string, slug: strin
   const blocos = await listarTodosOsBlocos(client, pageId);
   const { markdown, imagens } = blocosParaMarkdown(blocos);
   const corpo = await baixarImagensDoArtigo(markdown, imagens, pastaDeMidiaDoPost(slug), slug);
+
+  await registrarOrigemDoNotion(slug, pageId);
 
   return { titulo, corpo };
 }

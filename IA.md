@@ -15,14 +15,14 @@
 
 - **Em implementação**: "Felixo Editor", app desktop em `app/` para
   criar/editar posts e publicar a partir da database de Artigos do Notion.
-  Fatias 1 (esqueleto Electron), 2 (CRUD de posts `.md`), 3 (conexão com o
-  Notion), 4 (importação de artigos como Markdown) e 5 (templates + mídia +
-  capa por post) concluídas e commitadas; fatia 6 (publicação: gate + git +
-  status no Notion) é a próxima. Post agora aceita `capa` opcional no
-  frontmatter (`content.config.ts`), que vira a imagem Open Graph do post.
-  **Pendência do dono**: preencher `app/.env` (token + ID da database) para
-  validar a conexão e a importação de verdade. Ver os registros datados
-  `[2026-08-13]` no fim deste arquivo.
+  Fatias 1 a 6 concluídas e commitadas (esqueleto, CRUD de posts, conexão
+  Notion, importação como Markdown, templates+mídia+capa, publicação com
+  gate+git+status no Notion); falta só a fatia 7 (documentação/`start_app.py`).
+  Post agora aceita `capa` opcional no frontmatter (`content.config.ts`), que
+  vira a imagem Open Graph do post. **Pendência do dono**: preencher
+  `app/.env` (token + ID da database) para validar a conexão/importação de
+  verdade, e observar a primeira publicação real feita pelo app. Ver os
+  registros datados `[2026-08-13]` no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -744,3 +744,47 @@ webp) e capa por post.** Três entregas:
 **Estado**: fatia 5 concluída e commitada. Próxima: fatia 6, publicação
 (gate `check`+`build`, `git add` seletivo, commit, push, status de volta no
 Notion).
+
+[2026-08-13] **Felixo Editor, fatia 6: publicação (gate + git seletivo +
+escrita de volta no Notion).** `principal/publicacao/`: `gate.ts` roda
+`npm run check` + `npm run build` na raiz do blog via `child_process`, para
+antes do primeiro que falhar; `git.ts` roda comandos git reais via
+`execFile` (`ComandoGitFalhou` carrega o stderr de verdade); `publicar.ts`
+orquestra gate → `pull --rebase` → `git add --` **só** do `.md` e da pasta de
+mídia daquele slug → commit `post: <título>` → push, parando e devolvendo a
+etapa exata que falhou. Botão "Publicar" no editor salva antes (evita
+publicar a versão antiga do arquivo) e mostra a saída real em caso de erro.
+
+**Escrita de volta no Notion**, best-effort e depois do post já estar
+publicado (nunca desfaz a publicação se falhar): `notion/associacoes.ts`
+guarda localmente (`app/.notion-associacoes.json`, gitignored) qual slug
+veio de qual página do Notion, gravado na importação (fatia 4).
+`notion/statusDeVolta.ts` acha a propriedade `url` e uma propriedade
+`select`/`status` cuja opção pareça "publicado" (`/public/i`) — sem propriedade
+ou sem opção parecida, avisa e não escreve nada, em vez de adivinhar um
+valor errado.
+
+**Validado com evidência real, não presumida**:
+- 58 testes (16 arquivos, 12 novos). Os mais importantes: `publicacao-git` e
+  `publicacao-publicar` rodam contra **repositórios git reais** em diretório
+  temporário (`git init --bare` como "remoto" + clone), não mock de git —
+  inclusive um teste que reproduz o risco central desta fatia: um arquivo
+  alheio modificado no mesmo working tree (simulando outro agente do canvas)
+  continua modificado e **fora do stage** depois de publicar um post,
+  confirmado lendo `git status --short` de verdade. `publicacao-gate` roda
+  `npm run check`/`build` de verdade contra um `package.json` descartável
+  (sem tocar no blog real). `notion-status-de-volta` cobre os três casos
+  (sucesso, opção não encontrada, propriedade não encontrada) com o SDK
+  mockado.
+- `npm run check` limpo, build limpo, `npm audit`: 0 vulnerabilidades. Blog:
+  `check`/`build` seguem verdes, 7 páginas. Janela aberta de verdade
+  confirmando por print que o app sobe sem crash com os novos canais IPC.
+- **Não testei o fluxo de publicação de ponta a ponta contra o repositório
+  real** (isso publicaria de verdade na `main` por fora desta conversa) —
+  os testes de integração usam repositórios git descartáveis de propósito. A
+  primeira publicação real pelo app deve ser observada pelo dono.
+
+**Estado**: fatia 6 concluída e commitada. Falta a fatia 7 (documentação:
+README do blog + opção no `start_app.py`). Com isso, as sete fatias do plano
+original estarão entregues — Notion/importação seguem sem validação de rede
+real (pendência do dono: preencher `app/.env`).
