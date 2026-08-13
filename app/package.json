@@ -1,0 +1,41 @@
+{
+  "name": "felixo-editor",
+  "private": true,
+  "version": "0.1.0",
+  "description": "App desktop para criar, editar e publicar posts do blog a partir da database de Artigos do Notion.",
+  "type": "module",
+  "author": "Felipe Martin",
+  "main": "./dist-electron/principal/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.3.0",
+    "gray-matter": "^4.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.35.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "electron": "^43.4.0",
+    "electron-vite": "^4.0.1",
+    "typescript": "^5.7.2",
+    "vite": "^7.3.6",
+    "vitest": "^3.2.5"
+  },
+  "allowScripts": {
+    "electron@43.4.0": true,
+    "sharp@0.35.3": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true
+  }
+}

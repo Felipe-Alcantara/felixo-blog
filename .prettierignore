@@ -1,0 +1,3 @@
+# O Felixo Editor (app/) tem package.json, deps e formatação próprios —
+# não é código do blog e não deve ser tocado pelo `npm run format` da raiz.
+app/

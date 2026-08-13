@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      CSP restritiva: sem scripts inline, sem recurso remoto. O app não
+      precisa de rede na janela — Notion e git rodam no processo principal.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: file:;"
+    />
+    <title>Felixo Editor</title>
+  </head>
+  <body>
+    <div id="raiz"></div>
+    <script type="module" src="./entrada.tsx"></script>
+  </body>
+</html>

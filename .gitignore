@@ -29,3 +29,10 @@ pnpm-debug.log*
 # cache do start_app.py (Python)
 __pycache__/
 *.pyc
+
+# Felixo Editor (app/) — dependências e build são locais, credencial do
+# Notion nunca entra no repositório público
+app/node_modules/
+app/dist-electron/
+app/.env
+app/*.tsbuildinfo
