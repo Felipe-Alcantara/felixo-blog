@@ -13,17 +13,19 @@
 
 Última atualização: [2026-08-13]
 
-- **"Felixo Editor" (app/): as sete fatias do plano estão concluídas.** App
-  desktop (Electron) para criar/editar posts e publicar a partir da database
-  Artigos do Notion — esqueleto, CRUD de posts, conexão Notion, importação
-  como Markdown, templates+mídia+capa, publicação com gate+git+status no
-  Notion, e documentação (`README.md`/`app/README.md`/`start_app.py`), todas
-  commitadas. Post agora aceita `capa` opcional no frontmatter
-  (`content.config.ts`), que vira a imagem Open Graph do post. **Falta só
-  validação do dono com dado real**: preencher `app/.env` (token + ID da
-  database), testar a conexão, importar um artigo de verdade e observar a
-  primeira publicação real pelo botão "Publicar". Ver os registros datados
-  `[2026-08-13]` no fim deste arquivo.
+- **"Felixo Editor" (app/): as sete fatias concluídas e validadas com dado
+  real do Notion.** App desktop (Electron) para criar/editar posts e
+  publicar a partir da database **Artigos**
+  (`1fc91f95-497e-80d3-8dbd-ebbdcca5fec7`, propriedades: `Nome`
+  title/`Etapa` select/`URL publicada` url — achadas dinamicamente, sem
+  hardcode). `app/.env` já configurado nesta máquina (gitignored). Conexão e
+  listagem testadas contra a API real; importação do artigo "Reescrevendo a
+  internet" testada e comparada byte a byte com o post publicado (2 bugs de
+  conversão de lista encontrados e corrigidos nessa validação — ver registro
+  de hoje mais abaixo). Post aceita `capa` opcional no frontmatter, vira
+  `og:image`. **Falta só**: escrita de volta no Notion e publicação via git
+  ainda não testadas contra produção de verdade (evitado de propósito nesta
+  sessão). Ver os registros datados `[2026-08-13]` no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -831,3 +833,62 @@ dono:
    comentário HTML visível no editor).
 3. Fazer a primeira publicação real pelo botão "Publicar" e observar o
    commit/push gerado antes de confiar no fluxo sem supervisão.
+
+[2026-08-13] **Felixo Editor validado com dado real do Notion — e dois bugs
+de conversão encontrados e corrigidos.** O dono forneceu o token de
+integração já usado no ecossistema `Automa-es-do-Notion` (mesma integração,
+token reutilizável entre databases desde que compartilhada com cada uma).
+Configurado em `app/.env` (gitignored, confirmado fora do `git status`).
+
+A URL original do projeto (`app.notion.com/p/Artigos-...`) era mesmo de
+página, como suspeitado na fatia 3 — o ID real da database foi achado por
+busca na API (`POST /v1/search`, filtro `object: database`): **Artigos**,
+`1fc91f95-497e-80d3-8dbd-ebbdcca5fec7`. Schema real:
+
+| Propriedade | Tipo | Uso no app |
+|---|---|---|
+| `Nome` | title | título do artigo (achado dinamicamente, sem hardcode) |
+| `URL publicada` | url | alvo da escrita de volta |
+| `Etapa` | select (Ideia/Modelo/Rascunho/Revisão) | nenhuma opção contém "public" |
+| `Temas`, `Resumo`, `Tempo de leitura (min)`, `Data de publicação`, `Observações`, `ID` (unique_id) | — | não usados pelo app nesta fatia |
+
+Rodei o código do app de verdade (via `tsx`, sem mock) contra a API:
+`testarConexaoNotion`/`obterInfoDaDatabase` achou a database e as 10
+propriedades corretamente; `listarArtigosNotion` listou as 4 páginas reais
+(1 revisão publicada, 1 template "🧩 Template para artigos", 1 revisão, 1
+ideia vazia). Confirmação do desenho da fatia 6: como nenhuma opção de
+`Etapa` bate `/public/i`, `escreverStatusDeVolta` avisaria em vez de
+escrever errado — comportamento **observado de verdade**, não só coberto por
+teste.
+
+**Importação de artigo testada com o conteúdo mais exigente disponível**: o
+artigo "Reescrevendo a internet" (79 blocos: parágrafos, headings, listas
+com e sem marcador, negrito/itálico/link) já está publicado no blog, o que
+permitiu comparar a conversão contra o resultado humano real —
+`diff` **byte a byte, zero diferença**, depois de duas correções:
+
+1. **Listas ficavam "soltas"**: `blocosParaMarkdown` juntava todo bloco com
+   `\n\n`, inclusive itens de lista consecutivos — o `.md` gerado tinha uma
+   linha em branco entre cada `- item`, divergindo do estilo compacto
+   (`- item\n- item`) usado em todo o resto do blog. Corrigido: itens de
+   lista do mesmo tipo, quando consecutivos, ficam juntos com `\n` só;
+   qualquer outra combinação de blocos continua com `\n\n`.
+2. **Lista numerada sempre saía "1." repetido**, nunca 1/2/3/4 — funciona
+   por acidente (a maioria dos renderizadores markdown corrige a numeração
+   visualmente), mas o `.md` gerado não batia com o texto-fonte real. Corrigido
+   com contador que reinicia a cada bloco que não é `numbered_list_item`.
+
+Quatro testes novos em `notion-blocos.teste.ts` cobrindo os dois cenários
+(lista compacta, numeração real, reinício de numeração depois de um
+parágrafo, bulleted seguida de numbered não vira lista única) — 62 testes no
+total agora, todos verdes. `npm run check` limpo. Scripts de teste manual
+(`teste-conexao-real.ts`, `teste-importacao-real.ts`) foram usados só nesta
+sessão e apagados — não fazem parte do produto, evidência fica registrada
+aqui.
+
+**Pendências que seguem reais**: não testei a escrita de volta no Notion de
+verdade (evitei escrever em produção sem confirmação do dono) nem a
+publicação via git contra o repositório real. A conversão de blocos foi
+validada com o repertório de um artigo (parágrafo/heading/lista/negrito/
+itálico/link) — código, quote, callout e imagem seguem cobertos só por
+teste com fixture, não por artigo real do Notion que os use.
