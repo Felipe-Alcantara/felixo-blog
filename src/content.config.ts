@@ -12,15 +12,24 @@ import { z } from 'astro/zod';
  */
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
-  schema: z.object({
-    titulo: z.string(),
-    descricao: z.string(),
-    publicadoEm: z.coerce.date(),
-    atualizadoEm: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
-    /** Marca o post como rascunho: fica fora do build de produção. */
-    rascunho: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      titulo: z.string(),
+      descricao: z.string(),
+      publicadoEm: z.coerce.date(),
+      atualizadoEm: z.coerce.date().optional(),
+      tags: z.array(z.string()).default([]),
+      /** Marca o post como rascunho: fica fora do build de produção. */
+      rascunho: z.boolean().default(false),
+      /**
+       * Capa do post, relativa ao arquivo `.md` (ex.: `./meu-post/capa.jpg`).
+       * Vira a imagem Open Graph do post; sem ela, cai no cartão genérico do
+       * site (`public/og-image.jpg`, gerado por `scripts/gerar-og-image.py`).
+       * `image()` faz Astro otimizar e servir o arquivo com hash, igual às
+       * imagens já usadas no corpo dos posts.
+       */
+      capa: image().optional(),
+    }),
 });
 
 export const collections = { posts };

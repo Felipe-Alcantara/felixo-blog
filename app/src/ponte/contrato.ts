@@ -37,6 +37,8 @@ export const CANAIS = {
   notionTestarConexao: 'notion:testarConexao',
   notionListarArtigos: 'notion:listarArtigos',
   notionImportarArtigo: 'notion:importarArtigo',
+  midiaSalvarImagem: 'midia:salvarImagem',
+  midiaGerarCapa: 'midia:gerarCapa',
 } as const;
 
 /** Formato do objeto que `window.felixoEditor` expõe ao React. */
@@ -59,6 +61,10 @@ export interface PonteFelixoEditor {
   listarArtigosNotion: () => Promise<ArtigoDoNotion[]>;
   /** Importa um artigo do Notion como título + Markdown, baixando as imagens para `slug`. */
   importarArtigoNotion: (pageId: string, slug: string) => Promise<ArtigoImportado>;
+  /** Salva uma imagem colada/arrastada no editor (otimizada para webp). Devolve o link relativo. */
+  salvarImagemDoPost: (slug: string, nomeBase: string, bytes: ArrayBuffer) => Promise<string>;
+  /** Gera a capa do post via scripts/gerar-og-image.py. Devolve o link relativo. */
+  gerarCapaDoPost: (slug: string, titulo: string, descricao: string) => Promise<string>;
 }
 
 declare global {

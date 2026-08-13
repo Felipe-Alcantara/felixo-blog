@@ -19,6 +19,10 @@ const ponte: PonteFelixoEditor = {
   listarArtigosNotion: () => ipcRenderer.invoke(CANAIS.notionListarArtigos),
   importarArtigoNotion: (pageId, slug) =>
     ipcRenderer.invoke(CANAIS.notionImportarArtigo, pageId, slug),
+  salvarImagemDoPost: (slug, nomeBase, bytes) =>
+    ipcRenderer.invoke(CANAIS.midiaSalvarImagem, slug, nomeBase, bytes),
+  gerarCapaDoPost: (slug, titulo, descricao) =>
+    ipcRenderer.invoke(CANAIS.midiaGerarCapa, slug, titulo, descricao),
 };
 
 contextBridge.exposeInMainWorld('felixoEditor', ponte);

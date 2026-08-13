@@ -3,6 +3,7 @@ import { criarJanelaPrincipal } from './janela';
 import { registrarCanaisApp } from './canais/appInfo';
 import { registrarCanaisPosts } from './canais/posts';
 import { registrarCanaisNotion } from './canais/notion';
+import { registrarCanaisMidia } from './canais/midia';
 import { carregarConfiguracao } from './config/armazenamento';
 
 /**
@@ -17,6 +18,7 @@ void app.whenReady().then(() => {
   registrarCanaisApp();
   registrarCanaisPosts();
   registrarCanaisNotion();
+  registrarCanaisMidia();
   criarJanelaPrincipal();
 
   app.on('activate', () => {
