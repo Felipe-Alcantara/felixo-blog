@@ -1029,3 +1029,25 @@ app e do blog limpos.
 que a interface monte com `campo || undefined` está sujeito ao mesmo bug se
 alguém remover a correção da borda de gravação — a defesa agora vive em
 `repositorio.ts`, não em cada tela.
+
+[2026-08-13] **Lista de posts recarrega sozinha ao a janela ganhar foco.**
+Pedido do dono depois de perguntar se um post criado manualmente nos
+arquivos aparece automaticamente na lista — a resposta honesta era "só ao
+reabrir a tela ou o app" (sem observador de arquivo). Pedido explícito de
+tornar automático.
+
+`ListaDePosts.tsx`: a busca de posts virou uma função nomeada (`carregar`),
+chamada no mount e de novo em todo evento `focus` da janela
+(`window.addEventListener('focus', carregar)`, limpo no unmount). Cobre o
+caso real — editar/criar um `.md` por fora (outro editor, importação manual)
+e voltar o foco pro app — sem precisar de um observador de arquivo (`fs.watch`)
+nem de polling.
+
+Sem teste automatizado: é comportamento de UI amarrado ao evento `focus` do
+DOM do Chromium, sem lógica de negócio nova — a régua única de testes do
+projeto trata isso como opcional, com verificação manual registrada em vez
+de suíte nova. `npm run check` limpo, suíte completa (71 testes) sem
+regressão. Build feito; a verificação visual ficou pendente porque o dono
+já tinha uma instância própria aberta (`electron-vite dev`, que recarrega o
+processo principal sozinho ao detectar mudança no código-fonte — a
+correção já deve estar ativa nela sem precisar reabrir).
