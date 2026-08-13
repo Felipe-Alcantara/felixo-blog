@@ -13,10 +13,21 @@ export function ListaDePosts({ aoAbrir }: Props): JSX.Element {
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
-    window.felixoEditor
-      .listarPosts()
-      .then(setPosts)
-      .catch((e: unknown) => setErro(mensagemDeErro(e)));
+    function carregar(): void {
+      window.felixoEditor
+        .listarPosts()
+        .then(setPosts)
+        .catch((e: unknown) => setErro(mensagemDeErro(e)));
+    }
+
+    carregar();
+
+    // Sem observador de arquivo: recarrega sempre que a janela ganha foco,
+    // que é quando um post editado por fora (outro editor, importação
+    // manual) tem chance real de ter mudado. Não pisca a cada troca de
+    // aba interna porque este componente já remonta ao voltar pra cá.
+    window.addEventListener('focus', carregar);
+    return () => window.removeEventListener('focus', carregar);
   }, []);
 
   if (erro) {
