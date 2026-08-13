@@ -11,7 +11,12 @@
 
 ## 📊 ESTADO ATUAL (RESUMO VIVO)
 
-Última atualização: [2026-08-10]
+Última atualização: [2026-08-13]
+
+- **Em alinhamento (não iniciado)**: "Felixo Editor", app desktop em `app/`
+  para criar/editar posts e publicar a partir da database de Artigos do Notion.
+  Decisões fechadas e plano apresentado; aguardando aprovação para implementar.
+  Ver o registro de [2026-08-13] no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -491,3 +496,59 @@ preto (ver correção de 2026-08 acima) — nenhuma cor nova foi introduzida.
 Sem teste automatizado: é filtro puramente visual sobre dado já renderizado,
 sem lógica de negócio — verificação manual (digitar termo existente,
 inexistente e limpar o campo) registrada aqui em vez de suíte nova.
+
+[2026-08-13] **Alinhamento do "Felixo Editor" — app desktop para criar e
+publicar posts.** Registro de decisões; nenhuma linha de código escrita ainda.
+
+Motivo do pedido: escrever e publicar post editando Markdown na mão está
+custando caro demais no dia a dia. A ideia é um app desktop que leia a central
+de escrita (database de Artigos do Notion, já citada no registro de 2026-08-10)
+e gere o `.md` pronto neste repositório.
+
+Decisões fechadas com o dono, em questionário, antes de qualquer construção:
+
+- **Onde**: subpasta `app/` deste repositório, com `package.json` próprio.
+  Precisa ficar fora do `tsconfig` da raiz, do Prettier e do `npm ci` do
+  `deploy.yml` — o app é ferramenta local e não pode entrar no build do site.
+- **Stack**: Electron + Vite + React + TypeScript. É exceção consciente à regra
+  "nada de dependência nova" das regras do projeto: aquela regra protege o
+  **site publicado** (estático, sem JS no cliente), não a ferramenta local.
+- **Fonte da verdade é o `.md`**, não o Notion. O Notion entrega a ideia/pauta e
+  o rascunho inicial do corpo; depois de importado, quem manda é o arquivo.
+  Descartado o caminho bidirecional justamente para não criar conflito de versão.
+- **Escrita de volta no Notion**: só status e URL do post publicado.
+- **Credencial**: mesmo padrão do projeto de automações do Notion — `.env` na
+  raiz com o token de integração interna, já coberto pelo `.gitignore` daqui.
+  Este repositório é público; o token nunca entra em commit.
+- **Templates**: vêm da página de template da própria database.
+- **Imagens**: colar/arrastar, baixar as do Notion (as URLs de lá expiram, então
+  linkar direto quebraria o post depois), gerar capa/OG reusando
+  `scripts/gerar-og-image.py`, e converter para webp.
+- **Publicação**: `npm run check` + `npm run build` como gate travando o botão,
+  depois `pull --rebase`, `git add` **apenas** do `.md` e da pasta de imagens
+  daquele post, commit e push. O `add` seletivo é requisito, não detalhe: o
+  repositório recebe trabalho de mais de um agente em paralelo, e um `git add -A`
+  publicaria código alheio pela metade.
+- **Testes**: suíte automatizada cobrindo conversão de blocos do Notion,
+  frontmatter, slug, caminho de imagem e o fluxo de publicação (inclusive os
+  caminhos de falha), com git em repositório temporário de verdade. UI React
+  fica com verificação manual, conforme a régua única de testes do padrão.
+- **Fora de escopo**: assistência de IA dentro do editor (o dono usa agentes no
+  terminal) e gestão de tags/configuração do site.
+- **Porta de entrada**: novas opções no `start_app.py` que já existe, em vez de
+  um segundo script — é um programa só, com dois componentes.
+
+Dois riscos registrados desde já: a conversão de blocos do Notion nunca é
+completa (blocos não suportados devem degradar de forma visível, nunca sumir em
+silêncio), e o push automático publica sem etapa de revisão — se isso incomodar,
+a saída barata é importar sempre com `rascunho: true`.
+
+Uma verificação já feita, para poupar trabalho de quem retomar: o wrapper de
+Notion do projeto de automações é fino e **não** converte blocos em Markdown,
+além de ser Python. O reuso entre os dois projetos se limita ao padrão de
+`.env`/token.
+
+**Estado**: alinhamento concluído e plano técnico apresentado ao dono
+(esqueleto → posts → Notion → importação → templates/mídia → publicação → docs,
+um commit por fatia). Aguardando aprovação do plano para iniciar a
+implementação. Nada foi criado no repositório até aqui.
