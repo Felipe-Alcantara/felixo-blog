@@ -63,6 +63,16 @@ describe('salvarPost + lerPost', () => {
     ).rejects.toThrow();
   });
 
+  it('rejeita descrição vazia (ex.: artigo importado do Notion, ainda sem descrição preenchida) com mensagem legível, não JSON cru do Zod', async () => {
+    await expect(
+      salvarPost(
+        'sem-descricao',
+        { titulo: 'Título ok', descricao: '', publicadoEm: '2026-08-13' },
+        'corpo',
+      ),
+    ).rejects.toThrow(/descricao: Descrição não pode ser vazia/);
+  });
+
   it('rejeita slug com maiúscula ou espaço (não vira URL válida)', async () => {
     await expect(
       salvarPost(

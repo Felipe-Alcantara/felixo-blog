@@ -940,3 +940,25 @@ só o processo Electron que eu mesmo tinha aberto.
 **Pendência**: o dono precisa fechar e reabrir o Felixo Editor (o processo
 antigo continua com o bug em memória) e confirmar que "Importar do Notion"
 funciona agora.
+
+[2026-08-13] **Segundo achado real de uso: mensagem de erro ao salvar era
+JSON cru do Zod.** O dono importou o template do Notion e tentou salvar sem
+preencher a descrição (esperado — o importador só traz título+corpo de
+propósito, ver fatia 4). O app funcionou corretamente (rejeitou o
+salvamento), mas a mensagem mostrada foi um dump de array JSON dos issues
+do Zod, ilegível. Causa: `salvarPost` em `repositorio.ts` usava
+`esquemaFrontmatter.parse()` (lança `ZodError` cru) em vez de `safeParse()`
+com mensagem formatada — `lerPost` já fazia certo, `salvarPost` não.
+Corrigido para o mesmo padrão: `PostInvalidoError` com
+`"campo: mensagem"` por issue. Teste novo trava a mensagem legível para o
+caso exato que apareceu (descrição vazia). 64 testes, `npm run check`/build
+do app e do blog limpos.
+
+**Sugestão não implementada, registrada para não se perder**: dá para
+reduzir esse atrito de origem preenchendo `descricao` automaticamente na
+importação a partir da propriedade "Resumo" da database (existe e está
+com texto útil nos artigos reais, confirmado na validação anterior). Não
+implementei agora porque a fatia 4 decidiu deliberadamente não presumir
+nomes de propriedade além do `title` estrutural — "Resumo" é específico
+desta database, não garantido em outra. Fica como ideia de contribuição
+futura, não como pendência.
