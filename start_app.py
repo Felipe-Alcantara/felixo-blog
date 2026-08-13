@@ -32,6 +32,12 @@ PROJECT_DIR = Path(__file__).resolve().parent
 PACKAGE_JSON = PROJECT_DIR / "package.json"
 REQUIREMENTS_FILE = PROJECT_DIR / "requirements.txt"
 
+# Felixo Editor: app desktop (Electron) para criar/editar posts e publicar a
+# partir do Notion. Componente separado do blog (package.json próprio), mas
+# a porta de entrada continua sendo só este menu — ver AGENTS.md/IA.md.
+APP_DIR = PROJECT_DIR / "app"
+APP_PACKAGE_JSON = APP_DIR / "package.json"
+
 # Casa qualquer URL http(s) impressa pelo Astro, seja no formato clássico
 # ("Local   http://localhost:4321/") ou no log estruturado que ele usa fora
 # de um TTY interativo ("Dev server running at http://localhost:4321 (pid…").
@@ -164,6 +170,18 @@ def node_modules_instalado() -> bool:
     return (PROJECT_DIR / "node_modules").is_dir()
 
 
+def app_existe() -> bool:
+    return APP_PACKAGE_JSON.exists()
+
+
+def app_node_modules_instalado() -> bool:
+    return (APP_DIR / "node_modules").is_dir()
+
+
+def app_env_configurado() -> bool:
+    return (APP_DIR / ".env").exists()
+
+
 def porta_em_uso(porta: int, host: str = HOST_PADRAO) -> bool:
     alvo = "127.0.0.1" if host == "localhost" else host
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -210,11 +228,11 @@ def _abrir_navegador_quando_pronto(
         erro("Servidor não respondeu a tempo; abra a URL manualmente.")
 
 
-def _rodar_streaming(comando: list[str], *, abrir_navegador: bool) -> None:
+def _rodar_streaming(comando: list[str], *, abrir_navegador: bool, cwd: Path = PROJECT_DIR) -> None:
     """Roda um comando npm espelhando a saída, com Ctrl+C encerrando limpo."""
     processo = subprocess.Popen(
         comando,
-        cwd=PROJECT_DIR,
+        cwd=cwd,
         env=ambiente_com_overrides(),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -267,19 +285,25 @@ def _menu_iniciar(console, questionary) -> None:
         )
         return
 
-    escolha = questionary.select(
-        "O que você quer rodar?",
-        choices=[
+    opcoes = [
+        questionary.Choice(
+            f"Blog — servidor de desenvolvimento (hot reload em http://localhost:{PORTA_PADRAO})",
+            value="dev",
+        ),
+        questionary.Choice(
+            "Blog — build + preview (testa o build de produção localmente)", value="preview"
+        ),
+    ]
+    if app_existe():
+        opcoes.append(
             questionary.Choice(
-                f"Servidor de desenvolvimento — hot reload em http://localhost:{PORTA_PADRAO}",
-                value="dev",
-            ),
-            questionary.Choice(
-                "Build + preview — testa o build de produção localmente", value="preview"
-            ),
-            questionary.Choice("Voltar", value=None),
-        ],
-    ).ask()
+                "Felixo Editor — app desktop para criar/editar posts e publicar via Notion",
+                value="editor",
+            )
+        )
+    opcoes.append(questionary.Choice("Voltar", value=None))
+
+    escolha = questionary.select("O que você quer rodar?", choices=opcoes).ask()
 
     if not escolha:
         return
@@ -287,6 +311,23 @@ def _menu_iniciar(console, questionary) -> None:
     if escolha == "dev":
         console.print("[green]Subindo o servidor de desenvolvimento (Ctrl+C para parar)...[/green]")
         _rodar_streaming(["npm", "run", "dev"], abrir_navegador=True)
+        return
+
+    if escolha == "editor":
+        if not app_node_modules_instalado():
+            console.print(
+                "[yellow]Dependências do Felixo Editor ainda não instaladas — "
+                "rode Instalar/Setup antes.[/yellow]"
+            )
+            return
+        if not app_env_configurado():
+            console.print(
+                "[yellow]app/.env não existe ainda — o app abre, mas a aba Notion fica vazia "
+                "até você preencher NOTION_TOKEN/NOTION_DATABASE_ID (copie de app/.env.example, "
+                "ou preencha pela tela \"Notion\" dentro do app).[/yellow]"
+            )
+        console.print("[green]Abrindo o Felixo Editor (Ctrl+C para fechar)...[/green]")
+        _rodar_streaming(["npm", "run", "dev"], abrir_navegador=False, cwd=APP_DIR)
         return
 
     console.print("[green]Buildando...[/green]")
@@ -298,17 +339,39 @@ def _menu_iniciar(console, questionary) -> None:
     _rodar_streaming(["npm", "run", "preview"], abrir_navegador=True)
 
 
-def _menu_instalar(console) -> None:
+def _menu_instalar(console, questionary) -> None:
     if not comando_existe("npm"):
         console.print("[red]npm não encontrado. Instale o Node.js (>=22.12.0) e tente de novo.[/red]")
         return
 
-    console.print("[green]Instalando dependências (npm install)...[/green]")
-    resultado = subprocess.run(["npm", "install"], cwd=PROJECT_DIR)
-    if resultado.returncode != 0:
-        console.print("[red]npm install falhou — veja a saída acima.[/red]")
-        return
+    alvos = [("Blog", PROJECT_DIR)]
+    if app_existe():
+        escolha = questionary.select(
+            "Instalar dependências de quê?",
+            choices=[
+                questionary.Choice("Só o blog", value="blog"),
+                questionary.Choice("Blog + Felixo Editor", value="ambos"),
+                questionary.Choice("Voltar", value=None),
+            ],
+        ).ask()
+        if not escolha:
+            return
+        if escolha == "ambos":
+            alvos.append(("Felixo Editor", APP_DIR))
+
+    for nome, pasta in alvos:
+        console.print(f"[green]Instalando dependências do {nome} (npm install)...[/green]")
+        resultado = subprocess.run(["npm", "install"], cwd=pasta)
+        if resultado.returncode != 0:
+            console.print(f"[red]npm install do {nome} falhou — veja a saída acima.[/red]")
+            return
+
     console.print("[green]Dependências instaladas.[/green]")
+    if app_existe() and len(alvos) > 1 and not app_env_configurado():
+        console.print(
+            "[dim]Dica: copie app/.env.example para app/.env e preencha NOTION_TOKEN/"
+            "NOTION_DATABASE_ID para usar a integração com o Notion no Felixo Editor.[/dim]"
+        )
 
 
 def _menu_configurar(console, questionary) -> None:
@@ -415,6 +478,16 @@ def _menu_status(console) -> None:
         ", ".join(f"{k}={v}" for k, v in _overrides.items()) if _overrides else "[dim]nenhum[/dim]",
     )
 
+    if app_existe():
+        tabela.add_row(
+            "Felixo Editor — dependências",
+            "[green]instaladas[/green]" if app_node_modules_instalado() else "[yellow]faltando[/yellow]",
+        )
+        tabela.add_row(
+            "Felixo Editor — Notion configurado",
+            "[green]sim (app/.env existe)[/green]" if app_env_configurado() else "[dim]não[/dim]",
+        )
+
     console.print(tabela)
 
 
@@ -467,7 +540,7 @@ def rodar_menu() -> int:
         if escolha == "iniciar":
             _menu_iniciar(console, questionary)
         elif escolha == "instalar":
-            _menu_instalar(console)
+            _menu_instalar(console, questionary)
         elif escolha == "configurar":
             _menu_configurar(console, questionary)
         elif escolha == "verificar":

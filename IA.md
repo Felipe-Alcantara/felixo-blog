@@ -13,16 +13,17 @@
 
 Última atualização: [2026-08-13]
 
-- **Em implementação**: "Felixo Editor", app desktop em `app/` para
-  criar/editar posts e publicar a partir da database de Artigos do Notion.
-  Fatias 1 a 6 concluídas e commitadas (esqueleto, CRUD de posts, conexão
-  Notion, importação como Markdown, templates+mídia+capa, publicação com
-  gate+git+status no Notion); falta só a fatia 7 (documentação/`start_app.py`).
-  Post agora aceita `capa` opcional no frontmatter (`content.config.ts`), que
-  vira a imagem Open Graph do post. **Pendência do dono**: preencher
-  `app/.env` (token + ID da database) para validar a conexão/importação de
-  verdade, e observar a primeira publicação real feita pelo app. Ver os
-  registros datados `[2026-08-13]` no fim deste arquivo.
+- **"Felixo Editor" (app/): as sete fatias do plano estão concluídas.** App
+  desktop (Electron) para criar/editar posts e publicar a partir da database
+  Artigos do Notion — esqueleto, CRUD de posts, conexão Notion, importação
+  como Markdown, templates+mídia+capa, publicação com gate+git+status no
+  Notion, e documentação (`README.md`/`app/README.md`/`start_app.py`), todas
+  commitadas. Post agora aceita `capa` opcional no frontmatter
+  (`content.config.ts`), que vira a imagem Open Graph do post. **Falta só
+  validação do dono com dado real**: preencher `app/.env` (token + ID da
+  database), testar a conexão, importar um artigo de verdade e observar a
+  primeira publicação real pelo botão "Publicar". Ver os registros datados
+  `[2026-08-13]` no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -788,3 +789,45 @@ valor errado.
 README do blog + opção no `start_app.py`). Com isso, as sete fatias do plano
 original estarão entregues — Notion/importação seguem sem validação de rede
 real (pendência do dono: preencher `app/.env`).
+
+[2026-08-13] **Felixo Editor, fatia 7 (última do plano): documentação e
+`start_app.py`.** Sem código de produto novo — só integração do que as
+fatias 1-6 entregaram ao resto do projeto:
+
+- `start_app.py`: "Iniciar/Rodar" ganhou a opção "Felixo Editor" (só aparece
+  se `app/` existir), que roda `npm run dev` dentro de `app/` sem tentar
+  abrir navegador (é app desktop, não site); avisa se `app/.env` não existe
+  em vez de deixar a aba Notion falhar em silêncio depois. "Instalar/Setup"
+  ganhou a escolha "Só o blog" vs. "Blog + Felixo Editor". "Status" mostra se
+  as dependências do app estão instaladas e se o `.env` do Notion existe.
+- `README.md` do blog: nova seção "Felixo Editor", campo `capa` documentado
+  na tabela de frontmatter, `app/` citado na árvore de estrutura.
+- `app/README.md`: reescrito — estava descrevendo só o esqueleto da fatia 1;
+  agora documenta as seis fatias entregues, a dependência "sob demanda" do
+  Playwright para a capa, e a pendência de validar o Notion com token real.
+
+Validado: `python3 -c "ast.parse(...)"` confirma sintaxe válida;
+`app_existe()`, `app_node_modules_instalado()`, `app_env_configurado()`
+chamadas de verdade contra o estado real deste repositório devolveram os
+valores corretos (`True`, `True`, `False` — `.env` de fato não existe ainda).
+**Não testei a navegação interativa do menu** (`questionary` exige teclado
+simulado) — é extensão direta do padrão já usado nas outras opções do menu,
+sem lógica nova além das três funções testadas acima; risco residual baixo,
+mas fica registrado como não coberto por execução ponta a ponta.
+`npm run check`/`build` do blog e `npm run check`/`test` do app seguem
+verdes (58 testes, 7 páginas).
+
+**Estado final do plano original de sete fatias: concluído.** Esqueleto,
+CRUD de posts, conexão Notion, importação como Markdown, templates+mídia+
+capa, publicação com gate+git+status no Notion, e documentação — todas
+commitadas. O que falta não é fatia do plano, é validação com dado real do
+dono:
+
+1. Preencher `app/.env` (`NOTION_TOKEN`, `NOTION_DATABASE_ID`) e confirmar
+   pela tela "Notion" → "Testar conexão" que a database Artigos é encontrada
+   e as propriedades batem com o esperado.
+2. Importar um artigo de verdade e conferir a conversão de blocos (a lista
+   suportada está em `principal/notion/blocos.ts`; o que não estiver lá vira
+   comentário HTML visível no editor).
+3. Fazer a primeira publicação real pelo botão "Publicar" e observar o
+   commit/push gerado antes de confiar no fluxo sem supervisão.
