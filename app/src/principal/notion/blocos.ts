@@ -47,24 +47,51 @@ export function textoInlineParaMarkdown(itens: RichTextItemResponse[]): string {
  * registrada no IA.md, não um bug silencioso: blocos não suportados viram um
  * comentário HTML visível no editor (`<!-- ... -->`), nunca somem calados.
  */
+/** Tipos de bloco cujas linhas ficam juntas (sem linha em branco) quando consecutivas — é uma única lista. */
+const TIPOS_DE_ITEM_DE_LISTA = new Set(['bulleted_list_item', 'numbered_list_item']);
+
 export function blocosParaMarkdown(blocos: Bloco[]): ResultadoDaConversao {
   const imagens: ImagemEncontrada[] = [];
-  const linhas: string[] = [];
+  const itens: { tipo: string; linha: string }[] = [];
+  let numeroDaListaAtual = 0;
 
   for (const bloco of blocos) {
     if (!('type' in bloco)) {
-      linhas.push('<!-- bloco parcial do Notion, sem conteúdo carregado -->');
+      itens.push({ tipo: 'desconhecido', linha: '<!-- bloco parcial do Notion, sem conteúdo carregado -->' });
+      numeroDaListaAtual = 0;
       continue;
     }
 
-    const linha = converterUmBloco(bloco, imagens);
-    if (linha !== null) linhas.push(linha);
+    // Numeração real (1, 2, 3…), não "1." repetido: a maioria dos
+    // renderizadores corrige visualmente, mas o `.md` gerado deve bater com
+    // o texto-fonte, não depender disso.
+    numeroDaListaAtual = bloco.type === 'numbered_list_item' ? numeroDaListaAtual + 1 : 0;
+
+    const linha = converterUmBloco(bloco, imagens, numeroDaListaAtual);
+    if (linha !== null) itens.push({ tipo: bloco.type, linha });
   }
 
-  return { markdown: linhas.join('\n\n'), imagens };
+  let markdown = '';
+  itens.forEach((item, indice) => {
+    if (indice > 0) {
+      const anterior = itens[indice - 1];
+      // Dois itens de lista do MESMO tipo seguidos formam uma lista compacta
+      // (sem parágrafo entre eles) — igual ao que o resto do blog já usa.
+      const listaCompacta =
+        TIPOS_DE_ITEM_DE_LISTA.has(item.tipo) && anterior.tipo === item.tipo;
+      markdown += listaCompacta ? '\n' : '\n\n';
+    }
+    markdown += item.linha;
+  });
+
+  return { markdown, imagens };
 }
 
-function converterUmBloco(bloco: BlockObjectResponse, imagens: ImagemEncontrada[]): string | null {
+function converterUmBloco(
+  bloco: BlockObjectResponse,
+  imagens: ImagemEncontrada[],
+  numeroDaLista: number,
+): string | null {
   switch (bloco.type) {
     case 'paragraph':
       return textoInlineParaMarkdown(bloco.paragraph.rich_text) || null;
@@ -79,7 +106,7 @@ function converterUmBloco(bloco: BlockObjectResponse, imagens: ImagemEncontrada[
     case 'bulleted_list_item':
       return `- ${textoInlineParaMarkdown(bloco.bulleted_list_item.rich_text)}`;
     case 'numbered_list_item':
-      return `1. ${textoInlineParaMarkdown(bloco.numbered_list_item.rich_text)}`;
+      return `${numeroDaLista}. ${textoInlineParaMarkdown(bloco.numbered_list_item.rich_text)}`;
 
     case 'quote':
       return `> ${textoInlineParaMarkdown(bloco.quote.rich_text)}`;

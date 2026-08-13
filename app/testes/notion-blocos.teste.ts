@@ -83,6 +83,52 @@ describe('blocosParaMarkdown', () => {
     expect(markdown).toBe('Um parágrafo.\n\n## Um título\n\n- Item\n\n> Citação');
   });
 
+  function itemDeLista(tipo: 'bulleted_list_item' | 'numbered_list_item', texto: string): BlockObjectResponse {
+    return {
+      object: 'block',
+      id: `li-${texto}`,
+      type: tipo,
+      [tipo]: { rich_text: [textoSimples(texto)], color: 'default' },
+      has_children: false,
+    } as unknown as BlockObjectResponse;
+  }
+
+  it('itens de lista consecutivos do mesmo tipo ficam juntos, sem linha em branco (lista compacta)', () => {
+    const { markdown } = blocosParaMarkdown([
+      itemDeLista('bulleted_list_item', 'Primeiro'),
+      itemDeLista('bulleted_list_item', 'Segundo'),
+      itemDeLista('bulleted_list_item', 'Terceiro'),
+    ]);
+    expect(markdown).toBe('- Primeiro\n- Segundo\n- Terceiro');
+  });
+
+  it('lista numerada usa números reais (1, 2, 3…), não "1." repetido', () => {
+    const { markdown } = blocosParaMarkdown([
+      itemDeLista('numbered_list_item', 'Primeiro'),
+      itemDeLista('numbered_list_item', 'Segundo'),
+      itemDeLista('numbered_list_item', 'Terceiro'),
+    ]);
+    expect(markdown).toBe('1. Primeiro\n2. Segundo\n3. Terceiro');
+  });
+
+  it('duas listas separadas por um parágrafo reiniciam a numeração e voltam a ter espaçamento', () => {
+    const { markdown } = blocosParaMarkdown([
+      itemDeLista('numbered_list_item', 'A'),
+      itemDeLista('numbered_list_item', 'B'),
+      blocoParagrafo([textoSimples('Separador.')]),
+      itemDeLista('numbered_list_item', 'C'),
+    ]);
+    expect(markdown).toBe('1. A\n2. B\n\nSeparador.\n\n1. C');
+  });
+
+  it('lista com marcadores seguida de lista numerada não vira lista compacta entre elas', () => {
+    const { markdown } = blocosParaMarkdown([
+      itemDeLista('bulleted_list_item', 'Marcador'),
+      itemDeLista('numbered_list_item', 'Numerado'),
+    ]);
+    expect(markdown).toBe('- Marcador\n\n1. Numerado');
+  });
+
   it('converte bloco de código preservando a linguagem', () => {
     const bloco = {
       object: 'block',
