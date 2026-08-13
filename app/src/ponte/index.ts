@@ -12,6 +12,10 @@ const ponte: PonteFelixoEditor = {
   lerPost: (slug) => ipcRenderer.invoke(CANAIS.postsLer, slug),
   salvarPost: (slug, frontmatter, corpo) =>
     ipcRenderer.invoke(CANAIS.postsSalvar, slug, frontmatter, corpo),
+  obterConfiguracaoNotion: () => ipcRenderer.invoke(CANAIS.notionObterConfiguracao),
+  salvarConfiguracaoNotion: (config) =>
+    ipcRenderer.invoke(CANAIS.notionSalvarConfiguracao, config),
+  testarConexaoNotion: () => ipcRenderer.invoke(CANAIS.notionTestarConexao),
 };
 
 contextBridge.exposeInMainWorld('felixoEditor', ponte);

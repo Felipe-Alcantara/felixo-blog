@@ -15,9 +15,11 @@
 
 - **Em implementação**: "Felixo Editor", app desktop em `app/` para
   criar/editar posts e publicar a partir da database de Artigos do Notion.
-  Fatia 1 (esqueleto Electron) e fatia 2 (CRUD de posts `.md`) concluídas e
-  commitadas; fatia 3 (conexão com o Notion) é a próxima. Ver os registros
-  datados `[2026-08-13]` no fim deste arquivo.
+  Fatias 1 (esqueleto Electron), 2 (CRUD de posts `.md`) e 3 (conexão com o
+  Notion) concluídas e commitadas; fatia 4 (importação como Markdown) é a
+  próxima. **Pendência do dono**: preencher `app/.env` (token + ID da
+  database) para validar a conexão de verdade. Ver os registros datados
+  `[2026-08-13]` no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -596,3 +598,43 @@ Validação real, não presumida:
 **Estado**: fatia 2 concluída e commitada. Próxima: fatia 3, conexão com a
 database Artigos do Notion (`.env`, descoberta do database real por trás da
 página compartilhada, mapeamento de propriedades). Sem pendência bloqueante.
+
+[2026-08-13] **Felixo Editor, fatia 3: conexão com a database Artigos do
+Notion.** `principal/notion/` traz o cliente (`cliente.ts`, com
+`comRetry` respeitando `Retry-After` e repetindo só em 429/5xx — conforme o
+guia de integração do Felixo System Design) e a descoberta de schema
+(`descoberta.ts`, `databases.retrieve` + mapeamento de propriedades).
+`principal/config/armazenamento.ts` grava `NOTION_TOKEN`/`NOTION_DATABASE_ID`
+no `.env` do app (fora do repositório, igual ao padrão do projeto de
+automações). Tela "Notion" na interface: colar token + ID da database,
+salvar, e "Testar conexão" mostra o título e as propriedades reais da
+database.
+
+**Limite honesto desta fatia**: não tenho um `NOTION_TOKEN` real, então não
+validei a chamada de rede de verdade — isso é credencial do dono, não algo
+que eu deva simular. O que foi validado com evidência real:
+- 22 testes (6 arquivos, todos passando) — os 13 novos cobrem retry/backoff
+  (incluindo respeito ao `Retry-After` e não repetir em erro não-transitório
+  como 401) com o SDK do Notion mockado no nível certo (sem HTTP real);
+  mapeamento de propriedades a partir de uma fixture no formato documentado
+  da API (`databases.retrieve`); e leitura/escrita do `.env` num arquivo
+  temporário — nunca no `.env` real de quem roda a suíte.
+- `npm run check` limpo; janela aberta de verdade (`electron .`) mostrando o
+  botão "Notion" e a lista de posts continuando a funcionar com `.env` vazio
+  (sem crash), só por print — sem repetir a automação de clique que mexeu na
+  tela do dono na fatia anterior.
+- `npm run check`/`build` da raiz seguem verdes, 7 páginas.
+
+**Pendência real para o dono**: preencher `app/.env` (ou pela tela
+"Notion") com `NOTION_TOKEN` e o ID da database Artigos, e confirmar que
+"Testar conexão" lista as propriedades esperadas. A URL original
+(`app.notion.com/p/Artigos-...`) é de página, não de database — o ID correto
+só se descobre abrindo a página no Notion e copiando o ID da database
+embutida, ou pela função `search` da API (não implementada nesta fatia por
+não ter como testar sem token).
+
+**Estado**: fatia 3 concluída e commitada. Próxima: fatia 4, importação de
+artigos do Notion como Markdown (conversão de blocos + download de imagens).
+Depende da fatia 3 estar validada pelo dono com credencial real antes de ter
+sentido testar import de verdade — sigo implementando com fixtures/mocks
+enquanto isso não acontece.

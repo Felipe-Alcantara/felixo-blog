@@ -10,6 +10,9 @@
     "src/interface/**/*",
     "src/ponte/**/*",
     "src/principal/posts/esquema.ts",
-    "src/principal/posts/slug.ts"
+    "src/principal/posts/slug.ts",
+    "src/principal/config/armazenamento.ts",
+    "src/principal/notion/descoberta.ts",
+    "src/principal/notion/cliente.ts"
   ]
 }
