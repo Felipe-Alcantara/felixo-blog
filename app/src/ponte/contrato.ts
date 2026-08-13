@@ -12,6 +12,8 @@
 import type { Frontmatter } from '../principal/posts/esquema';
 import type { ConfiguracaoNotion } from '../principal/config/armazenamento';
 import type { InfoDaDatabase } from '../principal/notion/descoberta';
+import type { ArtigoDoNotion } from '../principal/notion/paginasDaDatabase';
+import type { ArtigoImportado } from '../principal/notion/importacao';
 
 export interface ResumoDePost {
   slug: string;
@@ -22,7 +24,7 @@ export interface PostCompleto extends ResumoDePost {
   corpo: string;
 }
 
-export type { ConfiguracaoNotion, InfoDaDatabase };
+export type { ConfiguracaoNotion, InfoDaDatabase, ArtigoDoNotion, ArtigoImportado };
 
 /** Nomes dos canais IPC. Um único lugar para não duplicar strings soltas. */
 export const CANAIS = {
@@ -33,6 +35,8 @@ export const CANAIS = {
   notionObterConfiguracao: 'notion:obterConfiguracao',
   notionSalvarConfiguracao: 'notion:salvarConfiguracao',
   notionTestarConexao: 'notion:testarConexao',
+  notionListarArtigos: 'notion:listarArtigos',
+  notionImportarArtigo: 'notion:importarArtigo',
 } as const;
 
 /** Formato do objeto que `window.felixoEditor` expõe ao React. */
@@ -51,6 +55,10 @@ export interface PonteFelixoEditor {
   salvarConfiguracaoNotion: (config: ConfiguracaoNotion) => Promise<void>;
   /** Testa a conexão: busca a database configurada e lista suas propriedades. */
   testarConexaoNotion: () => Promise<InfoDaDatabase>;
+  /** Lista os artigos (páginas) da database configurada. */
+  listarArtigosNotion: () => Promise<ArtigoDoNotion[]>;
+  /** Importa um artigo do Notion como título + Markdown, baixando as imagens para `slug`. */
+  importarArtigoNotion: (pageId: string, slug: string) => Promise<ArtigoImportado>;
 }
 
 declare global {
