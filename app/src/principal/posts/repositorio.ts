@@ -94,9 +94,27 @@ export async function salvarPost(
       validado.error.issues.map((i) => `${i.path.join('.') || 'frontmatter'}: ${i.message}`).join('; '),
     );
   }
-  const frontmatter = validado.data;
+  const frontmatter = removerCamposIndefinidos(validado.data);
 
   await mkdir(PASTA_DE_POSTS, { recursive: true });
   const arquivo = matter.stringify(`\n${corpo.trim()}\n`, frontmatter);
   await writeFile(caminhoDoPost(slug), arquivo, 'utf-8');
+}
+
+/**
+ * Remove chaves com valor `undefined` de um objeto validado antes de
+ * serializar.
+ *
+ * Campo opcional do schema (ex.: `capa`) pode chegar como `capa: undefined`
+ * explícito — não ausente — quando quem chama monta o objeto com
+ * `campo || undefined` (é o que a interface faz). Zod aceita `undefined`
+ * como valor válido de campo opcional e preserva a chave; o serializador
+ * YAML do `gray-matter`, porém, não sabe serializar `undefined` e lança
+ * `YAMLException`. Corrige na borda de gravação, protegendo qualquer
+ * chamador — não só a tela atual.
+ */
+function removerCamposIndefinidos<T extends object>(objeto: T): T {
+  return Object.fromEntries(
+    Object.entries(objeto).filter(([, valor]) => valor !== undefined),
+  ) as T;
 }

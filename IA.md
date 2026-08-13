@@ -997,3 +997,35 @@ inclusive com o texto exato de erro que apareceu na tela do dono).
 **Pendência**: confirmação visual do painel de correção em uso real (o dono
 preencher a Descrição do template e ver o foco automático funcionando) ainda
 não foi feita — fica para quando o dono testar de novo.
+
+[2026-08-13] **Bug real: salvar post sem capa quebrava com `YAMLException`.**
+Achado pelo dono rodando o app pela porta de entrada certa (`start_app.py` →
+Felixo Editor) e tentando salvar o post do template depois de preencher a
+descrição. Log real: `YAMLException: unacceptable kind of an object to dump
+[object Undefined]`, disparado dentro de `gray-matter`/`js-yaml`.
+
+Causa: `EditorDePost.tsx` monta o objeto de frontmatter com
+`capa: estado.capa || undefined` — quando `capa` está vazia, isso cria a
+chave `capa` com valor `undefined` **explícito**, não uma chave ausente.
+`esquemaFrontmatter.safeParse` aceita `undefined` num campo `.optional()` e
+preserva a chave no resultado; `matter.stringify` repassa esse objeto pro
+serializador YAML, que não sabe serializar `undefined` e lança em vez de
+simplesmente omitir.
+
+Corrigido na borda de gravação (`repositorio.ts`), não só na tela: nova
+função `removerCamposIndefinidos` filtra qualquer chave `undefined` do
+frontmatter validado antes de `matter.stringify`. Protege contra qualquer
+chamador que mande `campo: undefined` explícito, não só o `EditorDePost`
+atual — é a mesma lógica de "não presumir só um caminho de entrada" já usada
+em outras partes do app.
+
+Validado: teste novo reproduzindo o formato exato do bug (`capa: undefined`
+no objeto de entrada) confirma que salva sem lançar, que `capa` sai ausente
+do `.md` gravado (`bruto`, sem a chave `capa:`), e que `lerPost` relê
+`capa: undefined` de volta. 71 testes no total, `npm run check`/build do
+app e do blog limpos.
+
+**Padrão de risco a vigiar**: qualquer campo `.optional()` novo no schema
+que a interface monte com `campo || undefined` está sujeito ao mesmo bug se
+alguém remover a correção da borda de gravação — a defesa agora vive em
+`repositorio.ts`, não em cada tela.
