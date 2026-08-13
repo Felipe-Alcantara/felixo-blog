@@ -14,6 +14,7 @@ import type { ConfiguracaoNotion } from '../principal/config/armazenamento';
 import type { InfoDaDatabase } from '../principal/notion/descoberta';
 import type { ArtigoDoNotion } from '../principal/notion/paginasDaDatabase';
 import type { ArtigoImportado } from '../principal/notion/importacao';
+import type { ResultadoDaPublicacao } from '../principal/publicacao/publicar';
 
 export interface ResumoDePost {
   slug: string;
@@ -24,7 +25,7 @@ export interface PostCompleto extends ResumoDePost {
   corpo: string;
 }
 
-export type { ConfiguracaoNotion, InfoDaDatabase, ArtigoDoNotion, ArtigoImportado };
+export type { ConfiguracaoNotion, InfoDaDatabase, ArtigoDoNotion, ArtigoImportado, ResultadoDaPublicacao };
 
 /** Nomes dos canais IPC. Um único lugar para não duplicar strings soltas. */
 export const CANAIS = {
@@ -39,6 +40,7 @@ export const CANAIS = {
   notionImportarArtigo: 'notion:importarArtigo',
   midiaSalvarImagem: 'midia:salvarImagem',
   midiaGerarCapa: 'midia:gerarCapa',
+  publicarPost: 'publicacao:publicar',
 } as const;
 
 /** Formato do objeto que `window.felixoEditor` expõe ao React. */
@@ -65,6 +67,8 @@ export interface PonteFelixoEditor {
   salvarImagemDoPost: (slug: string, nomeBase: string, bytes: ArrayBuffer) => Promise<string>;
   /** Gera a capa do post via scripts/gerar-og-image.py. Devolve o link relativo. */
   gerarCapaDoPost: (slug: string, titulo: string, descricao: string) => Promise<string>;
+  /** Gate + git add seletivo + commit + push + escrita de volta no Notion (best-effort). */
+  publicarPost: (slug: string, titulo: string) => Promise<ResultadoDaPublicacao>;
 }
 
 declare global {

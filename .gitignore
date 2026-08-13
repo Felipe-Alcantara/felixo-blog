@@ -36,3 +36,4 @@ app/node_modules/
 app/dist-electron/
 app/.env
 app/*.tsbuildinfo
+app/.notion-associacoes.json

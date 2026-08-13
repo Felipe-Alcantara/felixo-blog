@@ -19,6 +19,10 @@
     "src/principal/notion/blocos.ts",
     "src/principal/notion/paginacao.ts",
     "src/principal/midia/download.ts",
-    "src/principal/posts/caminhos.ts"
+    "src/principal/posts/caminhos.ts",
+    "src/principal/publicacao/publicar.ts",
+    "src/principal/publicacao/gate.ts",
+    "src/principal/publicacao/git.ts",
+    "src/principal/notion/associacoes.ts"
   ]
 }
