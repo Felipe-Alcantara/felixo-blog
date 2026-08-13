@@ -13,10 +13,11 @@
 
 Última atualização: [2026-08-13]
 
-- **Em alinhamento (não iniciado)**: "Felixo Editor", app desktop em `app/`
-  para criar/editar posts e publicar a partir da database de Artigos do Notion.
-  Decisões fechadas e plano apresentado; aguardando aprovação para implementar.
-  Ver o registro de [2026-08-13] no fim deste arquivo.
+- **Em implementação**: "Felixo Editor", app desktop em `app/` para
+  criar/editar posts e publicar a partir da database de Artigos do Notion.
+  Fatia 1 (esqueleto Electron) e fatia 2 (CRUD de posts `.md`) concluídas e
+  commitadas; fatia 3 (conexão com o Notion) é a próxima. Ver os registros
+  datados `[2026-08-13]` no fim deste arquivo.
 
 - **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
   via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
@@ -552,3 +553,46 @@ além de ser Python. O reuso entre os dois projetos se limita ao padrão de
 (esqueleto → posts → Notion → importação → templates/mídia → publicação → docs,
 um commit por fatia). Aguardando aprovação do plano para iniciar a
 implementação. Nada foi criado no repositório até aqui.
+
+[2026-08-13] **Felixo Editor, fatia 2: leitura e escrita de posts `.md`.**
+Aprovação do dono para "fazer tudo direto" — as próximas fatias do plano
+seguem sem pausa para aprovação a cada uma, mas continuam registradas aqui e
+commitadas em pedaços pequenos.
+
+O que entrou: `principal/posts/` (schema espelhando `content.config.ts`,
+cálculo de caminhos, geração de slug, repositório com listar/ler/salvar via
+`gray-matter`), canal IPC `posts:*`, e duas telas na interface (lista de
+posts, editor de frontmatter + corpo). `salvarPost` valida com Zod antes de
+tocar disco e nunca aceita slug com maiúscula/espaço — o nome do arquivo é a
+URL pública do post.
+
+**Risco tratado de propósito**: o schema do Astro (`content.config.ts`) só
+existe dentro do runtime `astro:content`, então o app não pode importá-lo — ele
+tem uma cópia (`esquema.ts`). `testes/esquema-paridade.teste.ts` lê o arquivo
+do Astro de verdade (regex sobre o bloco `z.object({...})`) e falha se um
+campo for adicionado ou removido de um lado só.
+
+Validação real, não presumida:
+- `npm run check` (tsc dos dois tsconfigs) e `npm run test` (9 testes, 3
+  arquivos) verdes no app; `repositorio.teste.ts` grava/relê em diretório
+  temporário de verdade (`mkdtemp`), não em mock de sistema de arquivos.
+- Janela aberta de verdade (`electron .`) contra o repositório real: a lista
+  mostrou os 3 posts existentes (títulos, data e "rascunho" corretos) e o
+  editor abriu um post real com os campos certos — inclusive conferi que
+  `10/08/2026` no campo de data batia com `publicadoEm: 2026-08-10` do
+  arquivo (formato `dd/mm/aaaa` do `<input type="date">` em pt-BR, não bug de
+  fuso horário).
+- **Não terminei de validar o botão "Salvar" manualmente**: os cliques de
+  mouse automatizados (`xdotool`) estavam mexendo na tela real do dono (fora
+  de um ambiente isolado — a janela moveu e um vídeo que ele assistia foi
+  afetado). Interrompi a automação de UI por segurança antes de clicar em
+  "Salvar" em qualquer post. A gravação em si tem cobertura de teste
+  automatizado equivalente e real (grava em disco, relê, confere
+  frontmatter/corpo/YAML), então o comportamento está validado — só a
+  confirmação visual do clique manual ficou pendente.
+- Regressão do blog: `npm run check` e `npm run build` da raiz seguem em 0
+  erros/avisos, 7 páginas.
+
+**Estado**: fatia 2 concluída e commitada. Próxima: fatia 3, conexão com a
+database Artigos do Notion (`.env`, descoberta do database real por trás da
+página compartilhada, mapeamento de propriedades). Sem pendência bloqueante.

@@ -6,5 +6,10 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": ["vite/client"]
   },
-  "include": ["src/interface/**/*", "src/ponte/**/*"]
+  "include": [
+    "src/interface/**/*",
+    "src/ponte/**/*",
+    "src/principal/posts/esquema.ts",
+    "src/principal/posts/slug.ts"
+  ]
 }
