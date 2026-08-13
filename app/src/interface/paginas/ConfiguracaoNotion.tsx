@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { mensagemDeErro } from '../erros';
 import type { InfoDaDatabase } from '../../ponte/contrato';
 
 const estiloCampo: React.CSSProperties = {
@@ -42,7 +43,7 @@ export function ConfiguracaoNotion(): JSX.Element {
       });
       setMensagem('Configuração salva.');
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
     } finally {
       setSalvando(false);
     }
@@ -57,7 +58,7 @@ export function ConfiguracaoNotion(): JSX.Element {
       const info = await window.felixoEditor.testarConexaoNotion();
       setInfoDatabase(info);
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
     } finally {
       setTestando(false);
     }

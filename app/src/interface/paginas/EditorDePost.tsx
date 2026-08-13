@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { derivarSlug, slugValido } from '../../principal/posts/slug';
+import { interpretarErroDeValidacao, mensagemDeErro, type PassoDeCorrecao } from '../erros';
 
 interface Props {
   /** `null` = post novo (ainda sem arquivo). */
@@ -67,6 +68,28 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
   const [mensagem, setMensagem] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const tituloRef = useRef<HTMLInputElement>(null);
+  const descricaoRef = useRef<HTMLInputElement>(null);
+  const publicadoEmRef = useRef<HTMLInputElement>(null);
+  const tagsRef = useRef<HTMLInputElement>(null);
+  const refsPorCampo: Record<string, React.RefObject<HTMLInputElement>> = {
+    titulo: tituloRef,
+    descricao: descricaoRef,
+    publicadoEm: publicadoEmRef,
+    tags: tagsRef,
+  };
+
+  const passosDeErro: PassoDeCorrecao[] | null = erro ? interpretarErroDeValidacao(erro) : null;
+
+  useEffect(() => {
+    // Assim que um erro de validação aparece, leva o foco pro primeiro campo
+    // errado — quem usa não precisa caçar qual dos seis campos está ruim.
+    if (passosDeErro && passosDeErro.length > 0) {
+      refsPorCampo[passosDeErro[0].campo]?.current?.focus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [erro]);
+
   useEffect(() => {
     if (!slugInicial) return;
     window.felixoEditor
@@ -83,11 +106,15 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
           capa: post.frontmatter.capa ?? '',
         });
       })
-      .catch((e: unknown) => setErro(e instanceof Error ? e.message : String(e)))
+      .catch((e: unknown) => setErro(mensagemDeErro(e)))
       .finally(() => setCarregando(false));
   }, [slugInicial]);
 
   const slugFinal = slugInicial ?? (estado.slug || derivarSlug(estado.titulo));
+
+  function focarCampo(campo: string): void {
+    refsPorCampo[campo]?.current?.focus();
+  }
 
   function inserirNoCorpoNaPosicaoDoCursor(trecho: string): void {
     const area = textareaRef.current;
@@ -117,7 +144,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
       const caminhoRelativo = await window.felixoEditor.salvarImagemDoPost(slugFinal, nomeBase, bytes);
       inserirNoCorpoNaPosicaoDoCursor(`![](${caminhoRelativo})`);
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
     } finally {
       setEnviandoImagem(false);
     }
@@ -159,7 +186,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
       setEstado((atual) => ({ ...atual, capa: caminhoRelativo }));
       setMensagem('Capa gerada.');
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
     } finally {
       setGerandoCapa(false);
     }
@@ -192,7 +219,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
       );
       return true;
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
       return false;
     }
   }
@@ -223,7 +250,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
         setErro(`Falhou em "${resultado.etapaComFalha}": ${resultado.detalhe}`);
       }
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
     } finally {
       setPublicando(false);
     }
@@ -262,6 +289,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
       <label>
         Título
         <input
+          ref={tituloRef}
           style={estiloCampo}
           value={estado.titulo}
           onChange={(e) => setEstado({ ...estado, titulo: e.target.value })}
@@ -271,6 +299,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
       <label>
         Descrição
         <input
+          ref={descricaoRef}
           style={estiloCampo}
           value={estado.descricao}
           onChange={(e) => setEstado({ ...estado, descricao: e.target.value })}
@@ -281,6 +310,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
         <label style={{ flex: 1 }}>
           Publicado em
           <input
+            ref={publicadoEmRef}
             type="date"
             style={estiloCampo}
             value={estado.publicadoEm}
@@ -290,6 +320,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
         <label style={{ flex: 2 }}>
           Tags (separadas por vírgula)
           <input
+            ref={tagsRef}
             style={estiloCampo}
             value={estado.tags}
             onChange={(e) => setEstado({ ...estado, tags: e.target.value })}
@@ -341,7 +372,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
       </label>
       {enviandoImagem && <span style={{ color: 'var(--cor-texto-fraco)', fontSize: '0.8rem' }}>Enviando imagem…</span>}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
         <button
           onClick={salvar}
           disabled={salvando}
@@ -376,8 +407,46 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
           {publicando ? 'Publicando… (rodando check + build)' : 'Publicar'}
         </button>
         {mensagem && <span style={{ color: '#4ade80' }}>{mensagem}</span>}
-        {erro && <span style={{ color: '#f87171' }}>{erro}</span>}
+        {erro && !passosDeErro && <span style={{ color: '#f87171' }}>{erro}</span>}
       </div>
+
+      {erro && passosDeErro && (
+        <div
+          role="alert"
+          style={{
+            background: 'rgb(248 113 113 / 0.08)',
+            border: '1px solid rgb(248 113 113 / 0.4)',
+            borderRadius: '0.5rem',
+            padding: '0.75rem 1rem',
+            color: '#fca5a5',
+          }}
+        >
+          <strong style={{ display: 'block', marginBottom: '0.4rem' }}>
+            Não deu para salvar — corrija antes de tentar de novo:
+          </strong>
+          <ol style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+            {passosDeErro.map((passo) => (
+              <li key={passo.campo}>
+                <button
+                  onClick={() => focarCampo(passo.campo)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    color: 'inherit',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    font: 'inherit',
+                  }}
+                >
+                  {passo.rotulo}
+                </button>
+                : {passo.motivo}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }

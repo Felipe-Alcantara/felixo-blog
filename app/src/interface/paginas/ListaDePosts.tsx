@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { mensagemDeErro } from '../erros';
 import type { ResumoDePost } from '../../ponte/contrato';
 
 interface Props {
@@ -15,7 +16,7 @@ export function ListaDePosts({ aoAbrir }: Props): JSX.Element {
     window.felixoEditor
       .listarPosts()
       .then(setPosts)
-      .catch((e: unknown) => setErro(e instanceof Error ? e.message : String(e)));
+      .catch((e: unknown) => setErro(mensagemDeErro(e)));
   }, []);
 
   if (erro) {

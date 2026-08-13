@@ -5,5 +5,5 @@
     "lib": ["ESNext"],
     "types": ["node"]
   },
-  "include": ["src/principal/**/*", "src/ponte/**/*", "testes/**/*", "../src/config/site.ts"]
+  "include": ["src/principal/**/*", "src/ponte/**/*", "testes/**/*", "../src/config/site.ts", "src/interface/erros.ts"]
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { mensagemDeErro } from '../erros';
 import type { ArtigoDoNotion } from '../../ponte/contrato';
 import { derivarSlug } from '../../principal/posts/slug';
 
@@ -16,7 +17,7 @@ export function ImportarDoNotion({ aoImportar, aoVoltar }: Props): JSX.Element {
     window.felixoEditor
       .listarArtigosNotion()
       .then(setArtigos)
-      .catch((e: unknown) => setErro(e instanceof Error ? e.message : String(e)));
+      .catch((e: unknown) => setErro(mensagemDeErro(e)));
   }, []);
 
   async function importar(artigo: ArtigoDoNotion): Promise<void> {
@@ -27,7 +28,7 @@ export function ImportarDoNotion({ aoImportar, aoVoltar }: Props): JSX.Element {
       const resultado = await window.felixoEditor.importarArtigoNotion(artigo.id, slug);
       aoImportar({ slug, titulo: resultado.titulo, corpo: resultado.corpo });
     } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
+      setErro(mensagemDeErro(e));
     } finally {
       setImportando(null);
     }
