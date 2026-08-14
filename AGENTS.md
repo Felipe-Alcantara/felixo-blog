@@ -25,6 +25,7 @@ histórico de decisões.
 | O pedido é sobre…                            | Arquivo                                                              |
 | -------------------------------------------- | -------------------------------------------------------------------- |
 | Escrever ou editar um post                   | `src/content/posts/<slug>.md`                                        |
+| Adicionar imagem a um post                   | pasta `src/content/posts/<slug>/`, ver [README § Imagens em um post](README.md#imagens-em-um-post) |
 | Adicionar campo ao frontmatter               | `src/content.config.ts` (schema Zod)                                 |
 | Título, descrição, links de navegação/rodapé | `src/config/site.ts`                                                 |
 | Cores, fontes, tipografia do corpo do post   | `src/styles/global.css`                                              |
