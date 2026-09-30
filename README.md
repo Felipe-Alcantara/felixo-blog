@@ -96,9 +96,7 @@ real (acessibilidade):
 ![Descrição alternativa da imagem](./meu-post/capa.png)
 ```
 
-Assim a imagem entra na coleção de conteúdo e o Astro otimiza. Já existe um
-exemplo no repositório: `src/content/posts/testando-os-recursos-do-blog.md` +
-`src/content/posts/testando-os-recursos-do-blog/capa.png`.
+Assim a imagem entra na coleção de conteúdo e o Astro otimiza.
 
 Imagens institucionais/compartilhadas (logo, foto de perfil etc.), que não
 pertencem a um post específico, vão em `public/imagens/` e são referenciadas

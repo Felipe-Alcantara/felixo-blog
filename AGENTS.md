@@ -19,12 +19,16 @@ histórico de decisões.
 - **Acessibilidade é obrigatória**: contraste AA, foco visível, `aria-current` na
   navegação, link de pular para o conteúdo, `prefers-reduced-motion` respeitado.
   Não regrida nenhum desses pontos.
+- **O texto do post é do Felipe.** Antes de escrever ou revisar conteúdo, leia
+  [`LINGUAGEM-NATURAL.md`](LINGUAGEM-NATURAL.md): a IA corrige e pergunta, não
+  reescreve com palavras "mais bonitas" nem inventa o que ele não disse.
 
 ## Onde mexer
 
 | O pedido é sobre…                            | Arquivo                                                              |
 | -------------------------------------------- | -------------------------------------------------------------------- |
 | Escrever ou editar um post                   | `src/content/posts/<slug>.md`                                        |
+| Tom, voz e revisão do texto de um post       | `LINGUAGEM-NATURAL.md`                                               |
 | Adicionar imagem a um post                   | pasta `src/content/posts/<slug>/`, ver [README § Imagens em um post](README.md#imagens-em-um-post) |
 | Adicionar campo ao frontmatter               | `src/content.config.ts` (schema Zod)                                 |
 | Título, descrição, links de navegação/rodapé | `src/config/site.ts`                                                 |
@@ -55,7 +59,11 @@ npm run build   # o build precisa passar; é o mesmo do CI
 - `post.id` é o nome do arquivo e **é a URL pública**. Renomear um post quebra
   links já compartilhados — só faça com pedido explícito.
 - `rascunho: true` esconde o post apenas no build de produção; em `npm run dev`
-  ele continua visível. Não use isso como controle de segredo.
+  ele continua visível, e o arquivo commitado fica aberto no GitHub. Não use
+  isso como controle de segredo: **post em rascunho, de teste ou futuro não é
+  commitado**. Rascunho vive só no Notion, e o arquivo entra aqui na hora de
+  publicar. O commit automático do Fetch All leva tudo o que está na árvore e
+  já levou rascunhos duas vezes; ver `IA.md`, registro de 2026-09-30.
 - **Nunca escreva um link interno na mão** (`href="/tags"`). Hoje o site serve na
   raiz de `blog.felixo.com.br` e caminho absoluto até funcionaria, mas basta um
   `BASE_PATH` (preview em subpasta) para tudo quebrar de uma vez — CSS e
@@ -67,4 +75,7 @@ npm run build   # o build precisa passar; é o mesmo do CI
   `public/CNAME` e em `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do
   README.
 - Este repositório é **público**. Nada de token, `.env` ou dado pessoal de
-  terceiros no conteúdo.
+  terceiros no conteúdo. Também não entram: ID ou link de página do Notion (use
+  `<database_id>`), caminho absoluto da máquina (`/home/...`), título, pauta ou
+  trecho de post que ainda não foi publicado, nem texto das anotações privadas
+  do dono. Isso vale para código, teste, `IA.md` e mensagem de commit.

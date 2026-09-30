@@ -19,7 +19,8 @@
   (`<database_id>`, propriedades: `Nome`
   title/`Etapa` select/`URL publicada` url — achadas dinamicamente, sem
   hardcode). `app/.env` já configurado nesta máquina (gitignored). Conexão e
-  listagem testadas contra a API real; importação do artigo [rascunho] testada e comparada byte a byte com o post publicado (2 bugs de
+  listagem testadas contra a API real; importação de um artigo real testada
+  e comparada byte a byte com o `.md` escrito à mão (2 bugs de
   conversão de lista encontrados e corrigidos nessa validação — ver registro
   de hoje mais abaixo). Post aceita `capa` opcional no frontmatter, vira
   `og:image`. **Falta só**: escrita de volta no Notion e publicação via git
@@ -39,10 +40,11 @@
   usa `questionary`/`rich` para o menu — não entra no bundle do site.
 - **Gate**: `npm run check` (0 erros) + `npm run build` (7 páginas) — ambos
   verdes em 2026-08-05. `npm audit`: 0 vulnerabilidades.
-- **Conteúdo**: 1 post inaugural (`ola-mundo.md`). Existe também um post de
-  teste local (`testando-os-recursos-do-blog.md`, `rascunho: true`) usado só
-  para auditar a renderização de Markdown — **nunca commitado de propósito**,
-  fica de fora do controle de versão.
+- **Conteúdo** (atualizado em 2026-09-30): nenhum post pronto. O
+  `ola-mundo.md` no ar foi um teste e ainda vai ser revisado, assim como o
+  site. Rascunho e post futuro não entram no repositório, que é público (ver
+  `AGENTS.md`); rascunho vive só no Notion. Os que estavam rastreados saíram do
+  repositório e do histórico em 2026-09-30.
 - **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
   "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
@@ -449,16 +451,22 @@ do dono, e escolher por ele seria passar do ponto. Se os dois sites devem ler
 como a mesma pessoa, o ajuste é de uma linha em `src/config/site.ts` e do `alt`
 do retrato em `src/pages/sobre.astro`.
 
-[2026-08-10] **Primeiro artigo de conteúdo escrito para o blog** (task do Notion
-[rascunho]). O texto nasceu na database
-de Artigos do Notion, que é a central de escrita, e chegou aqui como
-`src/content/posts/rascunho.md` com **`rascunho: true`** — a
-publicação depende de revisão do dono, e a flag garante que ele fica fora do
-build de produção até lá (o build seguiu com 7 páginas, sem contar o novo post).
+[2026-08-10] **Primeiro artigo de conteúdo escrito para o blog** (um artigo de
+opinião, ainda não publicado). O texto nasceu na central de escrita do Notion e
+chegou aqui com **`rascunho: true`**: a publicação depende de revisão do dono,
+e a flag o deixa fora do build de produção até lá (o build seguiu com 7
+páginas). _Redigido em 2026-09-30: título, arquivo e conteúdo do rascunho
+saíram deste registro porque o repositório é público._
 
 Vale registrar o método, porque ele é o que o modelo de artigo da database
 manda e foi o que pegou dois erros meus: **fonte que não foi aberta não entra**.
-Três afirmações factuais sustentavam o texto, e abrir as fontes em vez de confiar no resumo da busca mudou duas delas. (Detalhes redigidos em 2026-09-30: o repositório é público.)
+Três afirmações factuais sustentavam o texto, e abrir as três, em vez de
+confiar no resumo da busca, mudou duas delas:
+
+1. Uma evolução de sentido de palavra que eu tinha escrito só era sustentada
+   em parte pela fonte. O trecho passou a dizer o que a fonte diz.
+2. Duas fontes confiáveis **divergiam em um dia** sobre uma data. O texto
+   passou a citar só o mês, com a divergência registrada entre parênteses.
 
 A renderização foi conferida no navegador com o servidor de desenvolvimento, que
 mostra rascunhos: 5 links no corpo, nenhum quebrado, listas ordenadas e ênfases
@@ -845,9 +853,9 @@ ideia vazia). Confirmação do desenho da fatia 6: como nenhuma opção de
 escrever errado — comportamento **observado de verdade**, não só coberto por
 teste.
 
-**Importação de artigo testada com o conteúdo mais exigente disponível**: o
-artigo [rascunho] (79 blocos: parágrafos, headings, listas
-com e sem marcador, negrito/itálico/link) já está publicado no blog, o que
+**Importação de artigo testada com o conteúdo mais exigente disponível**: um
+artigo real (79 blocos: parágrafos, headings, listas com e sem marcador,
+negrito/itálico/link) que já existia no repositório escrito à mão, o que
 permitiu comparar a conversão contra o resultado humano real —
 `diff` **byte a byte, zero diferença**, depois de duas correções:
 
@@ -1035,3 +1043,46 @@ regressão. Build feito; a verificação visual ficou pendente porque o dono
 já tinha uma instância própria aberta (`electron-vite dev`, que recarrega o
 processo principal sozinho ao detectar mudança no código-fonte — a
 correção já deve estar ativa nela sem precisar reabrir).
+
+[2026-09-30] **Guia de linguagem natural (v0) e limpeza do que não devia estar
+no repositório público.** O dono retomou o blog: o único post no ar
+(`ola-mundo.md`) foi um teste e ainda vai ser revisado, assim como o site. E
+deixou duas regras explícitas: o repositório é público, então nada pode vazar
+nem deixar caminho explícito; e post futuro ou em escrita não fica no
+repositório.
+
+Guia: `LINGUAGEM-NATURAL.md` na raiz, com regras de voz e o que a IA pode ou
+não fazer numa revisão, e regra nova no `AGENTS.md` apontando para ele. O
+material de origem (textos crus, comparações) fica fora do repositório. As
+anotações de revisão de um post ficam numa subpágina da linha dele no Notion,
+não no corpo: o importador converte todo parágrafo do corpo em texto do post,
+não recursa em `has_children`, e uma subpágina vira só o comentário HTML
+`bloco do Notion não suportado: "child_page"`.
+
+Auditoria medida hoje: nenhum token, `.env` real, e-mail pessoal ou caminho
+absoluto rastreado. Exposto: três rascunhos e uma cópia `.md.save` em
+`src/content/posts/`, o ID da database do Notion e o título e o conteúdo de um
+rascunho neste arquivo, e o mesmo título num dado de teste do app. **Causa de
+dois dos rascunhos**: o commit automático do Fetch All (`11e777f` e `36bcf60`)
+leva tudo o que está na árvore, inclusive o post de teste que o "ESTADO ATUAL"
+dava como "nunca commitado". Disciplina não segura rascunho; precisa de
+`.gitignore`.
+
+Feito na árvore de trabalho: registros antigos deste arquivo redigidos (ID
+trocado por `<database_id>`, título e conteúdo do rascunho trocados por
+descrição genérica), exceção consciente à regra de append-only porque era
+vazamento; dado de teste do app com título neutro; README sem apontar para o
+post de teste.
+
+Decisões do dono, no mesmo dia: rascunho vive **só no Notion**, e o arquivo
+entra no repositório na hora de publicar. O histórico público foi
+**reescrito** com `git filter-repo` para tirar de todas as versões e mensagens
+de commit os arquivos de rascunho e de teste, o ID do Notion e o título e as
+fontes do rascunho, com backup completo (`git bundle --all`) fora do
+repositório antes. O `ola-mundo.md` fica no ar e vai ser editado depois.
+
+Risco que continua aberto: o importador do Felixo Editor grava o post
+importado direto em `src/content/posts/`, então entre importar e publicar o
+arquivo fica exposto ao commit automático do Fetch All. O editor precisa ser
+atualizado para isso, e também porque a database mudou de nome e de formato no
+Notion.

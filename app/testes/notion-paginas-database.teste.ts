@@ -24,13 +24,13 @@ function clienteFalso(paginas: unknown[], has_more = false): Client {
 describe('listarArtigosDaDatabase', () => {
   it('extrai o título mesmo quando a propriedade não se chama "Nome" ou "Title"', async () => {
     const cliente = clienteFalso([
-      paginaFalsa('p1', 'Artigo', '[rascunho]'),
+      paginaFalsa('p1', 'Artigo', 'Artigo de exemplo'),
       paginaFalsa('p2', 'Título do post', 'Outro artigo'),
     ]);
 
     const artigos = await listarArtigosDaDatabase(cliente, 'db-1');
     expect(artigos).toEqual([
-      { id: 'p1', titulo: '[rascunho]' },
+      { id: 'p1', titulo: 'Artigo de exemplo' },
       { id: 'p2', titulo: 'Outro artigo' },
     ]);
   });
