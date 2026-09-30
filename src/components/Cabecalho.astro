@@ -8,38 +8,33 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
 ---
 
-<header
-  class="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/80 backdrop-blur-md"
->
+<header class="relative z-40">
   <!-- `flex-wrap`: em 360px a marca e os três links não cabem na mesma linha, e
        o último ficava cortado na borda da tela. Quebrar para a linha de baixo
        mantém tudo alcançável sem esconder o nome do blog nem virar um trilho
        de rolagem horizontal, que ninguém percebe que rola. -->
   <nav
-    class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6"
+    class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 pt-8 pb-2 sm:px-6"
     aria-label="Navegação principal"
   >
     <a
       href={caminho('/')}
-      class="group inline-flex shrink-0 items-center gap-2 text-sm font-bold tracking-wide text-zinc-100"
+      class="group inline-flex shrink-0 items-center gap-2.5 font-bold text-zinc-100"
     >
-      <span
-        class="grid size-9 place-items-center rounded-xl border border-purple-500/30 bg-purple-500/10 p-1 shadow-[0_0_15px_rgba(168,85,247,0.3)] transition group-hover:bg-purple-500/20 group-hover:shadow-[0_0_22px_rgba(168,85,247,0.5)]"
-        aria-hidden="true"
-      >
-        <img
-          src={caminho('/imagens/logo-felixo.png')}
-          alt=""
-          width="32"
-          height="32"
-          decoding="async"
-          class="size-7 object-contain transition group-hover:scale-110"
-        />
-      </span>
+      <!-- O gato fica sozinho, sem caixa com borda e brilho em volta: o brilho
+           aparece só no hover, como acento da marca. -->
+      <img
+        src={caminho('/imagens/logo-felixo.png')}
+        alt=""
+        width="32"
+        height="32"
+        decoding="async"
+        class="size-8 object-contain transition group-hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]"
+      />
       <span>{SITE.titulo}</span>
     </a>
 
-    <ul class="flex items-center gap-1 text-sm">
+    <ul class="flex items-center gap-5 text-sm">
       {
         LINKS_NAVEGACAO.map(({ rotulo, href }) => {
           const ativo =
@@ -50,10 +45,10 @@ const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
                 href={caminho(href)}
                 aria-current={ativo ? 'page' : undefined}
                 class:list={[
-                  'rounded-lg px-3 py-1.5 transition',
+                  'transition',
                   ativo
-                    ? 'bg-purple-500/10 text-felixo-purple'
-                    : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100',
+                    ? 'text-felixo-purple underline decoration-felixo-purple/50 underline-offset-[6px]'
+                    : 'text-zinc-400 hover:text-zinc-100',
                 ]}
               >
                 {rotulo}

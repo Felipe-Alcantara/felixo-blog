@@ -1,0 +1,61 @@
+---
+/**
+ * Um post na lista: data à esquerda, título com link e resumo à direita.
+ *
+ * Substitui o antigo `CartaoPost`: sem caixa parada em volta, que dava cara de
+ * template; o brilho do felixo.com.br aparece no hover (`felixo-item-post`).
+ * O item inteiro continua clicável, como o dono pediu em 2026-08-05: o
+ * `::after` do link do título cobre o painel do brilho, e as tags ficam acima
+ * dele (`z-10`) para continuarem levando à página da tag.
+ */
+import { caminho } from '../utils/rotas';
+import Etiqueta from './Etiqueta.astro';
+import { formatarDataCurta, formatarDataISO } from '../utils/datas';
+import { type Post } from '../utils/posts';
+
+interface Props {
+  post: Post;
+  /** Nível do título: `h3` dentro de uma seção com `h2`, `h2` logo abaixo do `h1`. */
+  nivelTitulo?: 'h2' | 'h3';
+}
+
+const { post, nivelTitulo = 'h3' } = Astro.props;
+const { titulo, descricao, publicadoEm, tags } = post.data;
+const Titulo = nivelTitulo;
+---
+
+<article
+  class="felixo-item-post group grid gap-x-8 gap-y-1 sm:grid-cols-[6.5rem_minmax(0,1fr)]"
+>
+  <time
+    datetime={formatarDataISO(publicadoEm)}
+    class="font-mono text-sm text-zinc-400 transition group-hover:text-felixo-purple sm:pt-1"
+  >
+    {formatarDataCurta(publicadoEm)}
+  </time>
+
+  <div>
+    <Titulo class="text-lg font-semibold leading-snug">
+      <a
+        href={caminho(`/posts/${post.id}/`)}
+        class="text-zinc-100 underline decoration-purple-400/35 decoration-1 underline-offset-[5px] transition after:absolute after:-inset-x-3 after:-inset-y-3.5 group-hover:text-white group-hover:decoration-felixo-purple"
+      >
+        {titulo}
+      </a>
+    </Titulo>
+
+    <p class="mt-1.5 leading-relaxed text-zinc-400">{descricao}</p>
+
+    {
+      tags.length > 0 && (
+        <ul class="relative z-10 mt-3 flex w-fit flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li>
+              <Etiqueta tag={tag} />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</article>

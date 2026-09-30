@@ -80,15 +80,24 @@
      FelixoVerse, sem inserir uma biblioteca ou script no cliente. */
   .felixo-ambiente::before {
     opacity: 0.28;
+    /* Quatro camadas com tamanhos que não se alinham (primos entre si): a
+       repetição some e os pontos parecem espalhados, como no felixo.com.br,
+       em vez de formar uma grade. */
     background-image:
       radial-gradient(circle, rgb(216 180 254 / 0.8) 0 1px, transparent 1.5px),
-      radial-gradient(circle, rgb(192 132 252 / 0.6) 0 1px, transparent 1.5px);
+      radial-gradient(circle, rgb(192 132 252 / 0.6) 0 1px, transparent 1.5px),
+      radial-gradient(circle, rgb(255 255 255 / 0.55) 0 0.75px, transparent 1.25px),
+      radial-gradient(circle, rgb(192 132 252 / 0.7) 0 1.5px, transparent 2px);
     background-position:
       0 0,
-      80px 120px;
+      80px 120px,
+      37px 191px,
+      151px 59px;
     background-size:
-      180px 220px,
-      260px 300px;
+      179px 223px,
+      263px 307px,
+      131px 167px,
+      347px 401px;
     animation: felixo-particulas-subir 20s linear infinite;
     mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
   }
@@ -156,17 +165,29 @@
     }
   }
 
-  /* Brilho de respiração aplicado a cards e bordas. */
-  .felixo-card-glow {
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.05);
-    transition:
-      box-shadow 0.4s ease,
-      transform 0.4s ease,
-      border-color 0.4s ease;
+  /* Post na lista: texto solto em repouso. No hover, ou com o foco dentro,
+     aparece o painel com o brilho de respiração do felixo.com.br. Caixa parada
+     em volta de cada post era o que deixava a home com cara de template
+     (2026-09-30); o brilho no hover mantém a identidade sem a caixa. */
+  .felixo-item-post {
+    position: relative;
   }
 
-  .felixo-card-glow:hover {
-    transform: translateY(-2px);
+  .felixo-item-post::before {
+    content: '';
+    position: absolute;
+    inset: -0.875rem -0.75rem;
+    z-index: -1;
+    border-radius: 1rem;
+    background: rgb(168 85 247 / 0.05);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .felixo-item-post:hover::before,
+  .felixo-item-post:focus-within::before {
+    opacity: 1;
     animation: felixo-respirar-brilho 3s ease-in-out infinite;
   }
 
@@ -230,40 +251,6 @@
     z-index: 1;
   }
 
-  /* Barra de pesquisa dos posts, no mesmo espírito visual do filtro de
-     projetos do portfólio: campo escuro, borda sutil e ícone à esquerda. */
-  .felixo-busca {
-    position: relative;
-  }
-
-  .felixo-busca svg {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-felixo-purple);
-    pointer-events: none;
-  }
-
-  .felixo-busca input {
-    width: 100%;
-    border-radius: 1rem;
-    border: 1px solid rgb(255 255 255 / 0.1);
-    background: rgb(0 0 0 / 0.5);
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    font-size: 1rem;
-    color: #fff;
-  }
-
-  .felixo-busca input::placeholder {
-    color: rgb(161 161 170);
-  }
-
-  .felixo-busca input:focus-visible {
-    outline: 2px solid var(--color-felixo-purple);
-    outline-offset: 2px;
-  }
-
   /* Variante neutra do botão, para ações secundárias (ex.: RSS). */
   .felixo-botao-fantasma {
     border-color: rgb(255 255 255 / 0.25);
@@ -276,38 +263,47 @@
     box-shadow: 0 0 24px rgb(255 255 255 / 0.2);
   }
 
-  /* Tratamento da foto do portfólio aplicado à página Sobre. */
-  .felixo-foto-perfil-glow {
-    background: linear-gradient(
-      135deg,
-      rgb(168 85 247 / 0.24),
-      rgb(255 255 255 / 0.04),
-      transparent
-    );
-    filter: blur(1.5rem);
-    opacity: 0.75;
-    animation: felixo-foto-respirar 5s ease-in-out infinite;
-    background-size: 200% 200%;
+  /* Pesquisa de posts: campo compacto ao lado do título da lista, no mesmo
+     desenho da "Busca rápida" do felixo.com.br. */
+  .felixo-busca {
+    position: relative;
   }
 
-  .felixo-foto-perfil-glow-claro {
-    background: linear-gradient(to bottom, rgb(255 255 255 / 0.12), transparent);
-    filter: blur(1rem);
-    opacity: 0.8;
-    animation-delay: 0.5s;
-    animation-direction: reverse;
+  .felixo-busca svg {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-felixo-purple);
+    pointer-events: none;
   }
 
-  @keyframes felixo-foto-respirar {
-    0%,
-    100% {
-      opacity: 0.45;
-      transform: scale(0.98);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.03);
-    }
+  .felixo-busca input {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.4);
+    padding: 0.5rem 0.875rem 0.5rem 2.25rem;
+    font-size: 0.875rem;
+    color: #fff;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .felixo-busca input::placeholder {
+    color: rgb(161 161 170);
+  }
+
+  .felixo-busca input:hover,
+  .felixo-busca input:focus {
+    border-color: rgb(168 85 247 / 0.5);
+    box-shadow: 0 0 16px rgb(168 85 247 / 0.2);
+  }
+
+  .felixo-busca input:focus-visible {
+    outline: 2px solid var(--color-felixo-purple);
+    outline-offset: 2px;
   }
 }
 
@@ -418,11 +414,9 @@
 }
 
 .conteudo-post blockquote {
-  border-left: 3px solid rgb(168 85 247 / 0.5);
-  background: rgb(24 24 27 / 0.5);
-  border-radius: 0 0.75rem 0.75rem 0;
-  padding: 0.75rem 1.25rem;
-  color: rgb(161 161 170);
+  border-left: 2px solid rgb(168 85 247 / 0.6);
+  padding-left: 1.25rem;
+  color: rgb(212 212 216);
   font-style: italic;
 }
 
@@ -509,8 +503,7 @@
   }
 
   .felixo-ambiente::before,
-  .felixo-ambiente::after,
-  .felixo-foto-perfil-glow {
+  .felixo-ambiente::after {
     animation: none !important;
   }
 }

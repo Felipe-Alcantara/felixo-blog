@@ -8,26 +8,30 @@ const ano = new Date().getFullYear();
 const ehExterno = (href: string) => href.startsWith('http');
 ---
 
-<footer class="relative z-10 mt-24 border-t border-white/5">
-  <div
-    class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-10 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between sm:px-6"
-  >
-    <p>© {ano} {SITE.autor}. Feito com Astro.</p>
-    <ul class="flex flex-wrap gap-4">
-      {
-        LINKS_EXTERNOS.map(({ rotulo, href }) => (
-          <li>
-            <a
-              href={ehExterno(href) ? href : caminho(href)}
-              class="transition hover:text-felixo-purple"
-              rel={ehExterno(href) ? 'noopener noreferrer' : undefined}
-              target={ehExterno(href) ? '_blank' : undefined}
-            >
-              {rotulo}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+<footer class="relative z-10 mt-24">
+  <!-- A linha fica no bloco de dentro para ter a mesma largura do texto,
+       não a largura do padding lateral. -->
+  <div class="mx-auto max-w-3xl px-4 sm:px-6">
+    <div
+      class="flex flex-col gap-4 border-t border-white/5 py-10 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {ano} {SITE.autor}. Feito com Astro.</p>
+      <ul class="flex flex-wrap gap-4">
+        {
+          LINKS_EXTERNOS.map(({ rotulo, href }) => (
+            <li>
+              <a
+                href={ehExterno(href) ? href : caminho(href)}
+                class="transition hover:text-felixo-purple"
+                rel={ehExterno(href) ? 'noopener noreferrer' : undefined}
+                target={ehExterno(href) ? '_blank' : undefined}
+              >
+                {rotulo}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </footer>

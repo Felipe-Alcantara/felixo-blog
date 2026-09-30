@@ -1102,3 +1102,51 @@ refeito: um `git pull` nele traria o histórico velho de volta.
 Achado de passagem: `app/testes/publicacao-gate.teste.ts` estoura o timeout
 padrão de 5 s quando a suíte inteira roda (o teste chama `npm run` duas vezes)
 e passa sozinho. Instável, anterior a esta mudança.
+
+[2026-09-30] **Layout sem "cara de IA", sem sair do tema do felixo.com.br.**
+Pedido do dono: o blog estava bonito, mas algo ainda dava cara de IA, talvez
+"os blocos e o layout quadrados demais". Comparando com as duas referências
+que ele citou ao criar o blog (akitaonrails.com e rapha.land, capturadas em
+headless), as duas são texto primeiro: lista de posts com data e título,
+apresentação em primeira pessoa, tag como texto. A home seguia o molde que IA
+gera por padrão: rótulo em caixa alta, título com gradiente brilhante, três
+botões em pílula com ícone, e cada post numa caixa com borda e brilho.
+
+Caminho até a decisão: a primeira versão tirou brilho demais (títulos sem
+gradiente, botões virando links de texto, tag como `#texto`) e o dono achou
+que "ficou bom, mas saiu um pouco do tema" do felixo.com.br. Capturado o
+portfólio, a assinatura da marca é: títulos com gradiente brilhante,
+partículas soltas no fundo, botões em pílula com ícone, etiquetas em pílula
+com texto normal ("Web", "Python") e brilho roxo nas bordas.
+
+DECISÃO (meio-termo): a identidade volta, as caixas não. Voltaram o
+`felixo-text-glow` em todos os títulos de página, os botões `felixo-botao`
+(na home, "Ver portfólio" e "Assinar RSS"; "Ver posts" saiu porque só rolava
+até a lista logo abaixo), as etiquetas em pílula (sem caixa alta) e as
+partículas com a opacidade original, agora em quatro camadas de tamanhos
+primos entre si para não formarem grade. Ficaram de fora o rótulo em caixa
+alta acima do título e a caixa parada em volta de cada post: o post na lista
+virou `ItemPost` (data mono, título, resumo, pílulas), e o brilho de
+respiração do portfólio aparece só no hover ou com foco dentro
+(`felixo-item-post`). Cabeçalho sem barra fixa nem caixa no logo (igual ao
+felixo.com.br), coluna única de `max-w-3xl` em todas as páginas, busca
+compacta ao lado do título "Posts", citação sem caixa e foto do Sobre sem os
+halos. Saíram do CSS só as classes que ficaram sem uso: `felixo-card-glow` e
+`felixo-foto-perfil-glow*`.
+
+Regressão pega pelo dono no preview: a primeira versão do `ItemPost` deixava
+só o título clicável e perdia o "quadro inteiro clicável" pedido em
+2026-08-05 (registro mais acima, que eu não reli antes de trocar o cartão).
+Voltou sem a caixa: o `::after` do link do título cobre o item, e as tags
+ficam acima dele com `relative z-10`; o `::after` cobre também a margem do
+painel do brilho. Conferido com Playwright clicando por
+coordenada (o clique normal do Playwright recusa o parágrafo justamente
+porque o link está por cima): título, resumo e data abrem o post, e a tag
+abre a página da tag, na home e em `/tags/<tag>/`, em 1280 px e 390 px; pelo
+teclado, o Tab depois da busca cai no título do post.
+
+Fora de propósito: os textos do site (slogan, chamada, Sobre) continuam os
+mesmos, porque reescrever é trabalho do dono com o `LINGUAGEM-NATURAL.md`.
+Validado com `npm run check`, `npm run build` e captura em desktop e celular.
+Achado: `public/imagens/logo-felixo.png` tem 4096×4096 px (319 KB) para ser
+exibido a 32 px; carrega tarde e vale uma versão pequena.

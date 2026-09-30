@@ -8,6 +8,22 @@ export function formatarDataLonga(data: Date): string {
   }).format(data);
 }
 
+/**
+ * Formata uma data curta para listas (ex.: "31 jul 2026"). O `Intl` em pt-BR
+ * devolve "31 de jul. de 2026"; numa coluna de datas, as preposições e o ponto
+ * só atrapalham o alinhamento.
+ */
+export function formatarDataCurta(data: Date): string {
+  const partes = new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).formatToParts(data);
+  const valor = (tipo: string) => partes.find((p) => p.type === tipo)?.value ?? '';
+  return `${valor('day')} ${valor('month').replace('.', '')} ${valor('year')}`;
+}
+
 /** Formata uma data como `YYYY-MM-DD`, para o atributo `datetime` do `<time>`. */
 export function formatarDataISO(data: Date): string {
   return data.toISOString().slice(0, 10);
