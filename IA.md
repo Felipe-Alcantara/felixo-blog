@@ -1086,3 +1086,19 @@ importado direto em `src/content/posts/`, então entre importar e publicar o
 arquivo fica exposto ao commit automático do Fetch All. O editor precisa ser
 atualizado para isso, e também porque a database mudou de nome e de formato no
 Notion.
+
+Resultado, no mesmo dia: push forçado com lease no hash que estava no GitHub
+(`36bcf60` → `d25bcc1`, 32 commits; o commit que só adicionava o rascunho
+sumiu), deploy verde e post de teste respondendo 200. Nenhum fork. Conferido
+no histórico novo: nenhum ID do Notion, nenhum arquivo de rascunho em nenhum
+commit, nenhum título de rascunho nas mensagens. A execução do Actions cujo
+título era a mensagem do commit do rascunho foi apagada, com aval do dono.
+
+**Resíduo fora do alcance do git**: o GitHub continua servindo os commits
+antigos pelo hash até o suporte dele limpar o cache (o pedido é do dono; os
+hashes ficaram no backup local). Clone antigo em outra máquina precisa ser
+refeito: um `git pull` nele traria o histórico velho de volta.
+
+Achado de passagem: `app/testes/publicacao-gate.teste.ts` estoura o timeout
+padrão de 5 s quando a suíte inteira roda (o teste chama `npm run` duas vezes)
+e passa sozinho. Instável, anterior a esta mudança.
