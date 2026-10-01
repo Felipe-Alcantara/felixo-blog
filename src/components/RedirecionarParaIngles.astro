@@ -1,0 +1,16 @@
+---
+/**
+ * Leva para `/en/` quem já escolheu inglês e abre a home em português. Vai no
+ * `<head>` e roda antes da pintura (`is:inline`), para a home em português não
+ * piscar antes do redirecionamento. Só a home usa: um link compartilhado para
+ * uma página específica é respeitado.
+ */
+import { CHAVE_IDIOMA } from '../config/idiomas';
+import { caminho } from '../utils/rotas';
+---
+
+<script is:inline define:vars={{ chave: CHAVE_IDIOMA, destino: caminho('/en/') }}>
+  try {
+    if (localStorage.getItem(chave) === 'en') location.replace(destino);
+  } catch {}
+</script>

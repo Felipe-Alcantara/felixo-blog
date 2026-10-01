@@ -25,23 +25,25 @@ histórico de decisões.
 
 ## Onde mexer
 
-| O pedido é sobre…                            | Arquivo                                                              |
-| -------------------------------------------- | -------------------------------------------------------------------- |
-| Escrever ou editar um post                   | `src/content/posts/<slug>.md`                                        |
-| Tom, voz e revisão do texto de um post       | `LINGUAGEM-NATURAL.md`                                               |
-| Adicionar imagem a um post                   | pasta `src/content/posts/<slug>/`, ver [README § Imagens em um post](README.md#imagens-em-um-post) |
-| Adicionar campo ao frontmatter               | `src/content.config.ts` (schema Zod)                                 |
-| Título, descrição, links de navegação/rodapé | `src/config/site.ts`                                                 |
-| Cores, fontes, tipografia do corpo do post   | `src/styles/global.css`                                              |
-| `<head>`, SEO, Open Graph, canonical         | `src/layouts/BaseLayout.astro`                                       |
-| Cabeçalho do post, tags, tempo de leitura    | `src/layouts/PostLayout.astro`                                       |
-| Home / listagem de posts                     | `src/pages/index.astro`                                              |
-| Páginas de tag                               | `src/pages/tags/`                                                    |
-| Feed RSS                                     | `src/pages/rss.xml.ts`                                               |
-| Ordenação, filtro de rascunho, slug de tag   | `src/utils/posts.ts`                                                 |
-| Domínio, sitemap, tema de realce de código   | `astro.config.mjs`                                                   |
-| Deploy                                       | `.github/workflows/deploy.yml`                                       |
-| Comentários (giscus)                         | `src/components/Comentarios.astro`, `GISCUS` em `src/config/site.ts` |
+| O pedido é sobre…                             | Arquivo                                                                                            |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Escrever ou editar um post                    | `src/content/posts/<slug>.md`                                                                      |
+| Tom, voz e revisão do texto de um post        | `LINGUAGEM-NATURAL.md`                                                                             |
+| Adicionar imagem a um post                    | pasta `src/content/posts/<slug>/`, ver [README § Imagens em um post](README.md#imagens-em-um-post) |
+| Adicionar campo ao frontmatter                | `src/content.config.ts` (schema Zod)                                                               |
+| Título, descrição, autor, giscus              | `src/config/site.ts`                                                                               |
+| Textos da interface, navegação, rodapé, PT/EN | `src/config/idiomas.ts`                                                                            |
+| Pergunta de idioma da primeira visita         | `src/components/EscolhaDeIdioma.astro`                                                             |
+| Home (as duas versões: `/` e `/en/`)          | `src/components/PaginaInicial.astro`                                                               |
+| Cores, fontes, tipografia do corpo do post    | `src/styles/global.css`                                                                            |
+| `<head>`, SEO, Open Graph, canonical          | `src/layouts/BaseLayout.astro`                                                                     |
+| Cabeçalho do post, tags, tempo de leitura     | `src/layouts/PostLayout.astro`                                                                     |
+| Páginas de tag                                | `src/pages/tags/`                                                                                  |
+| Feed RSS                                      | `src/pages/rss.xml.ts`                                                                             |
+| Ordenação, filtro de rascunho, slug de tag    | `src/utils/posts.ts`                                                                               |
+| Domínio, sitemap, tema de realce de código    | `astro.config.mjs`                                                                                 |
+| Deploy                                        | `.github/workflows/deploy.yml`                                                                     |
+| Comentários (giscus)                          | `src/components/Comentarios.astro`, `GISCUS` em `src/config/site.ts`                               |
 
 ## Gate de qualidade
 
@@ -70,6 +72,13 @@ npm run build   # o build precisa passar; é o mesmo do CI
   navegação juntos, com o sintoma "a página só tem texto, sem design". Já
   aconteceu uma vez; ver `IA.md`. Use sempre `caminho()` de
   `src/utils/rotas.ts`.
+- **Dois idiomas**: português na raiz, inglês em `/en/`. Texto de interface
+  não fica solto na página: vai em `TEXTOS` de `src/config/idiomas.ts`, nos
+  dois idiomas. Página nova em inglês entra em `src/pages/en/` **e** em
+  `PAGINAS_EM_INGLES`; sem isso, o seletor PT | EN leva para a home e a
+  pergunta da primeira visita não troca de página. Post só ganha versão em
+  inglês depois de completo em português, e a tradução passa pela revisão do
+  dono.
 - Trocar de domínio é mexer nas constantes `SITE`/`BASE` no topo de
   `astro.config.mjs` (ou nas variáveis `SITE_URL`/`BASE_PATH`), no
   `public/CNAME` e em `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do

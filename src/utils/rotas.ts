@@ -11,3 +11,9 @@ export function caminho(destino: string): string {
   const limpo = destino.startsWith('/') ? destino : `/${destino}`;
   return `${base}${limpo}`;
 }
+
+/** Caminho da página atual sem o prefixo `base` (ex.: `/posts/x/`), para comparar com rotas. */
+export function caminhoSemBase(url: URL): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  return url.pathname.slice(base.length) || '/';
+}

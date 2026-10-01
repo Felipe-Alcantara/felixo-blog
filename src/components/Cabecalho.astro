@@ -1,24 +1,38 @@
 ---
-import { caminho } from '../utils/rotas';
-import { LINKS_NAVEGACAO, SITE } from '../config/site';
+import { caminho, caminhoSemBase } from '../utils/rotas';
+import { TEXTOS, destinoNoIdioma, type Idioma } from '../config/idiomas';
 
-// Descarta o prefixo `base` para comparar com os hrefs de navegação, que são
-// escritos a partir da raiz do site ("/", "/tags"...).
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
+interface Props {
+  idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const textos = TEXTOS[idioma];
+const caminhoAtual = caminhoSemBase(Astro.url);
+const home = idioma === 'en' ? '/en/' : '/';
+
+/** Link da navegação ativo: a home só quando é ela; as outras, pelo prefixo. */
+const estaAtivo = (href: string) =>
+  href === home
+    ? caminhoAtual === home || caminhoAtual === home.replace(/\/$/, '')
+    : caminhoAtual.startsWith(href);
+
+const opcoesDeIdioma = [
+  { idioma: 'pt', rotulo: 'PT', lang: 'pt-BR', titulo: 'Ler em português' },
+  { idioma: 'en', rotulo: 'EN', lang: 'en', titulo: 'Read in English' },
+] as const;
 ---
 
 <header class="relative z-40">
-  <!-- `flex-wrap`: em 360px a marca e os três links não cabem na mesma linha, e
-       o último ficava cortado na borda da tela. Quebrar para a linha de baixo
-       mantém tudo alcançável sem esconder o nome do blog nem virar um trilho
-       de rolagem horizontal, que ninguém percebe que rola. -->
+  <!-- `flex-wrap`: em 360px a marca, os links e o seletor de idioma não cabem
+       na mesma linha. Quebrar para a linha de baixo mantém tudo alcançável sem
+       esconder o nome do blog nem virar um trilho de rolagem horizontal. -->
   <nav
     class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 pt-8 pb-2 sm:px-6"
-    aria-label="Navegação principal"
+    aria-label={textos.navegacaoPrincipal}
   >
     <a
-      href={caminho('/')}
+      href={caminho(home)}
       class="group inline-flex shrink-0 items-center gap-2.5 font-bold text-zinc-100"
     >
       <!-- O gato fica sozinho, sem caixa com borda e brilho em volta: o brilho
@@ -31,32 +45,68 @@ const caminhoAtual = Astro.url.pathname.slice(base.length) || '/';
         decoding="async"
         class="size-8 object-contain transition group-hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]"
       />
-      <span>{SITE.titulo}</span>
+      <span>{textos.tituloSite}</span>
     </a>
 
-    <ul class="flex items-center gap-5 text-sm">
-      {
-        LINKS_NAVEGACAO.map(({ rotulo, href }) => {
-          const ativo =
-            href === '/' ? caminhoAtual === '/' : caminhoAtual.startsWith(href);
-          return (
-            <li>
-              <a
-                href={caminho(href)}
-                aria-current={ativo ? 'page' : undefined}
-                class:list={[
-                  'transition',
-                  ativo
-                    ? 'text-felixo-purple underline decoration-felixo-purple/50 underline-offset-[6px]'
-                    : 'text-zinc-400 hover:text-zinc-100',
-                ]}
-              >
-                {rotulo}
-              </a>
-            </li>
-          );
-        })
-      }
-    </ul>
+    <div class="flex items-center gap-5 text-sm">
+      <ul class="flex items-center gap-5">
+        {
+          textos.navegacao.map(({ rotulo, href }) => {
+            const ativo = estaAtivo(href);
+            return (
+              <li>
+                <a
+                  href={caminho(href)}
+                  aria-current={ativo ? 'page' : undefined}
+                  class:list={[
+                    'transition',
+                    ativo
+                      ? 'text-felixo-purple underline decoration-felixo-purple/50 underline-offset-[6px]'
+                      : 'text-zinc-400 hover:text-zinc-100',
+                  ]}
+                >
+                  {rotulo}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+
+      <!-- Seletor PT | EN: leva para a mesma página no outro idioma quando ela
+           existe, ou para a home do idioma. O clique grava a escolha (ver
+           EscolhaDeIdioma.astro). -->
+      <ul
+        class="flex items-center gap-1 border-l border-white/10 pl-5 font-mono text-xs"
+        aria-label={textos.seletorIdioma}
+      >
+        {
+          opcoesDeIdioma.map((opcao) => {
+            const atual = opcao.idioma === idioma;
+            return (
+              <li>
+                <a
+                  href={caminho(destinoNoIdioma(caminhoAtual, opcao.idioma))}
+                  hreflang={opcao.lang}
+                  lang={opcao.lang}
+                  title={opcao.titulo}
+                  aria-label={opcao.titulo}
+                  aria-current={atual ? 'true' : undefined}
+                  data-trocar-idioma={opcao.idioma}
+                  class:list={[
+                    'rounded-md px-1.5 py-0.5 transition',
+                    atual
+                      ? 'bg-purple-500/15 text-felixo-purple'
+                      : 'text-zinc-400 hover:text-zinc-100',
+                  ]}
+                >
+                  {opcao.rotulo}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
   </nav>
 </header>

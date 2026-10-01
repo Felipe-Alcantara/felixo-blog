@@ -1,0 +1,114 @@
+---
+/**
+ * Pergunta de idioma na primeira visita (decisão do dono, 2026-09-30): abre
+ * uma vez, guarda a escolha no `localStorage` e não pergunta de novo. Depois
+ * disso, a troca é pelo seletor PT | EN do cabeçalho.
+ *
+ * Usa o `<dialog>` nativo, que já prende o foco e fecha com Esc. Sem
+ * JavaScript, ou com o armazenamento do navegador bloqueado, a pergunta não
+ * aparece: sem ter onde guardar a resposta, ela voltaria a cada página.
+ */
+import { CHAVE_IDIOMA, type Idioma } from '../config/idiomas';
+
+interface Props {
+  /** Idioma da página atual. */
+  idioma: Idioma;
+  /** A mesma página em cada idioma (já com o `base`), quando existe. */
+  destinos: { pt?: string; en?: string };
+}
+
+const { idioma, destinos } = Astro.props;
+const soEmPortugues = idioma === 'pt' && !destinos.en;
+---
+
+<dialog
+  id="escolha-idioma"
+  aria-labelledby="escolha-idioma-titulo"
+  data-chave={CHAVE_IDIOMA}
+  data-idioma-da-pagina={idioma}
+  data-destino-pt={destinos.pt}
+  data-destino-en={destinos.en}
+  class="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-purple-500/30 bg-zinc-950 p-6 text-zinc-300 shadow-[0_0_40px_rgba(168,85,247,0.25)] backdrop:bg-black/70 backdrop:backdrop-blur-sm sm:p-8"
+>
+  <h2 id="escolha-idioma-titulo" class="text-lg font-bold text-zinc-100">
+    <span lang="pt-BR" class="block">Em qual idioma você quer ler?</span>
+    <span lang="en" class="mt-1 block text-zinc-400">Which language would you like?</span>
+  </h2>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <button type="button" data-idioma="pt" lang="pt-BR" class="felixo-botao">
+      <span>Português</span>
+    </button>
+    <button
+      type="button"
+      data-idioma="en"
+      lang="en"
+      class="felixo-botao felixo-botao-fantasma"
+    >
+      <span>English</span>
+    </button>
+  </div>
+
+  {
+    soEmPortugues && (
+      <p lang="en" class="mt-4 text-sm text-zinc-400">
+        This page is only in Portuguese for now.
+      </p>
+    )
+  }
+</dialog>
+
+<script>
+  const dialogo = document.querySelector<HTMLDialogElement>('#escolha-idioma');
+  const chave = dialogo?.dataset.chave ?? '';
+  const idiomaDaPagina = dialogo?.dataset.idiomaDaPagina;
+
+  // `localStorage` pode não existir ou lançar erro (aba anônima, bloqueio).
+  let armazenamento: Storage | null = null;
+  try {
+    localStorage.setItem(`${chave}:teste`, '1');
+    localStorage.removeItem(`${chave}:teste`);
+    armazenamento = localStorage;
+  } catch {
+    armazenamento = null;
+  }
+
+  const salvar = (valor: string | undefined) => {
+    if (!valor) return;
+    try {
+      armazenamento?.setItem(chave, valor);
+    } catch {
+      // Sem onde guardar, a escolha vale só para esta página.
+    }
+  };
+
+  // O seletor PT | EN do cabeçalho também grava a escolha; sem isso, a home em
+  // português mandaria de volta para `/en/` quem já tinha escolhido inglês.
+  document.addEventListener('click', (evento) => {
+    const alvo = evento.target instanceof Element ? evento.target : null;
+    const link = alvo?.closest<HTMLElement>('[data-trocar-idioma]');
+    if (link) salvar(link.dataset.trocarIdioma);
+  });
+
+  if (dialogo && armazenamento && !armazenamento.getItem(chave)) {
+    dialogo.showModal();
+    dialogo
+      .querySelector<HTMLButtonElement>(`[data-idioma="${idiomaDaPagina}"]`)
+      ?.focus();
+
+    dialogo.addEventListener('click', (evento) => {
+      const alvo = evento.target instanceof Element ? evento.target : null;
+      const botao = alvo?.closest<HTMLButtonElement>('[data-idioma]');
+      if (!botao) return;
+      const escolhido = botao.dataset.idioma;
+      salvar(escolhido);
+      dialogo.close();
+      const destino =
+        escolhido === 'en' ? dialogo.dataset.destinoEn : dialogo.dataset.destinoPt;
+      if (escolhido !== idiomaDaPagina && destino) location.assign(destino);
+    });
+
+    // Esc fecha e fica no idioma da página, sem perguntar de novo.
+    dialogo.addEventListener('cancel', () => salvar(idiomaDaPagina));
+  }
+</script>

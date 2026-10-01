@@ -9,12 +9,12 @@ export function formatarDataLonga(data: Date): string {
 }
 
 /**
- * Formata uma data curta para listas (ex.: "31 jul 2026"). O `Intl` em pt-BR
- * devolve "31 de jul. de 2026"; numa coluna de datas, as preposições e o ponto
- * só atrapalham o alinhamento.
+ * Formata uma data curta para listas (ex.: "31 jul 2026", ou "31 Jul 2026" em
+ * `en-GB`). O `Intl` em pt-BR devolve "31 de jul. de 2026"; numa coluna de
+ * datas, as preposições e o ponto só atrapalham o alinhamento.
  */
-export function formatarDataCurta(data: Date): string {
-  const partes = new Intl.DateTimeFormat('pt-BR', {
+export function formatarDataCurta(data: Date, locale = 'pt-BR'): string {
+  const partes = new Intl.DateTimeFormat(locale, {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

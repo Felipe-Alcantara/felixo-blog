@@ -1150,3 +1150,66 @@ mesmos, porque reescrever é trabalho do dono com o `LINGUAGEM-NATURAL.md`.
 Validado com `npm run check`, `npm run build` e captura em desktop e celular.
 Achado: `public/imagens/logo-felixo.png` tem 4096×4096 px (319 KB) para ser
 exibido a 32 px; carrega tarde e vale uma versão pequena.
+
+[2026-09-30] **Home com apresentação em primeira pessoa.** O dono achou o
+texto da home "muito genérico": o slogan "Programação descomplicada" e a
+chamada abstrata serviam para qualquer blog de tecnologia e não diziam quem
+escreve. Seguindo o `LINGUAGEM-NATURAL.md`, foram oferecidas três versões
+montadas com frases já escritas por ele, com a origem de cada trecho
+marcada; ele escolheu a apresentação direta, trocou "Felipe" por "Felixo" no
+título ("Oi, eu sou o Felixo!") e ditou o texto. A `SITE.chamada` virou
+`TEXTOS.pt.home.apresentacao` (ver registro seguinte), um item por parágrafo, todo com as palavras dele: quem
+ele é (desenvolvedor, engenheiro de IA, engenheiro de áudio e produtor
+musical, líder de uma startup brasileira, entusiasta de ativos criativos) e
+o que o blog é (a história dele, a visão de mercado e o aprendizado, "não
+são apenas notícias, muito menos tutoriais"). A revisão só mexeu em
+pontuação e concordância: "uma" antes de "startup", "como" no lugar de
+"etc.", vírgula depois de "notícias", "tutoriais" no plural e "e" no lugar
+de "+". A `SITE.descricao` ainda fala em "notícias de tecnologia", o que agora
+contradiz a home. Continuam genéricos e ficam para depois, com o
+dono: a `SITE.descricao` (buscador, cartão de compartilhamento, RSS e
+`scripts/gerar-og-image.py`) e a lista da página Sobre.
+
+[2026-09-30] **Blog em dois idiomas: português na raiz, inglês em `/en/`.**
+Pedido do dono, para divulgar também para público em inglês: perguntar o
+idioma ao abrir o site. Decisões dele: perguntar **na primeira visita** e
+lembrar (com troca a qualquer hora pelo seletor PT | EN no topo); e os posts
+só ganham versão em inglês **depois de completos em português**, feita junto
+com ele.
+
+O que entrou:
+
+- `src/config/idiomas.ts`: todo texto de interface nos dois idiomas
+  (`TEXTOS`), o mapa `PAGINAS_EM_INGLES` (hoje só `/` → `/en/`) e as funções
+  de equivalência entre páginas. `LINKS_NAVEGACAO`, `LINKS_EXTERNOS` e a
+  apresentação da home saíram do `site.ts` para cá.
+- A home virou `PaginaInicial.astro`, usada por `src/pages/index.astro` e
+  `src/pages/en/index.astro`. Em inglês, os posts aparecem com o selo "In
+  Portuguese" e `lang="pt-BR"` no item, para o leitor de tela; a data sai em
+  `en-GB` ("31 Jul 2026"), no mesmo formato da coluna em português.
+- `BaseLayout` tira o idioma do caminho: `lang` do HTML, `og:locale`,
+  `hreflang` (pt-BR, en e x-default) quando a página existe nos dois idiomas.
+- `EscolhaDeIdioma.astro`: `<dialog>` nativo na primeira visita (foco e Esc
+  de graça), escolha no `localStorage` (`felixo-blog:idioma`). Escolher o
+  outro idioma leva para a página equivalente; numa página que só existe em
+  português (um post), avisa e mantém a pessoa nela. Esc fecha e grava o
+  idioma da página. Sem JavaScript ou com o armazenamento bloqueado, a
+  pergunta não aparece, porque sem onde guardar ela voltaria a cada página.
+- `RedirecionarParaIngles.astro`: na home em português, quem já escolheu
+  inglês vai para `/en/` antes da pintura. Só a home redireciona: link
+  compartilhado para uma página específica é respeitado. O seletor PT | EN
+  grava a escolha no clique, senão a home mandaria de volta para `/en/`.
+- Em inglês, o menu tem só "Posts": Tags e Sobre ainda não existem em
+  inglês e entram junto com os posts traduzidos. O nome no topo fica
+  "Felixo's Blog".
+
+Validado com Playwright, cada cenário num perfil novo: a pergunta abre na
+primeira visita com foco em "Português"; English leva para `/en/` e grava;
+voltar à raiz redireciona; PT no topo volta e não redireciona de novo; num
+post, English mantém no post com o aviso; Esc fecha e grava; `lang`, selo,
+data e `hreflang` certos em `/en/`. A apresentação em inglês é tradução do
+texto do dono e espera a revisão dele.
+
+Achado no caminho: na lista, a `<ul>` das tags ficava acima do link do post
+e engolia o clique nos espaços entre as tags (e no selo). Agora ela tem
+`pointer-events-none` e só os links das tags capturam o clique.

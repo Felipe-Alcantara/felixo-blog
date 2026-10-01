@@ -1,8 +1,11 @@
 ---
-import { caminho } from '../utils/rotas';
+import { caminho, caminhoSemBase } from '../utils/rotas';
 import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
+import EscolhaDeIdioma from '../components/EscolhaDeIdioma.astro';
+import RedirecionarParaIngles from '../components/RedirecionarParaIngles.astro';
 import { SITE } from '../config/site';
+import { TEXTOS, idiomaDoCaminho, paginaEquivalente } from '../config/idiomas';
 import '../styles/global.css';
 
 interface Props {
@@ -15,15 +18,34 @@ interface Props {
   imagemCapa?: { src: string; width: number; height: number };
 }
 
+// O idioma sai do caminho: tudo em `/en/` é inglês, o resto é português.
+const atual = caminhoSemBase(Astro.url);
+const idioma = idiomaDoCaminho(atual);
+const textos = TEXTOS[idioma];
+
 const {
   titulo,
-  descricao = SITE.descricao,
+  descricao = textos.descricao,
   tipoOG = 'website',
   publicadoEm,
   imagemCapa,
 } = Astro.props;
 
-const tituloCompleto = titulo === SITE.titulo ? titulo : `${titulo} · ${SITE.titulo}`;
+const tituloCompleto =
+  titulo === textos.tituloSite ? titulo : `${titulo} · ${textos.tituloSite}`;
+
+// A mesma página nos dois idiomas, quando existe: vira `hreflang` para o
+// buscador e destino da pergunta da primeira visita.
+const equivalentes = {
+  pt: paginaEquivalente(atual, 'pt'),
+  en: paginaEquivalente(atual, 'en'),
+};
+const temOsDois = Boolean(equivalentes.pt && equivalentes.en);
+const absoluta = (rota: string) => new URL(caminho(rota), Astro.site ?? SITE.url);
+
+// Quem já escolheu inglês e abre a home em português vai direto para `/en/`.
+// Só na home: um link compartilhado para uma página específica é respeitado.
+const redirecionarSeEscolheuIngles = idioma === 'pt' && atual === '/';
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
 
 // Cartão de compartilhamento. A URL precisa ser absoluta: WhatsApp, LinkedIn e
@@ -36,14 +58,24 @@ const imagemCompartilhamento = imagemCapa
 ---
 
 <!doctype html>
-<html lang={SITE.idioma}>
+<html lang={textos.lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {redirecionarSeEscolheuIngles && <RedirecionarParaIngles />}
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
     <meta name="author" content={SITE.autor} />
     <link rel="canonical" href={canonical} />
+    {
+      temOsDois && (
+        <>
+          <link rel="alternate" hreflang="pt-BR" href={absoluta(equivalentes.pt!)} />
+          <link rel="alternate" hreflang="en" href={absoluta(equivalentes.en!)} />
+          <link rel="alternate" hreflang="x-default" href={absoluta(equivalentes.pt!)} />
+        </>
+      )
+    }
     <link rel="icon" type="image/svg+xml" href={caminho('/favicon.svg')} />
     <link
       rel="alternate"
@@ -54,15 +86,26 @@ const imagemCompartilhamento = imagemCapa
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content={tipoOG} />
-    <meta property="og:site_name" content={SITE.titulo} />
+    <meta property="og:site_name" content={textos.tituloSite} />
     <meta property="og:title" content={tituloCompleto} />
     <meta property="og:description" content={descricao} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale" content={textos.localeOG} />
+    {
+      temOsDois && (
+        <meta
+          property="og:locale:alternate"
+          content={TEXTOS[idioma === 'pt' ? 'en' : 'pt'].localeOG}
+        />
+      )
+    }
     <meta property="og:image" content={imagemCompartilhamento} />
     <meta property="og:image:width" content={String(imagemCapa?.width ?? 1200)} />
     <meta property="og:image:height" content={String(imagemCapa?.height ?? 630)} />
-    <meta property="og:image:alt" content={`${SITE.titulo} — ${SITE.descricao}`} />
+    <meta
+      property="og:image:alt"
+      content={`${textos.tituloSite} — ${textos.descricao}`}
+    />
     {
       publicadoEm && (
         <meta property="article:published_time" content={publicadoEm.toISOString()} />
@@ -87,12 +130,19 @@ const imagemCompartilhamento = imagemCapa
     <a
       href="#conteudo"
       class="relative z-50 sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white"
-      >Pular para o conteúdo</a
+      >{textos.pularParaConteudo}</a
     >
-    <Cabecalho />
+    <Cabecalho idioma={idioma} />
     <main id="conteudo" class="relative z-10 mx-auto max-w-3xl px-4 py-14 sm:px-6">
       <slot />
     </main>
-    <Rodape />
+    <Rodape idioma={idioma} />
+    <EscolhaDeIdioma
+      idioma={idioma}
+      destinos={{
+        pt: equivalentes.pt && caminho(equivalentes.pt),
+        en: equivalentes.en && caminho(equivalentes.en),
+      }}
+    />
   </body>
 </html>

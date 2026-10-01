@@ -5,33 +5,44 @@
  * Substitui o antigo `CartaoPost`: sem caixa parada em volta, que dava cara de
  * template; o brilho do felixo.com.br aparece no hover (`felixo-item-post`).
  * O item inteiro continua clicável, como o dono pediu em 2026-08-05: o
- * `::after` do link do título cobre o painel do brilho, e as tags ficam acima
- * dele (`z-10`) para continuarem levando à página da tag.
+ * `::after` do link do título cobre o painel do brilho. A lista de tags fica
+ * acima dele (`z-10`) mas deixa o clique passar (`pointer-events-none`); só os
+ * links das tags o capturam, para o selo e os espaços entre as tags abrirem o
+ * post.
  */
 import { caminho } from '../utils/rotas';
 import Etiqueta from './Etiqueta.astro';
 import { formatarDataCurta, formatarDataISO } from '../utils/datas';
 import { type Post } from '../utils/posts';
+import { TEXTOS, type Idioma } from '../config/idiomas';
 
 interface Props {
   post: Post;
   /** Nível do título: `h3` dentro de uma seção com `h2`, `h2` logo abaixo do `h1`. */
   nivelTitulo?: 'h2' | 'h3';
+  /**
+   * Idioma da página que lista o post. Os posts ainda são todos em português;
+   * numa página em inglês, o item ganha o selo "In Portuguese" e `lang="pt-BR"`
+   * para o leitor de tela pronunciar o título certo.
+   */
+  idioma?: Idioma;
 }
 
-const { post, nivelTitulo = 'h3' } = Astro.props;
+const { post, nivelTitulo = 'h3', idioma = 'pt' } = Astro.props;
+const emOutroIdioma = idioma !== 'pt';
 const { titulo, descricao, publicadoEm, tags } = post.data;
 const Titulo = nivelTitulo;
 ---
 
 <article
   class="felixo-item-post group grid gap-x-8 gap-y-1 sm:grid-cols-[6.5rem_minmax(0,1fr)]"
+  lang={emOutroIdioma ? 'pt-BR' : undefined}
 >
   <time
     datetime={formatarDataISO(publicadoEm)}
     class="font-mono text-sm text-zinc-400 transition group-hover:text-felixo-purple sm:pt-1"
   >
-    {formatarDataCurta(publicadoEm)}
+    {formatarDataCurta(publicadoEm, TEXTOS[idioma].localeDatas)}
   </time>
 
   <div>
@@ -47,10 +58,18 @@ const Titulo = nivelTitulo;
     <p class="mt-1.5 leading-relaxed text-zinc-400">{descricao}</p>
 
     {
-      tags.length > 0 && (
-        <ul class="relative z-10 mt-3 flex w-fit flex-wrap gap-2">
+      (tags.length > 0 || emOutroIdioma) && (
+        <ul class="pointer-events-none relative z-10 mt-3 flex w-fit flex-wrap gap-2">
+          {emOutroIdioma && (
+            <li
+              lang={TEXTOS[idioma].lang}
+              class="rounded-full border border-white/15 px-2.5 py-0.5 text-xs font-medium text-zinc-300"
+            >
+              {TEXTOS[idioma].postEmOutroIdioma}
+            </li>
+          )}
           {tags.map((tag) => (
-            <li>
+            <li class="pointer-events-auto">
               <Etiqueta tag={tag} />
             </li>
           ))}
