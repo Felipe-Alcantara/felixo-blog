@@ -129,6 +129,23 @@ sem back-end, sem banco de dados. Comentar exige login com GitHub. Config em
 `GISCUS` (`src/config/site.ts`), componente em `src/components/Comentarios.astro`,
 tema customizado em `public/temas/giscus.css`.
 
+## Contagem de acessos
+
+As visitas são contadas pelo [GoatCounter](https://www.goatcounter.com), sem
+cookie e sem back-end próprio. Os números ficam no painel da conta, e cada post
+mostra quantos acessos teve ao lado do tempo de leitura. Para ligar:
+
+1. Crie a conta em [goatcounter.com/signup](https://www.goatcounter.com/signup).
+   O _Account name_ vira o endereço `<codigo>.goatcounter.com`.
+2. No painel, em **Settings**, marque **Allow adding visitor counts on your
+   website** e salve. Sem isso, a contagem funciona, mas o número não aparece
+   no post.
+3. Preencha `codigo` em `GOATCOUNTER` (`src/config/site.ts`) e publique.
+
+Com `codigo` vazio, nada do GoatCounter entra no site. A contagem só roda no
+build de produção, então os testes no `npm run dev` não contam. O número no
+post fica em cache por até 4 horas no GoatCounter.
+
 ## O que o site gera
 
 - `/` — lista de posts, do mais recente para o mais antigo

@@ -1,0 +1,44 @@
+---
+/**
+ * Contagem de acessos via GoatCounter (pedido do dono, 2026-10-16): conta as
+ * visitas de cada página sem cookie e sem back-end próprio. Os números ficam
+ * no painel da conta (ver GOATCOUNTER em src/config/site.ts).
+ *
+ * Script completo (`count.js`, que manda também origem e tamanho de tela) e,
+ * para quem está sem JavaScript, o pixel de 1×1 dentro do `<noscript>`.
+ *
+ * Só entra no build de produção: `npm run dev` não conta. O `count.js` também
+ * ignora localhost sozinho, o que cobre o `npm run preview`.
+ *
+ * O caminho vai explícito, e não deduzido pelo script: assim a contagem e o
+ * número mostrado no post (`AcessosDoPost.astro`) usam a mesma chave, e um
+ * `?utm=` no link não vira uma página separada no painel.
+ */
+import { GOATCOUNTER, contaGoatCounter } from '../config/site';
+
+const ativo = import.meta.env.PROD && GOATCOUNTER.codigo !== '';
+const pagina = Astro.url.pathname;
+---
+
+{
+  ativo && (
+    <>
+      <script
+        is:inline
+        data-goatcounter={`${contaGoatCounter()}/count`}
+        data-goatcounter-settings={JSON.stringify({ path: pagina })}
+        async
+        src="https://gc.zgo.at/count.js"
+      />
+      <noscript>
+        <img
+          src={`${contaGoatCounter()}/count?p=${encodeURIComponent(pagina)}`}
+          alt=""
+          width="1"
+          height="1"
+          class="absolute"
+        />
+      </noscript>
+    </>
+  )
+}

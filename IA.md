@@ -47,6 +47,10 @@
   repositório e do histórico em 2026-09-30.
 - **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
   "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
+- **Acessos** (2026-10-16): GoatCounter, conta `felixo`
+  (`felixo.goatcounter.com`). O número no post só aparece depois que a opção
+  "Allow adding visitor counts on your website" for marcada no painel; até
+  lá o contador público responde 403 e o número fica escondido.
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
   deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
   via giscus já publicados (push feito, deploy verde em 2026-08-05).
@@ -271,6 +275,17 @@ repo (autorização manual, feita pelo dono do repo — nenhuma API cobre esse
 passo). Tema customizado servido em `/temas/giscus.css` (arquivo público,
 sem segredo). Nenhuma credencial ou variável de ambiente envolvida: todos os
 IDs usados (`repoId`, `categoriaId`) são públicos por natureza do protocolo.
+
+[2026-10-16] **GoatCounter** (contagem de acessos) — `GOATCOUNTER` em
+`src/config/site.ts`, `src/components/ContagemDeAcessos.astro` (contagem, no
+fim do `<body>` de toda página) e `src/components/AcessosDoPost.astro`
+(número no cabeçalho do post). Conta criada pelo dono em goatcounter.com,
+grátis para uso razoável. Nenhuma credencial: o código da conta é público.
+Duas dependências externas: `gc.zgo.at/count.js` (script) e
+`<codigo>.goatcounter.com` (contagem e contador público
+`/counter/<caminho>.json`, que responde com `Access-Control-Allow-Origin: *`).
+O contador público só responde com **Allow adding visitor counts on your
+website** marcado nas configurações do painel.
 
 [2026-08-05] **Alinhamento de Front-End e imagens por Alinhamento de Front-End.**
 O shell do blog passou a usar a composição ampla e responsiva do portfólio
@@ -1273,3 +1288,45 @@ modo normal. **Atenção ao testar:** a emulação de `prefers-reduced-motion`
 do DevTools/CDP (`Emulation.setEmulatedMedia`) não chega a SVG carregado
 como imagem, e o gatinho continua piscando. Para testar, use a preferência
 do sistema ou a flag do Chrome.
+
+[2026-10-16] **Contagem de acessos com GoatCounter.** Pedido do dono: saber
+quantos acessos o site tem, sem servidor, como já é com os comentários. A
+contagem anônima não pode morar no próprio repositório (exigiria um token
+exposto no site público), então vai para um serviço externo. Escolhido o
+GoatCounter: sem cookie, sem dado pessoal, grátis, de código aberto. O
+Google Analytics foi descartado: usa cookie, pede banner de consentimento e
+pesa demais para este site. O dono pediu "com todos os scripts" e com o
+número visível no post.
+
+Como ficou:
+
+- `ContagemDeAcessos.astro`: o `count.js` completo (origem, tamanho de tela)
+  e o pixel de 1×1 em `<noscript>` para quem está sem JavaScript. Só no build
+  de produção; o `count.js` também ignora localhost sozinho. O caminho vai
+  explícito (`data-goatcounter-settings` com `path` = `Astro.url.pathname`),
+  para a contagem e o número do post usarem a mesma chave e um `?utm=` não
+  virar outra página no painel.
+- `AcessosDoPost.astro`: "· 1.234 acessos" no fim da linha de data e tempo
+  de leitura. Um script inline lê `/counter/<caminho>.json`, fica só com os
+  dígitos (o GoatCounter separa milhar com espaço, "1 234") e formata no
+  idioma da página (`acessos` em `TEXTOS`). Começa com `hidden` e só aparece
+  com um número maior que zero. Sem JavaScript, com bloqueador, com o
+  contador desligado no painel ou com 404 (post ainda sem acesso), a linha
+  fica como antes.
+- Com `GOATCOUNTER.codigo` vazio nada disso entra no HTML, nem script.
+  **Estado: pronto e desligado, esperando o dono criar a conta e passar o
+  código** (passo a passo no README, seção "Contagem de acessos").
+
+Validado: `npm run check` (0 erros) e `npm run build` com o código vazio,
+sem nenhuma ocorrência de GoatCounter no `dist/`. Com um código de teste
+temporário, o HTML gerado foi conferido na home e no post. No Chrome
+headless, as chamadas ao GoatCounter foram interceptadas via CDP (`Fetch`)
+com respostas simuladas: `"1 234"` aparece como "1.234 acessos", `"1"` como
+"1 acesso" e um 404 deixa a linha sem o número. Nada foi enviado a uma conta
+real.
+
+Mais tarde no mesmo dia, o dono criou a conta: código `felixo`, preenchido em
+`GOATCOUNTER.codigo`. Build com as 8 páginas contando e o número só no post.
+O contador público respondeu 403 ("Need to enable the 'allow using the
+visitor counter' setting") porque a opção ainda não estava marcada no
+painel. Esse é o caso em que o número fica escondido, como previsto.

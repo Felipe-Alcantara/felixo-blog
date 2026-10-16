@@ -45,6 +45,7 @@ histórico de decisões.
 | Domínio, sitemap, tema de realce de código    | `astro.config.mjs`                                                                                 |
 | Deploy                                        | `.github/workflows/deploy.yml`                                                                     |
 | Comentários (giscus)                          | `src/components/Comentarios.astro`, `GISCUS` em `src/config/site.ts`                               |
+| Contagem de acessos (GoatCounter)             | `ContagemDeAcessos.astro`, `AcessosDoPost.astro`, `GOATCOUNTER` em `src/config/site.ts`            |
 
 ## Gate de qualidade
 

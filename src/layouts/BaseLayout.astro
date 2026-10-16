@@ -5,6 +5,7 @@ import Rodape from '../components/Rodape.astro';
 import Abertura from '../components/Abertura.astro';
 import EscolhaDeIdioma from '../components/EscolhaDeIdioma.astro';
 import RedirecionarParaIngles from '../components/RedirecionarParaIngles.astro';
+import ContagemDeAcessos from '../components/ContagemDeAcessos.astro';
 import { SITE } from '../config/site';
 import { TEXTOS, idiomaDoCaminho, paginaEquivalente } from '../config/idiomas';
 import '../styles/global.css';
@@ -146,5 +147,6 @@ const imagemCompartilhamento = imagemCapa
         en: equivalentes.en && caminho(equivalentes.en),
       }}
     />
+    <ContagemDeAcessos />
   </body>
 </html>

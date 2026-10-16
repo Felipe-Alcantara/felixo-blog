@@ -63,6 +63,8 @@ export const TEXTOS = {
     },
     /** Selo para post que não está no idioma da página. */
     postEmOutroIdioma: '',
+    /** Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`). */
+    acessos: { singular: 'acesso', plural: 'acessos' },
   },
   en: {
     lang: 'en',
@@ -99,6 +101,7 @@ export const TEXTOS = {
       nenhumResultado: 'No posts found.',
     },
     postEmOutroIdioma: 'In Portuguese',
+    acessos: { singular: 'view', plural: 'views' },
   },
 } as const satisfies Record<Idioma, unknown>;
 

@@ -25,3 +25,16 @@ export const GISCUS = {
   /** Tema customizado (public/temas/giscus.css) pra bater com o Felixo System Design. */
   temaUrl: `${SITE.url}/temas/giscus.css`,
 } as const;
+
+/**
+ * Contagem de acessos via GoatCounter (sem cookie, sem back-end próprio).
+ * `codigo` é o nome da conta, o que vem antes de `.goatcounter.com`. Não é
+ * segredo: aparece no HTML de qualquer site que usa GoatCounter. Vazio
+ * desliga tudo: nem o script de contagem nem o número no post entram na página.
+ */
+export const GOATCOUNTER = {
+  codigo: 'felixo',
+};
+
+/** Endereço da conta no GoatCounter, ex.: `https://felixo.goatcounter.com`. */
+export const contaGoatCounter = () => `https://${GOATCOUNTER.codigo}.goatcounter.com`;
