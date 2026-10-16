@@ -1213,3 +1213,41 @@ texto do dono e espera a revisão dele.
 Achado no caminho: na lista, a `<ul>` das tags ficava acima do link do post
 e engolia o clique nos espaços entre as tags (e no selo). Agora ela tem
 `pointer-events-none` e só os links das tags capturam o clique.
+
+[2026-10-16] **Abertura com o gatinho do FelixoVerse a cada carregamento.**
+Pedido do dono: toda vez que o site abrir, trocar de página ou recarregar, a
+animação do gatinho piscando com um mini headbang abre o site. O desenho e
+os keyframes vieram do arquivo dele (`gatinho-piscando-headbang`), sem
+retoque, inclusive o rosa do gatinho, que não é o roxo do blog.
+
+Como ficou (`src/components/Abertura.astro`, primeiro filho do `<body>` no
+`BaseLayout`): camada fixa preta, com o brilho roxo do fundo, e o gatinho no
+centro dando **uma** piscadinha (os primeiros 40% do ciclo de 3,5 s do
+original); depois a camada some sozinha. Uns 2 s no total. É só CSS: como o
+site é estático, cada navegação é um carregamento novo e a animação roda de
+novo sem script. Decorativa (`aria-hidden`), sem nada focável. Com "reduzir
+movimento" não aparece; na impressão também não.
+
+Conflito resolvido: o `<dialog>` da pergunta de idioma abre na camada de topo
+do navegador, acima de qualquer `z-index`, e cobria o gatinho na primeira
+visita. A primeira correção esperava a abertura terminar, e o dono viu o
+problema no localhost: a abertura sumia, a página aparecia clara e a
+pergunta "piscava" por cima. Agora `EscolhaDeIdioma` abre o `showModal()`
+quando a animação `abertura-sumir` **começa** (lê `delay` e `currentTime`
+dela pela Web Animations API), e o `::backdrop` escurece em 0,35 s, o
+mesmo tempo da saída da abertura: um fundo escuro passa para o outro sem a
+página clarear no meio. A caixa entra logo depois, subindo um pouco
+(`pergunta-entrar`). Sem abertura (reduzir movimento), abre na hora e a
+regra global zera as durações.
+
+Limite conhecido: voltar ou avançar pelo histórico pode restaurar a página
+do cache (bfcache) já pronta, e aí a abertura não repete.
+
+Validado com `npm run check`, `npm run build` e capturas do Chrome headless
+em tempos diferentes: gatinho surgindo, olho fechado com a cabeça inclinada
+(home e post), camada sumindo e a pergunta de idioma só depois; com
+`--force-prefers-reduced-motion`, a página e a pergunta aparecem direto. A
+transição suave foi medida no build de produção, lendo as opacidades via
+CDP a cada ~50 ms: o fundo da pergunta chega a 0,66 com a abertura ainda em
+0,97, e já está em 1 quando a abertura passa por 0,43. A página não fica
+clara em nenhum momento da troca.
