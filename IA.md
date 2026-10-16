@@ -48,9 +48,11 @@
 - **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
   "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
 - **Acessos** (2026-10-16): GoatCounter, conta `felixo`
-  (`felixo.goatcounter.com`). O número no post só aparece depois que a opção
-  "Allow adding visitor counts on your website" for marcada no painel; até
-  lá o contador público responde 403 e o número fica escondido.
+  (`felixo.goatcounter.com`), com o contador público ligado no painel. O número
+  no post só aparece depois do primeiro acesso a ele.
+- **Assinatura** (2026-10-16): follow.it, feed `blog-do-felixo` na conta do
+  dono, plano grátis. Formulário sem JS no fim do post, na home, no Sobre e no
+  rodapé (`Assinatura.astro`, `FOLLOWIT`). Sem notificação no navegador.
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
   deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
   via giscus já publicados (push feito, deploy verde em 2026-08-05).
@@ -1354,3 +1356,41 @@ Pendente: o formulário no blog (fim do post, home, Sobre e rodapé), que
 espera a aprovação do design, e a notificação no navegador, que a página
 pública do feed não lista entre as opções do leitor (RSS, e-mail, app,
 página pessoal).
+
+[2026-10-16] **Assinatura no blog publicada (conclui o registro anterior).**
+O dono assumiu o feed no follow.it (prova pela meta tag, commit `ebdc9ca`) e
+aprovou o design. Especificação e plano em
+`docs/superpowers/specs/2026-10-16-assinatura-follow-it-design.md` e
+`docs/superpowers/plans/2026-10-16-assinatura-follow-it.md`.
+
+Como ficou: `src/components/Assinatura.astro`, variante `destaque` (fim do
+post, home PT e EN, Sobre) e `compacta` (rodapé de todas as páginas). É um
+`<form>` HTML puro (POST para `FOLLOWIT.formulario`, campo `email`), abrindo o
+follow.it em aba nova porque o plano grátis não redireciona de volta. Os ids
+vêm de um prop por instância (`assinatura-post`, `-home`, `-sobre`,
+`-rodape`), porque a mesma página tem dois formulários. Textos em
+`TEXTOS.<idioma>.assinatura`, fiéis ao plano grátis ("um e-mail no dia em que
+sair post novo", com anúncios do follow.it). `FOLLOWIT.formulario` vazio
+desliga tudo sem deixar espaço (o componente recebe `class` em vez de um
+`<div>` com margem em volta).
+
+Decisões na implementação: o `<form>` ficou sem `rel="noopener"` porque os
+tipos do Astro não aceitam `rel` em formulário (`target="_blank"` já implica
+`noopener` nos navegadores atuais, e o destino é o follow.it). Na validação
+visual, o texto de privacidade e o placeholder saíram em `zinc-500` com 4,35:1
+sobre o preto, abaixo do AA: passaram para `zinc-400` (8,19:1), e o campo
+ficou igual ao da busca (texto branco, borda roxa no hover e no foco).
+
+Configuração no follow.it, feita pelo Claude in Chrome no Brave do dono, com
+o ok dele a cada salvamento: feed ligado à conta, frase curta em português,
+imagem do gatinho, idioma das telas automático pelo navegador. Travados no
+plano grátis: diretório, padrão do e-mail (fica "Newspaper", o resumo
+diário), horários e redirecionamento.
+
+Validado: `npm run check` (0 erros), `npm run build` (8 páginas); no `dist/`,
+2 formulários no post, na home PT e EN e no Sobre, 1 nas demais, ids sem
+repetição, textos em inglês em `/en/`; desligado, nenhum formulário (a meta de
+verificação continua na home). Capturas do Chrome headless em 1280 e 360 px
+sem rolagem horizontal; Tab chega ao campo e ao botão do destaque e do rodapé
+com foco visível; contraste dos textos da assinatura de 8,19:1 a 14,21:1.
+Pendente: o teste ponta a ponta com e-mail real, que é do dono.

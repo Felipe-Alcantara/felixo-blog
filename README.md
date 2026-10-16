@@ -146,6 +146,23 @@ Com `codigo` vazio, nada do GoatCounter entra no site. A contagem só roda no
 build de produção, então os testes no `npm run dev` não contam. O número no
 post fica em cache por até 4 horas no GoatCounter.
 
+## Assinatura dos posts novos
+
+Quem lê pode assinar os posts novos pelo [follow.it](https://follow.it), sem
+back-end próprio. O formulário (`src/components/Assinatura.astro`) é um
+`<form>` HTML puro que envia o e-mail direto ao follow.it, que lê o `rss.xml` e
+avisa os assinantes. Ele aparece em destaque no fim de cada post, na home e no
+Sobre, e compacto no rodapé. Configuração em `FOLLOWIT` (`src/config/site.ts`):
+`formulario` vazio desliga tudo, e `verificacao` é a meta tag que prova ao
+follow.it que o site é do dono do feed. Textos em `TEXTOS.<idioma>.assinatura`.
+
+Limites do plano grátis: o follow.it lê o feed a cada 6 horas; o padrão do
+e-mail é um resumo diário (cada assinante pode trocar para um e-mail por post);
+os e-mails têm anúncios e a marca do follow.it; e, depois de assinar, o leitor
+fica no follow.it (por isso o formulário abre numa aba nova). Notificação no
+navegador não é oferecida. Assinantes e estatísticas ficam no painel do feed
+`blog-do-felixo`, na conta do dono no follow.it.
+
 ## O que o site gera
 
 - `/` — lista de posts, do mais recente para o mais antigo
