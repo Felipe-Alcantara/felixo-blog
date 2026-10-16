@@ -34,6 +34,7 @@ histórico de decisões.
 | Título, descrição, autor, giscus              | `src/config/site.ts`                                                                               |
 | Textos da interface, navegação, rodapé, PT/EN | `src/config/idiomas.ts`                                                                            |
 | Pergunta de idioma da primeira visita         | `src/components/EscolhaDeIdioma.astro`                                                             |
+| Abertura com o gatinho (a cada carregamento)  | `src/components/Abertura.astro`                                                                    |
 | Home (as duas versões: `/` e `/en/`)          | `src/components/PaginaInicial.astro`                                                               |
 | Cores, fontes, tipografia do corpo do post    | `src/styles/global.css`                                                                            |
 | `<head>`, SEO, Open Graph, canonical          | `src/layouts/BaseLayout.astro`                                                                     |

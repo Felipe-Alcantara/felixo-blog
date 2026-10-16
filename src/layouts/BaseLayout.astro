@@ -2,6 +2,7 @@
 import { caminho, caminhoSemBase } from '../utils/rotas';
 import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
+import Abertura from '../components/Abertura.astro';
 import EscolhaDeIdioma from '../components/EscolhaDeIdioma.astro';
 import RedirecionarParaIngles from '../components/RedirecionarParaIngles.astro';
 import { SITE } from '../config/site';
@@ -126,6 +127,7 @@ const imagemCompartilhamento = imagemCapa
   </head>
 
   <body class="relative min-h-dvh text-zinc-300 antialiased">
+    <Abertura />
     <div class="felixo-ambiente" aria-hidden="true"></div>
     <a
       href="#conteudo"

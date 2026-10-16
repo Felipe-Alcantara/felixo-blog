@@ -91,10 +91,29 @@ const soEmPortugues = idioma === 'pt' && !destinos.en;
   });
 
   if (dialogo && armazenamento && !armazenamento.getItem(chave)) {
-    dialogo.showModal();
-    dialogo
-      .querySelector<HTMLButtonElement>(`[data-idioma="${idiomaDaPagina}"]`)
-      ?.focus();
+    // O `<dialog>` modal fica acima de tudo e cobriria o gatinho, então a
+    // pergunta espera a abertura começar a sumir (`abertura-sumir`, em
+    // `Abertura.astro`). Abrir nesse instante, e não no fim, faz o fundo
+    // escuro da pergunta entrar enquanto a abertura sai: a página não fica
+    // clara entre uma e outra. Sem abertura (reduzir movimento), abre na hora.
+    const sumir = document
+      .querySelector('.abertura')
+      ?.getAnimations()
+      .find(
+        (animacao) =>
+          animacao instanceof CSSAnimation && animacao.animationName === 'abertura-sumir',
+      );
+    const atraso = Number(sumir?.effect?.getTiming().delay ?? 0);
+    const decorrido = Number(sumir?.currentTime ?? 0);
+    setTimeout(
+      () => {
+        dialogo.showModal();
+        dialogo
+          .querySelector<HTMLButtonElement>(`[data-idioma="${idiomaDaPagina}"]`)
+          ?.focus();
+      },
+      Math.max(0, atraso - decorrido),
+    );
 
     dialogo.addEventListener('click', (evento) => {
       const alvo = evento.target instanceof Element ? evento.target : null;
@@ -112,3 +131,29 @@ const soEmPortugues = idioma === 'pt' && !destinos.en;
     dialogo.addEventListener('cancel', () => salvar(idiomaDaPagina));
   }
 </script>
+
+<style>
+  /* Entrada suave: o fundo escurece no mesmo ritmo em que a abertura some, e a
+     caixa sobe um pouco logo depois. Com "reduzir movimento", a regra global
+     de `global.css` zera as durações e a pergunta aparece direto. */
+  dialog[open] {
+    animation: pergunta-entrar 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.12s both;
+  }
+
+  dialog[open]::backdrop {
+    animation: pergunta-fundo-entrar 0.35s ease-out both;
+  }
+
+  @keyframes pergunta-entrar {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem) scale(0.97);
+    }
+  }
+
+  @keyframes pergunta-fundo-entrar {
+    from {
+      opacity: 0;
+    }
+  }
+</style>
