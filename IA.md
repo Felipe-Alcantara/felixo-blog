@@ -1251,3 +1251,25 @@ transição suave foi medida no build de produção, lendo as opacidades via
 CDP a cada ~50 ms: o fundo da pergunta chega a 0,66 com a abertura ainda em
 0,97, e já está em 1 quando a abertura passa por 0,43. A página não fica
 clara em nenhum momento da troca.
+
+[2026-10-16] **Ícone do cabeçalho: o gatinho em loop.** Pedido do dono: no
+lugar do `logo-felixo.png`, a versão em loop do mesmo gatinho, que pisca com
+o mini headbang a cada 3,5 s. O arquivo é `public/imagens/gatinho-piscando-headbang.svg`,
+o SVG do dono sem retoque (desenho, keyframes e `<style>` embutido), usado
+como `<img>` em `Cabecalho.astro`. O enquadramento é o mesmo do PNG
+(1932×1932), então o tamanho no topo não mudou. O PNG continua no
+repositório: `scripts/gerar-og-image.py` usa ele no cartão de
+compartilhamento.
+
+Por que `<img>` e não o SVG inline: a animação mora no próprio arquivo, sem
+JavaScript, e o arquivo fica isolado da página, sem disputar o
+`id="gatinho-rosa"` do gradiente com o SVG da abertura.
+
+"Reduzir movimento" é tratado pelo `@media (prefers-reduced-motion)` de
+dentro do SVG. Validado no Chrome headless via CDP, contando quadros
+distintos do ícone em 45 capturas (4,5 s): 19 distintos no modo normal e
+1 só com `--force-prefers-reduced-motion`, igual ao quadro de repouso do
+modo normal. **Atenção ao testar:** a emulação de `prefers-reduced-motion`
+do DevTools/CDP (`Emulation.setEmulatedMedia`) não chega a SVG carregado
+como imagem, e o gatinho continua piscando. Para testar, use a preferência
+do sistema ou a flag do Chrome.

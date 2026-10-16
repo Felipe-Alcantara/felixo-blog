@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1932 1932" class="gatinho gatinho--loop" role="img" aria-label="Gatinho dando uma piscadinha com um mini headbang">
+  <title>Gatinho dando uma piscadinha com um mini headbang</title>
+  <style>
+    /*
+      Modos (classe no elemento svg):
+        gatinho--loop    pisca sozinho a cada ciclo (padrão deste arquivo)
+        gatinho--piscar  pisca uma vez (adicionada via JS no hover/clique)
+      Um ciclo dura --ciclo: a piscadinha ocupa os primeiros 40% e o resto é pausa.
+    */
+    .gatinho { --ciclo: 3.5s; }
+    /* a cabeça "dobra" a partir do queixo, como um aceno para frente */
+    .gatinho__cabeca { transform-origin: 966px 1560px; }
+    .gatinho__frente { transform-origin: 966px 1150px; }
+    .gatinho__orelhas { transform-origin: 966px 820px; }
+    .gatinho__olho--pisca,
+    .gatinho__olho-fechado,
+    .gatinho__boca { transform-box: fill-box; transform-origin: center; }
+    .gatinho__olho-fechado { opacity: 0; }
+
+    .gatinho--loop .gatinho__parte,
+    .gatinho--piscar .gatinho__parte {
+      animation-duration: var(--ciclo);
+      animation-fill-mode: both;
+    }
+    .gatinho--loop .gatinho__parte { animation-iteration-count: infinite; }
+
+    .gatinho--loop .gatinho__cabeca, .gatinho--piscar .gatinho__cabeca { animation-name: gatinho-headbang; }
+    .gatinho--loop .gatinho__frente, .gatinho--piscar .gatinho__frente { animation-name: gatinho-headbang-frente; }
+    .gatinho--loop .gatinho__orelhas, .gatinho--piscar .gatinho__orelhas { animation-name: gatinho-headbang-orelhas; }
+    .gatinho--loop .gatinho__olho--pisca, .gatinho--piscar .gatinho__olho--pisca { animation-name: gatinho-olho-abre-fecha; }
+    .gatinho--loop .gatinho__olho-fechado, .gatinho--piscar .gatinho__olho-fechado { animation-name: gatinho-olho-fechado; }
+    .gatinho--loop .gatinho__boca, .gatinho--piscar .gatinho__boca { animation-name: gatinho-sorri; }
+
+    /* olho aberto achata até virar uma linha, some, e depois reabre com um leve quique */
+    @keyframes gatinho-olho-abre-fecha {
+      0%    { transform: scaleY(1);    opacity: 1; animation-timing-function: cubic-bezier(.55, 0, .9, .4); }
+      5.6%  { transform: scaleY(.1);   opacity: 1; }
+      7.2%  { transform: scaleY(.1);   opacity: 0; }
+      28%   { transform: scaleY(.1);   opacity: 0; }
+      29.6% { transform: scaleY(.1);   opacity: 1; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+      34.4% { transform: scaleY(1.06); opacity: 1; }
+      40%, 100% { transform: scaleY(1); opacity: 1; }
+    }
+    /* arquinho ⌒ surge da linha achatada, segura e se desfaz */
+    @keyframes gatinho-olho-fechado {
+      0%, 5.6% { transform: scaleY(.2);  opacity: 0; }
+      7.2%     { transform: scaleY(1.15); opacity: 1; }
+      9.6%     { transform: scaleY(1);    opacity: 1; }
+      26.4%    { transform: scaleY(1);    opacity: 1; animation-timing-function: ease-in; }
+      28.8%    { transform: scaleY(.25);  opacity: 1; }
+      30.4%, 100% { transform: scaleY(.25); opacity: 0; }
+    }
+    /*
+      mini headbang: pega impulso para cima, joga a cabeça para frente/baixo num tranco rápido
+      (achata na vertical = topo vindo na direção de quem olha; alarga = chega mais perto),
+      quica para uma pose levemente abaixada e inclinada para o lado do olho que pisca,
+      e volta passando um pouco do ponto antes de assentar
+    */
+    @keyframes gatinho-headbang {
+      0%    { transform: translate(0, 0) rotate(0deg) scale(1, 1); animation-timing-function: cubic-bezier(.2, .6, .3, 1); }
+      1.7%  { transform: translate(0, -12px) rotate(.5deg) scale(.995, 1.015); animation-timing-function: cubic-bezier(.5, 0, .9, .5); }
+      5.7%  { transform: translate(0, 60px) rotate(-3deg) scale(1.03, .92); animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+      10%   { transform: translate(0, 26px) rotate(-4deg) scale(1.012, .965); animation-timing-function: ease-in-out; }
+      25.7% { transform: translate(0, 30px) rotate(-4.5deg) scale(1.014, .96); animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+      31.4% { transform: translate(0, -14px) rotate(1deg) scale(.995, 1.02); animation-timing-function: ease-in-out; }
+      36%   { transform: translate(0, 4px) rotate(-.3deg) scale(1, .995); }
+      40%, 100% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
+    }
+    /* profundidade: olhos e boca ("frente") descem mais que o contorno, como se o rosto olhasse para baixo */
+    @keyframes gatinho-headbang-frente {
+      0%    { transform: translate(0, 0) scale(1); animation-timing-function: cubic-bezier(.2, .6, .3, 1); }
+      1.7%  { transform: translate(0, -6px) scale(1); animation-timing-function: cubic-bezier(.5, 0, .9, .5); }
+      6.6%  { transform: translate(0, 34px) scale(1.03); animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+      11%   { transform: translate(0, 15px) scale(1.012); animation-timing-function: ease-in-out; }
+      25.7% { transform: translate(0, 17px) scale(1.014); animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+      32.3% { transform: translate(0, -8px) scale(.995); animation-timing-function: ease-in-out; }
+      37%   { transform: translate(0, 2px) scale(1); }
+      41%, 100% { transform: translate(0, 0) scale(1); }
+    }
+    /* o rosa das orelhas encolhe na vertical: as orelhas "tombam" para frente */
+    @keyframes gatinho-headbang-orelhas {
+      0%    { transform: scaleY(1); animation-timing-function: cubic-bezier(.2, .6, .3, 1); }
+      1.7%  { transform: scaleY(1.03); animation-timing-function: cubic-bezier(.5, 0, .9, .5); }
+      6.6%  { transform: scaleY(.86); animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+      11%   { transform: scaleY(.94); animation-timing-function: ease-in-out; }
+      25.7% { transform: scaleY(.935); animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+      32.3% { transform: scaleY(1.03); animation-timing-function: ease-in-out; }
+      37%   { transform: scaleY(1); }
+      41%, 100% { transform: scaleY(1); }
+    }
+    /* boquinha cresce num sorriso maroto */
+    @keyframes gatinho-sorri {
+      0%    { transform: translateY(0) scale(1); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+      8.8%  { transform: translateY(-6px) scale(1.14); }
+      27.2% { transform: translateY(-6px) scale(1.14); }
+      36%, 100% { transform: translateY(0) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gatinho * { animation: none !important; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="gatinho-rosa" gradientUnits="userSpaceOnUse" x1="0" y1="345" x2="0" y2="1590">
+      <stop offset="0" stop-color="#DB749D"/>
+      <stop offset="1" stop-color="#CE2055"/>
+    </linearGradient>
+  </defs>
+
+  <g class="gatinho__parte gatinho__cabeca">
+    <!-- rosto branco (segue o contorno e o zigue-zague dos bigodes) -->
+    <path fill="#fff" d="M395 1384 L310 1383.5 L395 1278.5 L210 1263.5 L360 1155.5 L215 1093.5 L303.5 1051
+      C341.5 1000 359.5 930 349 855 C332 740 331.5 640 340.5 576 C346.5 442 421.5 367.5 490.5 367.5
+      C515.5 367.5 530.5 373.5 548.5 385.5 C640.5 441.5 720 506.5 797 568.5 C860 546.5 910 539.5 966 539.5
+      C1022 539.5 1072 546.5 1135 568.5 C1212 506.5 1291.5 441.5 1383.5 385.5 C1401.5 373.5 1416.5 367.5 1441.5 367.5
+      C1510.5 367.5 1585.5 442 1591.5 576 C1600.5 640 1600 740 1583 855 C1572.5 930 1590.5 1000 1628.5 1051
+      L1717 1093.5 L1572 1155.5 L1722 1263.5 L1537 1278.5 L1622 1383.5 L1537 1384
+      C1372 1520 1172 1563 966 1563 C760 1563 560 1520 395 1384 Z"/>
+
+    <g fill="none" stroke="url(#gatinho-rosa)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round">
+      <!-- contorno: bochecha esquerda, orelhas, topo da cabeça, bochecha direita -->
+      <path d="M303.5 1051 C341.5 1000 359.5 930 349 855 C332 740 331.5 640 340.5 576 C346.5 442 421.5 367.5 490.5 367.5
+        C515.5 367.5 530.5 373.5 548.5 385.5 C640.5 441.5 720 506.5 797 568.5 C860 546.5 910 539.5 966 539.5
+        C1022 539.5 1072 546.5 1135 568.5 C1212 506.5 1291.5 441.5 1383.5 385.5 C1401.5 373.5 1416.5 367.5 1441.5 367.5
+        C1510.5 367.5 1585.5 442 1591.5 576 C1600.5 640 1600 740 1583 855 C1572.5 930 1590.5 1000 1628.5 1051"/>
+      <!-- queixo -->
+      <path d="M395 1386 C560 1520 760 1563 966 1563 C1172 1563 1372 1520 1537 1386"/>
+      <!-- bigodes -->
+      <polyline points="365,1033.5 215,1093.5 360,1155.5 210,1263.5 395,1278.5 310,1383.5 480,1364.5"/>
+      <polyline points="1567,1033.5 1717,1093.5 1572,1155.5 1722,1263.5 1537,1278.5 1622,1383.5 1452,1364.5"/>
+    </g>
+
+    <!-- parte de dentro das orelhas (encolhe quando as orelhas tombam para frente) -->
+    <g class="gatinho__parte gatinho__orelhas" fill="url(#gatinho-rosa)">
+      <path d="M456 819.5 C421 731 411 621 426 556 C439 501 460.5 482.5 478.5 482.5 C496 482.5 511.5 493 526.5 508 L659 651 C592 691.5 521.5 751.5 456 819.5 Z"/>
+      <path d="M1476 819.5 C1511 731 1521 621 1506 556 C1493 501 1471.5 482.5 1453.5 482.5 C1436 482.5 1420.5 493 1405.5 508 L1273 651 C1340 691.5 1410.5 751.5 1476 819.5 Z"/>
+    </g>
+
+    <!-- olhos e boca (ficam "na frente": descem mais que o contorno) -->
+    <g class="gatinho__parte gatinho__frente">
+      <g fill="url(#gatinho-rosa)">
+        <!-- olho direito do gatinho (lado esquerdo da tela): é o que pisca -->
+        <ellipse class="gatinho__parte gatinho__olho gatinho__olho--pisca" cx="674" cy="1085" rx="111" ry="146"/>
+        <ellipse class="gatinho__olho" cx="1258" cy="1085" rx="111" ry="146"/>
+        <!-- olho piscando: arquinho ⌒ -->
+        <path class="gatinho__parte gatinho__olho-fechado" stroke="url(#gatinho-rosa)" stroke-width="18" stroke-linejoin="round"
+          d="M566 1112 C598 1032 750 1032 782 1112 C744 1072 604 1072 566 1112 Z"/>
+      </g>
+      <!-- boquinha -->
+      <path class="gatinho__parte gatinho__boca" fill="none" stroke="url(#gatinho-rosa)" stroke-width="33" stroke-linejoin="round"
+        d="M899 1270 C899 1320 940 1345 966 1353 C992 1345 1033 1320 1033 1270"/>
+    </g>
+  </g>
+</svg>
