@@ -1330,3 +1330,27 @@ Mais tarde no mesmo dia, o dono criou a conta: código `felixo`, preenchido em
 O contador público respondeu 403 ("Need to enable the 'allow using the
 visitor counter' setting") porque a opção ainda não estava marcada no
 painel. Esse é o caso em que o número fica escondido, como previsto.
+
+[2026-10-16] **Assinatura dos posts novos com follow.it (em andamento: só a
+verificação publicada).** Pedido do dono: a pessoa assina no blog e recebe os
+posts novos por e-mail, no celular e no navegador, sem back-end, só com
+serviço grátis. Pesquisa dos planos grátis: RSS-to-email é pago no Kit, no
+Buttondown e no MailerLite. Ficaram duas opções que cobrem tudo de graça:
+OneSignal + GitHub Actions (sem anúncio, aviso na hora, mais trabalho) e
+follow.it (quase sem código). O dono escolheu o **follow.it**, sabendo que o
+plano grátis põe anúncios, a marca e "artigos sugeridos" nos e-mails e lê o
+feed só a cada 6 h.
+
+Feito: feed `blog-do-felixo` criado no follow.it a partir do `rss.xml`, com o
+formulário configurado no visual do blog (pelo Claude in Chrome, no Brave do
+dono). O formulário gerado é um `<form>` HTML puro (POST para
+`api.follow.it/subscription-form/…/8`, um campo `email`), então dá para
+assinar sem JavaScript no blog. Para o dono assumir o feed (ver e exportar
+assinantes), o follow.it pede prova de propriedade: a meta tag
+`follow.it-verification-code`, só no `<head>` da página inicial
+(`FOLLOWIT.verificacao` em `src/config/site.ts`).
+
+Pendente: o formulário no blog (fim do post, home, Sobre e rodapé), que
+espera a aprovação do design, e a notificação no navegador, que a página
+pública do feed não lista entre as opções do leitor (RSS, e-mail, app,
+página pessoal).

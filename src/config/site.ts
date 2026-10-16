@@ -38,3 +38,13 @@ export const GOATCOUNTER = {
 
 /** Endereço da conta no GoatCounter, ex.: `https://felixo.goatcounter.com`. */
 export const contaGoatCounter = () => `https://${GOATCOUNTER.codigo}.goatcounter.com`;
+
+/**
+ * Assinatura dos posts novos via follow.it (e-mail e app, lendo o `rss.xml`),
+ * feed `blog-do-felixo`. `verificacao` é o código que prova ao follow.it que o
+ * site é do dono do feed: vai numa meta tag da página inicial e é público por
+ * natureza, como o do Google Search Console. Vazio tira a meta tag.
+ */
+export const FOLLOWIT = {
+  verificacao: 'nDnjKRVEAyctn8CkYXUb',
+};

@@ -6,7 +6,7 @@ import Abertura from '../components/Abertura.astro';
 import EscolhaDeIdioma from '../components/EscolhaDeIdioma.astro';
 import RedirecionarParaIngles from '../components/RedirecionarParaIngles.astro';
 import ContagemDeAcessos from '../components/ContagemDeAcessos.astro';
-import { SITE } from '../config/site';
+import { FOLLOWIT, SITE } from '../config/site';
 import { TEXTOS, idiomaDoCaminho, paginaEquivalente } from '../config/idiomas';
 import '../styles/global.css';
 
@@ -69,6 +69,11 @@ const imagemCompartilhamento = imagemCapa
     <meta name="description" content={descricao} />
     <meta name="author" content={SITE.autor} />
     <link rel="canonical" href={canonical} />
+    {
+      atual === '/' && FOLLOWIT.verificacao !== '' && (
+        <meta name="follow.it-verification-code" content={FOLLOWIT.verificacao} />
+      )
+    }
     {
       temOsDois && (
         <>
