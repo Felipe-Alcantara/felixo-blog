@@ -89,7 +89,7 @@ const idAviso = `${id}-aviso`;
 
       <p
         id={idAviso}
-        class:list={['text-xs leading-relaxed text-zinc-500', destaque && 'mt-3']}
+        class:list={['text-xs leading-relaxed text-zinc-400', destaque && 'mt-3']}
       >
         {destaque && <>{textos.privacidade} </>}
         {textos.novaAba}{' '}
@@ -97,7 +97,7 @@ const idAviso = `${id}-aviso`;
           href={FOLLOWIT.seguir}
           target="_blank"
           rel="noopener noreferrer"
-          class="text-zinc-400 underline decoration-white/20 underline-offset-2 transition hover:text-felixo-purple"
+          class="text-zinc-300 underline decoration-white/20 underline-offset-2 transition hover:text-felixo-purple"
         >
           {textos.outrasOpcoes}
         </a>
@@ -114,11 +114,20 @@ const idAviso = `${id}-aviso`;
     background: rgb(0 0 0 / 0.4);
     padding: 0.55rem 0.875rem;
     font-size: 0.875rem;
-    color: rgb(244 244 245);
+    color: #fff;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
+  /* zinc-400, como a busca: o zinc-500 dava 4,35:1 sobre o preto (abaixo do AA). */
   .assinatura-campo::placeholder {
-    color: rgb(113 113 122);
+    color: rgb(161 161 170);
+  }
+
+  .assinatura-campo:hover,
+  .assinatura-campo:focus {
+    border-color: rgb(168 85 247 / 0.5);
   }
 
   .assinatura-campo:focus-visible {
