@@ -8,8 +8,9 @@
  * `rss.xml`. O blog não guarda e-mail nenhum. Abre o follow.it numa aba nova
  * porque o plano grátis não manda o leitor de volta ao blog.
  *
- * `destaque` (fim do post, home, Sobre) traz título, frase e privacidade;
- * `compacta` (rodapé) é uma linha. Como a mesma página pode ter as duas, os
+ * `destaque` (fim do post, home, Sobre) traz título e frase; `compacta`
+ * (rodapé) é só o campo. As duas mostram o aviso de privacidade antes do
+ * envio: o rodapé é a única assinatura em Tags e na 404. Como a mesma página pode ter as duas, os
  * ids vêm do prop `id`, que precisa ser único por instância. Com
  * `FOLLOWIT.formulario` vazio, nada é renderizado.
  */
@@ -91,8 +92,7 @@ const idAviso = `${id}-aviso`;
         id={idAviso}
         class:list={['text-xs leading-relaxed text-zinc-400', destaque && 'mt-3']}
       >
-        {destaque && <>{textos.privacidade} </>}
-        {textos.novaAba}{' '}
+        {textos.privacidade} {textos.novaAba}{' '}
         <a
           href={FOLLOWIT.seguir}
           target="_blank"
