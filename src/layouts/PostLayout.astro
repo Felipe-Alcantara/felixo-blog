@@ -5,6 +5,7 @@ import { idiomaDoCaminho } from '../config/idiomas';
 import { GOATCOUNTER } from '../config/site';
 import BaseLayout from './BaseLayout.astro';
 import AcessosDoPost from '../components/AcessosDoPost.astro';
+import Assinatura from '../components/Assinatura.astro';
 import Comentarios from '../components/Comentarios.astro';
 import Etiqueta from '../components/Etiqueta.astro';
 import Icone from '../components/Icone.astro';
@@ -80,6 +81,8 @@ const imagemCapa = capaOtimizada
       <slot />
     </div>
   </article>
+
+  <Assinatura idioma={idioma} variante="destaque" id="assinatura-post" class="mt-16" />
 
   <div>
     <Comentarios />

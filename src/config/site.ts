@@ -44,7 +44,16 @@ export const contaGoatCounter = () => `https://${GOATCOUNTER.codigo}.goatcounter
  * feed `blog-do-felixo`. `verificacao` é o código que prova ao follow.it que o
  * site é do dono do feed: vai numa meta tag da página inicial e é público por
  * natureza, como o do Google Search Console. Vazio tira a meta tag.
+ *
+ * `formulario` é o endereço de envio do formulário gerado pelo follow.it (POST,
+ * um campo `email`); vazio desliga a assinatura em todas as páginas (ver
+ * `Assinatura.astro`). `seguir` é a página do feed onde o leitor escolhe o
+ * canal; o `?pub` mantém o e-mail dele na lista do dono. Os dois aparecem no
+ * HTML de qualquer site que usa follow.it: não são segredo.
  */
 export const FOLLOWIT = {
   verificacao: 'nDnjKRVEAyctn8CkYXUb',
+  formulario:
+    'https://api.follow.it/subscription-form/Z2NUZVdmSzRYcm90N0tCK0NmMjcwc3JkUHBzcXhDVTJzbEpLMEpodGIvV0dqT1dCeTQ4V2RjU2k0VFAvZlJ3VVRXTFFGb3BncjNKQXBQQzQ4cFJDZ2ExTndqM0xrbjcyTlZraXBsVFJvUCtYT2twN0pvOVhpWVhoM3IycnYwbCt8YXFHSUVGOEdnQmxuV1NCNW1wdXpvMjl1WVI1RlhvMDV6cWM1N2RvWUFWMD0=/8',
+  seguir: 'https://follow.it/blog-do-felixo?pub',
 };

@@ -65,6 +65,22 @@ export const TEXTOS = {
     postEmOutroIdioma: '',
     /** Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`). */
     acessos: { singular: 'acesso', plural: 'acessos' },
+    /**
+     * Formulário de assinatura do follow.it (ver `Assinatura.astro`). O padrão
+     * do plano grátis é um resumo diário: não prometer aviso "na hora".
+     */
+    assinatura: {
+      titulo: 'Receba os posts novos',
+      texto: 'Um e-mail no dia em que sair post novo.',
+      rotuloEmail: 'Seu e-mail',
+      placeholder: 'voce@exemplo.com',
+      botao: 'Assinar',
+      compacto: 'Receba os posts novos por e-mail',
+      privacidade:
+        'Quem envia é o follow.it, que guarda o seu e-mail e coloca anúncios nas mensagens. Dá para cancelar a qualquer momento.',
+      novaAba: 'Abre o follow.it em nova aba.',
+      outrasOpcoes: 'Prefere app ou RSS?',
+    },
   },
   en: {
     lang: 'en',
@@ -102,6 +118,19 @@ export const TEXTOS = {
     },
     postEmOutroIdioma: 'In Portuguese',
     acessos: { singular: 'view', plural: 'views' },
+    assinatura: {
+      titulo: 'Get new posts',
+      texto:
+        'An email on the day a new post comes out (posts are in Portuguese for now).',
+      rotuloEmail: 'Your email',
+      placeholder: 'you@example.com',
+      botao: 'Subscribe',
+      compacto: 'Get new posts by email',
+      privacidade:
+        'Emails are sent by follow.it, which stores your address and adds ads to its messages. You can unsubscribe at any time.',
+      novaAba: 'Opens follow.it in a new tab.',
+      outrasOpcoes: 'Prefer an app or RSS?',
+    },
   },
 } as const satisfies Record<Idioma, unknown>;
 
