@@ -7,7 +7,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ItemPost from './ItemPost.astro';
 import Icone from './Icone.astro';
-import Assinatura from './Assinatura.astro';
+import BotaoAssinatura from './BotaoAssinatura.astro';
 import { caminho } from '../utils/rotas';
 import { TEXTOS, type Idioma } from '../config/idiomas';
 import { listarPosts } from '../utils/posts';
@@ -34,7 +34,9 @@ const posts = await listarPosts();
     </div>
 
     <!-- Botões em pílula do felixo.com.br. Eram três; o "Ver posts" saiu
-         porque só rolava até a lista logo abaixo (2026-09-30). -->
+         porque só rolava até a lista logo abaixo (2026-09-30). O de e-mail
+         abre a janela de assinatura, que ficava aberta num cartão aqui
+         embaixo (2026-10-16). -->
     <div class="mt-7 flex flex-wrap gap-3">
       <a
         href="https://felixo.com.br/"
@@ -49,10 +51,9 @@ const posts = await listarPosts();
         <Icone nome="rss" />
         <span>{textos.home.assinarRss}</span>
       </a>
+      <BotaoAssinatura idioma={idioma} variante="botao" />
     </div>
   </section>
-
-  <Assinatura idioma={idioma} variante="destaque" id="assinatura-home" class="mb-14" />
 
   <section aria-labelledby="titulo-posts">
     <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">

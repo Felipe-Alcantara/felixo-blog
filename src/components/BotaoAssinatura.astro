@@ -1,0 +1,66 @@
+---
+/**
+ * Botão que abre a janela de assinatura (`Assinatura.astro`, que o
+ * `BaseLayout` põe em toda página). `popovertarget` é o `popover` nativo:
+ * abre sem JavaScript. Some com `FOLLOWIT.formulario` vazio.
+ *
+ * - `botao`: pílula neutra, ao lado de "Assinar RSS" na home.
+ * - `chamada`: uma frase e o botão, no fim do post e no Sobre.
+ * - `link`: texto curto entre os links do rodapé; o nome acessível é a frase
+ *   inteira ("Receber por e-mail"), que contém o texto visível.
+ */
+import { FOLLOWIT } from '../config/site';
+import { TEXTOS, type Idioma } from '../config/idiomas';
+import Icone from './Icone.astro';
+
+interface Props {
+  idioma: Idioma;
+  variante: 'botao' | 'chamada' | 'link';
+  /** Classes de espaçamento do lugar onde entra; somem junto quando desligado. */
+  class?: string;
+}
+
+const { idioma, variante, class: classe } = Astro.props;
+const textos = TEXTOS[idioma].assinatura;
+const ativo = FOLLOWIT.formulario !== '';
+---
+
+{
+  ativo && variante === 'link' && (
+    <button
+      type="button"
+      popovertarget="assinatura"
+      aria-label={textos.abrir}
+      class:list={['cursor-pointer transition hover:text-felixo-purple', classe]}
+    >
+      {textos.rodape}
+    </button>
+  )
+}
+{
+  ativo && variante === 'botao' && (
+    <button
+      type="button"
+      popovertarget="assinatura"
+      class:list={['felixo-botao felixo-botao-fantasma cursor-pointer', classe]}
+    >
+      <Icone nome="email" />
+      <span>{textos.abrir}</span>
+    </button>
+  )
+}
+{
+  ativo && variante === 'chamada' && (
+    <div class:list={['flex flex-wrap items-center gap-x-4 gap-y-3', classe]}>
+      <p class="text-zinc-400">{textos.chamada}</p>
+      <button
+        type="button"
+        popovertarget="assinatura"
+        class="felixo-botao felixo-botao-fantasma cursor-pointer"
+      >
+        <Icone nome="email" />
+        <span>{textos.abrir}</span>
+      </button>
+    </div>
+  )
+}

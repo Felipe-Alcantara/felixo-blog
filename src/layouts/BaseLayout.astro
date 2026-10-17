@@ -2,6 +2,7 @@
 import { caminho, caminhoSemBase } from '../utils/rotas';
 import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
+import Assinatura from '../components/Assinatura.astro';
 import Abertura from '../components/Abertura.astro';
 import EscolhaDeIdioma from '../components/EscolhaDeIdioma.astro';
 import RedirecionarParaIngles from '../components/RedirecionarParaIngles.astro';
@@ -145,6 +146,7 @@ const imagemCompartilhamento = imagemCapa
       <slot />
     </main>
     <Rodape idioma={idioma} />
+    {FOLLOWIT.formulario !== '' && <Assinatura idioma={idioma} />}
     <EscolhaDeIdioma
       idioma={idioma}
       destinos={{

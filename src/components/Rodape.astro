@@ -1,8 +1,8 @@
 ---
-import { SITE } from '../config/site';
+import { FOLLOWIT, SITE } from '../config/site';
 import { TEXTOS, type Idioma } from '../config/idiomas';
 import { caminho } from '../utils/rotas';
-import Assinatura from './Assinatura.astro';
+import BotaoAssinatura from './BotaoAssinatura.astro';
 
 interface Props {
   idioma: Idioma;
@@ -20,14 +20,6 @@ const ehExterno = (href: string) => href.startsWith('http');
   <!-- A linha fica no bloco de dentro para ter a mesma largura do texto,
        não a largura do padding lateral. -->
   <div class="mx-auto max-w-3xl px-4 sm:px-6">
-    <!-- Assinatura compacta acima da linha: some inteira (sem deixar espaço)
-         quando FOLLOWIT.formulario está vazio. -->
-    <Assinatura
-      idioma={Astro.props.idioma}
-      variante="compacta"
-      id="assinatura-rodape"
-      class="pb-8 text-sm sm:max-w-md"
-    />
     <div
       class="flex flex-col gap-4 border-t border-white/5 py-10 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between"
     >
@@ -46,6 +38,14 @@ const ehExterno = (href: string) => href.startsWith('http');
               </a>
             </li>
           ))
+        }
+        {/* Abre a janela de assinatura; sem `li` vazio quando ela está desligada. */}
+        {
+          FOLLOWIT.formulario !== '' && (
+            <li>
+              <BotaoAssinatura idioma={Astro.props.idioma} variante="link" />
+            </li>
+          )
         }
       </ul>
     </div>

@@ -1,98 +1,96 @@
 ---
 /**
- * Assinatura dos posts novos via follow.it (pedido do dono, 2026-10-16; ver
- * `docs/superpowers/specs/2026-10-16-assinatura-follow-it-design.md`).
+ * Janela de assinatura dos posts novos via follow.it (pedido do dono,
+ * 2026-10-16; ver `docs/superpowers/specs/2026-10-16-assinatura-follow-it-design.md`).
  *
- * `<form>` HTML puro, sem JavaScript: o e-mail vai direto ao follow.it, que
- * confirma a assinatura e manda o aviso quando um post novo entra no
- * `rss.xml`. O blog não guarda e-mail nenhum. Abre o follow.it numa aba nova
- * porque o plano grátis não manda o leitor de volta ao blog.
+ * Entra uma vez por página, no `BaseLayout`, e abre pelos botões de
+ * `BotaoAssinatura.astro` (home, fim do post, Sobre e rodapé). Antes era um
+ * cartão aberto no meio da página, que o dono achou intrusivo (mesmo dia).
  *
- * `destaque` (fim do post, home, Sobre) traz título e frase; `compacta`
- * (rodapé) é só o campo. As duas mostram o aviso de privacidade antes do
- * envio: o rodapé é a única assinatura em Tags e na 404. Como a mesma página pode ter as duas, os
- * ids vêm do prop `id`, que precisa ser único por instância. Com
- * `FOLLOWIT.formulario` vazio, nada é renderizado.
+ * É um `<dialog>` com o `popover` nativo: abre e fecha sem JavaScript, fecha
+ * com Esc ou com clique fora, e o campo recebe o foco quando abre. O `<form>`
+ * é HTML puro: o e-mail vai direto ao follow.it, que confirma a assinatura e
+ * manda o aviso quando um post novo entra no `rss.xml`. O blog não guarda
+ * e-mail nenhum. O follow.it abre numa aba nova porque o plano grátis não
+ * manda o leitor de volta ao blog. Com `FOLLOWIT.formulario` vazio, nada é
+ * renderizado (e o `BaseLayout` nem inclui o componente, para o script
+ * também não entrar).
+ *
+ * A animação é a do modal de contato do felixo.com.br (pedido do dono): o
+ * botão clicado cresce até virar a janela e, ao fechar, ela encolhe de volta
+ * para ele. O script abaixo só cuida disso; sem ele, a janela abre com o
+ * esmaecimento do CSS.
+ *
+ * O id `assinatura` é o alvo dos botões (`popovertarget`); mudar aqui é mudar
+ * lá também.
  */
 import { FOLLOWIT } from '../config/site';
 import { TEXTOS, type Idioma } from '../config/idiomas';
+import Icone from './Icone.astro';
 
 interface Props {
   idioma: Idioma;
-  variante: 'destaque' | 'compacta';
-  /** Prefixo dos ids desta instância, ex.: `assinatura-post`. */
-  id: string;
-  /** Classes de espaçamento do lugar onde entra; somem junto quando desligado. */
-  class?: string;
 }
 
-const { idioma, variante, id, class: classe } = Astro.props;
-const textos = TEXTOS[idioma].assinatura;
+const textos = TEXTOS[Astro.props.idioma].assinatura;
 const ativo = FOLLOWIT.formulario !== '';
-const destaque = variante === 'destaque';
-const idEmail = `${id}-email`;
-const idAviso = `${id}-aviso`;
 ---
 
 {
   ativo && (
-    <section
-      class:list={[
-        'assinatura',
-        destaque
-          ? 'rounded-2xl border border-white/10 bg-black/40 p-6 sm:p-8'
-          : 'flex flex-col gap-3',
-        classe,
-      ]}
-      aria-labelledby={destaque ? `${id}-titulo` : undefined}
-      aria-label={destaque ? undefined : textos.compacto}
+    <dialog
+      id="assinatura"
+      popover
+      aria-labelledby="assinatura-titulo"
+      class="assinatura m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-purple-500/30 bg-zinc-950 p-6 text-zinc-300 shadow-[0_0_40px_rgba(168,85,247,0.25)] backdrop:bg-black/70 backdrop:backdrop-blur-sm sm:p-8"
     >
-      {destaque && (
-        <>
-          <h2 id={`${id}-titulo`} class="felixo-text-glow text-xl font-bold">
-            {textos.titulo}
-          </h2>
-          <p class="mt-2 text-zinc-400">{textos.texto}</p>
-        </>
-      )}
+      <div class="flex items-start justify-between gap-4">
+        <h2 id="assinatura-titulo" class="felixo-text-glow text-xl font-bold">
+          {textos.titulo}
+        </h2>
+        <button
+          type="button"
+          popovertarget="assinatura"
+          popovertargetaction="hide"
+          aria-label={textos.fechar}
+          class="-m-2 cursor-pointer rounded-lg p-2 text-zinc-400 transition hover:text-white"
+        >
+          <Icone nome="fechar" />
+        </button>
+      </div>
+      <p class="mt-2 text-zinc-400">{textos.texto}</p>
 
       <form
         action={FOLLOWIT.formulario}
         method="post"
         target="_blank"
-        class:list={['flex flex-col gap-2 sm:flex-row sm:items-end', destaque && 'mt-5']}
+        class="mt-5 flex flex-col gap-2 sm:flex-row sm:items-end"
       >
         <div class="flex-1">
-          <label
-            for={idEmail}
-            class:list={[
-              'block text-sm',
-              destaque ? 'mb-1.5 text-zinc-300' : 'mb-1 text-zinc-400',
-            ]}
-          >
-            {destaque ? textos.rotuloEmail : textos.compacto}
+          <label for="assinatura-email" class="mb-1.5 block text-sm text-zinc-300">
+            {textos.rotuloEmail}
           </label>
           <input
-            id={idEmail}
+            id="assinatura-email"
             type="email"
             name="email"
             required
+            autofocus
             autocomplete="email"
             placeholder={textos.placeholder}
-            aria-describedby={idAviso}
+            aria-describedby="assinatura-aviso"
             class="assinatura-campo w-full"
           />
         </div>
-        <button type="submit" class="felixo-botao justify-center">
+        <button type="submit" class="felixo-botao cursor-pointer justify-center">
           <span>{textos.botao}</span>
         </button>
       </form>
 
-      <p
-        id={idAviso}
-        class:list={['text-xs leading-relaxed text-zinc-400', destaque && 'mt-3']}
-      >
-        {textos.privacidade} {textos.novaAba}{' '}
+      <p class="mt-3 text-xs leading-relaxed text-zinc-400">
+        <span id="assinatura-aviso">
+          {textos.privacidade} {textos.novaAba}
+        </span>{' '}
         <a
           href={FOLLOWIT.seguir}
           target="_blank"
@@ -102,7 +100,7 @@ const idAviso = `${id}-aviso`;
           {textos.outrasOpcoes}
         </a>
       </p>
-    </section>
+    </dialog>
   )
 }
 
@@ -134,4 +132,145 @@ const idAviso = `${id}-aviso`;
     outline: 2px solid var(--color-felixo-purple);
     outline-offset: 2px;
   }
+
+  /* Esmaecimento do modal de contato do felixo.com.br: fundo e janela entram
+     e saem juntos em 0,3 s, com a curva padrão de opacidade do framer-motion
+     que o portfólio usa. */
+  .assinatura,
+  .assinatura::backdrop {
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.35, 1);
+  }
+
+  .assinatura:popover-open,
+  .assinatura:popover-open::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .assinatura:popover-open,
+    .assinatura:popover-open::backdrop {
+      opacity: 0;
+    }
+  }
+
+  /* Ao fechar, a janela continua na tela os 0,45 s em que encolhe de volta
+     para o botão (ver o script). Sem `overlay`, ela some na hora. */
+  @supports (overlay: auto) {
+    .assinatura {
+      transition:
+        opacity 0.3s cubic-bezier(0.25, 0.1, 0.35, 1),
+        display 0.45s allow-discrete,
+        overlay 0.45s allow-discrete;
+    }
+  }
+
+  /* A regra global de "reduzir movimento" usa `*`, que não pega o `::backdrop`. */
+  @media (prefers-reduced-motion: reduce) {
+    .assinatura::backdrop {
+      transition-duration: 0.01ms;
+    }
+  }
 </style>
+
+<script>
+  // Abertura do modal de contato do felixo.com.br, que usa o `layoutId` do
+  // framer-motion: o botão clicado some e a janela cresce a partir dele; ao
+  // fechar, ela encolhe de volta e o botão reaparece. Os tempos são os padrões
+  // do framer-motion no portfólio: 0,45 s com cubic-bezier(.4, 0, .1, 1) para
+  // a forma, e 0,3 s para o esmaecimento (no CSS acima).
+  const janela = document.querySelector<HTMLElement>('#assinatura');
+
+  if (janela) {
+    const reduzir = matchMedia('(prefers-reduced-motion: reduce)');
+    const forma = { duration: 450, easing: 'cubic-bezier(0.4, 0, 0.1, 1)' };
+    const esmaecer = { duration: 300, easing: 'cubic-bezier(0.25, 0.1, 0.35, 1)' };
+    // Sem `overlay` (ver o CSS), a janela some ao fechar e não dá para encolher.
+    const animaSaida = CSS.supports('overlay', 'auto');
+
+    let origem: HTMLElement | null = null;
+    let animacao: Animation | null = null;
+    // Segura o botão invisível; uma animação, e não `style.opacity`, para não
+    // esbarrar na transição de opacidade que alguns botões têm (o do rodapé).
+    let sumico: Animation | null = null;
+
+    const esconderBotao = (botao: HTMLElement) => {
+      sumico = botao.animate({ opacity: 0 }, { duration: 0, fill: 'forwards' });
+    };
+
+    const mostrarBotao = (suave: boolean) => {
+      const botao =
+        sumico?.effect instanceof KeyframeEffect ? sumico.effect.target : null;
+      sumico?.cancel();
+      sumico = null;
+      if (suave) botao?.animate([{ opacity: 0 }, { opacity: 1 }], esmaecer);
+    };
+
+    const noLugar = (): Keyframe => ({
+      transformOrigin: '0 0',
+      transform: 'none',
+      borderRadius: getComputedStyle(janela).borderTopLeftRadius,
+    });
+
+    /** Quadro em que a janela cobre exatamente o botão, com o canto dele. */
+    const sobreOBotao = (botao: HTMLElement): Keyframe => {
+      const de = botao.getBoundingClientRect();
+      const para = janela.getBoundingClientRect();
+      const sx = de.width / para.width;
+      const sy = de.height / para.height;
+      const raio = parseFloat(getComputedStyle(botao).borderTopLeftRadius) || 0;
+      return {
+        transformOrigin: '0 0',
+        transform: `translate(${de.left - para.left}px, ${de.top - para.top}px) scale(${sx}, ${sy})`,
+        borderRadius: `${raio / sx}px / ${raio / sy}px`,
+      };
+    };
+
+    // O clique chega antes da abertura: guarda qual botão abriu a janela.
+    document.addEventListener(
+      'click',
+      (evento) => {
+        const alvo = evento.target instanceof Element ? evento.target : null;
+        const botao = alvo?.closest<HTMLElement>('[popovertarget]');
+        if (
+          botao?.getAttribute('popovertarget') === janela.id &&
+          !botao.hasAttribute('popovertargetaction')
+        ) {
+          origem = botao;
+        }
+      },
+      true,
+    );
+
+    janela.addEventListener('beforetoggle', (evento) => {
+      animacao?.cancel();
+      animacao = null;
+      const botao = origem;
+      const abrindo = (evento as ToggleEvent).newState === 'open';
+
+      if (reduzir.matches || !botao || !botao.isConnected) {
+        mostrarBotao(false);
+        return;
+      }
+
+      if (abrindo) {
+        mostrarBotao(false);
+        // A janela só tem tamanho depois de aberta: mede no quadro seguinte,
+        // que ainda não foi pintado.
+        requestAnimationFrame(() => {
+          if (!janela.matches(':popover-open')) return;
+          animacao = janela.animate([sobreOBotao(botao), noLugar()], forma);
+          esconderBotao(botao);
+        });
+      } else if (animaSaida) {
+        animacao = janela.animate([noLugar(), sobreOBotao(botao)], {
+          ...forma,
+          fill: 'forwards',
+        });
+        mostrarBotao(true);
+      } else {
+        mostrarBotao(false);
+      }
+    });
+  }
+</script>
