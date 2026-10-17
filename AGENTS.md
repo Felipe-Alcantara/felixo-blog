@@ -46,7 +46,7 @@ histórico de decisões.
 | Deploy                                        | `.github/workflows/deploy.yml`                                                                     |
 | Comentários (giscus)                          | `src/components/Comentarios.astro`, `GISCUS` em `src/config/site.ts`                               |
 | Contagem de acessos (GoatCounter)             | `ContagemDeAcessos.astro`, `AcessosDoPost.astro`, `GOATCOUNTER` em `src/config/site.ts`            |
-| Assinatura dos posts novos (follow.it)        | `Assinatura.astro`, `FOLLOWIT` em `src/config/site.ts`, textos em `TEXTOS.*.assinatura`            |
+| Assinatura dos posts novos (follow.it)        | `Assinatura.astro` (janela), `BotaoAssinatura.astro`, `FOLLOWIT` em `src/config/site.ts`           |
 
 ## Gate de qualidade
 

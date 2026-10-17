@@ -51,8 +51,10 @@
   (`felixo.goatcounter.com`), com o contador público ligado no painel. O número
   no post só aparece depois do primeiro acesso a ele.
 - **Assinatura** (2026-10-16): follow.it, feed `blog-do-felixo` na conta do
-  dono, plano grátis. Formulário sem JS no fim do post, na home, no Sobre e no
-  rodapé (`Assinatura.astro`, `FOLLOWIT`). Sem notificação no navegador.
+  dono, plano grátis. Botão "Receber por e-mail" na home, no fim do post, no
+  Sobre e no rodapé (`BotaoAssinatura.astro`), que abre uma janela com o
+  formulário (`Assinatura.astro`, `FOLLOWIT`), com a animação dos modais do
+  portfólio. Sem notificação no navegador.
 - **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
   deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
   via giscus já publicados (push feito, deploy verde em 2026-08-05).
@@ -1394,3 +1396,53 @@ verificação continua na home). Capturas do Chrome headless em 1280 e 360 px
 sem rolagem horizontal; Tab chega ao campo e ao botão do destaque e do rodapé
 com foco visível; contraste dos textos da assinatura de 8,19:1 a 14,21:1.
 Pendente: o teste ponta a ponta com e-mail real, que é do dono.
+
+[2026-10-16] **Assinatura vira botão com janela, com a animação do portfólio.**
+Pedido do dono: o cartão de assinatura aberto no meio da página ficou
+intrusivo, melhor dentro de um botão. Entre abrir uma janela, abrir logo abaixo
+do botão e ir direto ao follow.it, ele escolheu a janela; no meio do trabalho,
+pediu as animações dos modais do felixo.com.br.
+
+Como ficou: `BotaoAssinatura.astro` tem três variantes, `botao` (pílula ao
+lado de "Assinar RSS" na home), `chamada` ("Quer saber quando sair post novo?"
+e o botão, no fim do post e no Sobre) e `link` ("E-mail" entre os links do
+rodapé, com nome acessível "Receber por e-mail"). Todas abrem a mesma janela,
+`Assinatura.astro`, que o `BaseLayout` põe uma vez por página: um
+`<dialog popover>` com o formulário de antes, um ✕ e o aviso do follow.it. O
+`popover` nativo abre e fecha sem JavaScript, inclusive com Esc e clique fora,
+e o `autofocus` do campo só age quando a janela abre. Saíram a variante
+`compacta` e os ids por instância: agora há um formulário por página.
+
+Animação: é a do modal de contato do portfólio (repositório
+`Felipe-Portifolio`), em que o `layoutId` do framer-motion transforma o botão
+"Enviar mensagem" no cartão. Os tempos vieram do bundle publicado do
+felixo.com.br: 0,45 s com `cubic-bezier(.4, 0, .1, 1)` para a forma (o padrão
+de layout do framer-motion) e 0,3 s com `cubic-bezier(.25, .1, .35, 1)` para o
+esmaecimento. O esmaecimento é CSS (`@starting-style`). A forma é um script
+curto: mede o botão clicado, anima a janela a partir dele (FLIP com Web
+Animations, corrigindo o canto arredondado durante a escala), esconde o botão
+enquanto a janela está aberta e, ao fechar, encolhe a janela de volta para
+ele. Para a janela continuar na tela durante a saída, o CSS usa
+`allow-discrete` em `display` e `overlay`, só onde `overlay` existe; nos outros
+navegadores ela some na hora. Com "reduzir movimento", nada se move; sem
+JavaScript, a janela abre só com o esmaecimento.
+
+Decisões: o script é a exceção à regra de "sem JS de interface" só para a
+animação, porque o dono pediu a do portfólio e ela depende de medir o botão;
+abrir e fechar continuam sem JS. O botão some por uma animação de opacidade, e
+não por `style.opacity`, porque o link do rodapé tem a transição de opacidade
+do Tailwind. O script procura `[popovertarget]` e compara com o id da janela,
+em vez de escrever o seletor inteiro, porque o Astro embute o script no HTML e
+o seletor contaria como mais um botão nas asserções. A regra global de "reduzir
+movimento" usa `*`, que não pega o `::backdrop`; o componente cobre isso.
+
+Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No `dist/`:
+uma janela e um formulário por página, dois botões na home PT e EN, no post e no
+Sobre e um em Tags e na 404, ids sem repetição, textos em inglês em `/en/`;
+desligado, nenhum botão, janela ou link do follow.it. No Chrome headless, em
+360 e 1280 px, nas cinco páginas: carrega fechada e sem roubar o foco, abre
+crescendo do botão e termina no lugar com o foco no campo, cabe na tela, Esc
+fecha encolhendo e o botão volta; ✕ e clique fora fecham; Enter abre pelo
+teclado, Tab vai ao Assinar e Esc devolve o foco ao botão; com "reduzir
+movimento" e sem JavaScript, abre e fecha; contraste de 7,53:1 a 13,46:1 sobre
+o fundo da janela.

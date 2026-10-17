@@ -149,12 +149,16 @@ post fica em cache por até 4 horas no GoatCounter.
 ## Assinatura dos posts novos
 
 Quem lê pode assinar os posts novos pelo [follow.it](https://follow.it), sem
-back-end próprio. O formulário (`src/components/Assinatura.astro`) é um
+back-end próprio. O botão "Receber por e-mail"
+(`src/components/BotaoAssinatura.astro`) fica na home, no fim de cada post, no
+Sobre e no rodapé, e abre uma janela (`src/components/Assinatura.astro`) com um
 `<form>` HTML puro que envia o e-mail direto ao follow.it, que lê o `rss.xml` e
-avisa os assinantes. Ele aparece em destaque no fim de cada post, na home e no
-Sobre, e compacto no rodapé. Configuração em `FOLLOWIT` (`src/config/site.ts`):
-`formulario` vazio desliga tudo, e `verificacao` é a meta tag que prova ao
-follow.it que o site é do dono do feed. Textos em `TEXTOS.<idioma>.assinatura`.
+avisa os assinantes. A janela usa o `popover` nativo, então abre e fecha sem
+JavaScript; um script curto só faz a animação dos modais do felixo.com.br (o
+botão cresce até virar a janela). Configuração em `FOLLOWIT`
+(`src/config/site.ts`): `formulario` vazio desliga tudo, e `verificacao` é a
+meta tag que prova ao follow.it que o site é do dono do feed. Textos em
+`TEXTOS.<idioma>.assinatura`.
 
 Limites do plano grátis: o follow.it lê o feed a cada 6 horas; o padrão do
 e-mail é um resumo diário (cada assinante pode trocar para um e-mail por post);
