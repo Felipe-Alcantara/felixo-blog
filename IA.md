@@ -1584,3 +1584,47 @@ Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No build de
 produção servido local, em Chrome headless a 1000 e 390 px: os três parágrafos
 na ordem e "Minhas redes" entre o texto e os botões (conferido olhando as
 capturas; o estouro horizontal não foi medido desta vez).
+
+[2026-10-22] **Redes da home como no felixo.com.br.** Depois da frase "Minhas redes"
+(registro anterior), o dono mandou a captura da home, com a frase em cima dos
+três botões, e a da seção "Sobre" do portfólio: "Não colocou as redes como é no
+meu site". O que ele queria era a linha de ícones, não os botões.
+
+Origem: `src/sections/about.jsx` do repositório `Felipe-Portifolio` (público).
+Seis ícones só com o desenho, de 28 px, na ordem e com os endereços de lá:
+e-mail, GitHub, LinkedIn, WhatsApp, Discord e Twitter (o ícone é o passarinho;
+o endereço é `x.com/Felixo_Tech`, o mesmo de `SITE.twitter`). Cor `#A855F7` com
+o brilho pulsante de `.text-felixo-purple-glow` do portfólio (só a parte do
+`drop-shadow`, a que vale para SVG), crescimento de 1,5× no hover e uma linha
+roxa brilhante embaixo. Na home, a ordem ficou: parágrafos, "Minhas redes",
+ícones, linha, e os três botões de antes (portfólio, RSS, e-mail), que são
+ações do blog e não redes.
+
+Onde está cada coisa: endereços em `REDES` de `src/config/site.ts` (o `id` é o
+nome do ícone e a chave do rótulo); rótulos em `TEXTOS.<idioma>.home.redes`;
+linha em `src/components/Redes.astro`; desenhos em `Icone.astro`, agora com
+`github` e `linkedin` (Lucide 0.292.0, a versão do portfólio) e as marcas
+`whatsapp`, `discord` e `twitter`, que não existem no Lucide e vêm do Font
+Awesome Free 5.15.4 (CC BY 4.0, atribuição no comentário do `Icone.astro`), os
+mesmos que o portfólio usa via `react-icons`. O `Icone` ganhou o tamanho 28.
+Brilho em `.felixo-icone-brilho` de `global.css`, que para com "reduzir
+movimento".
+
+Acessibilidade, que o portfólio não tem: link só com ícone tem `aria-label` e
+`title` (em inglês, "Email"); o SVG é `aria-hidden`; o crescimento vale também
+para o foco do teclado; os links externos abrem em nova aba com
+`rel="noopener noreferrer"`.
+
+Atenção: o e-mail e o número do WhatsApp passam a estar no HTML do blog e neste
+repositório, que é público. São os mesmos que já estão no portfólio, que
+também é público, e o dono pediu que fosse igual ao site; a diferença é que o
+blog tem mais uma cópia para robôs de spam lerem.
+
+Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No build de
+produção servido local, em Chrome headless: seis links com o endereço certo, o
+nome certo e abertura em nova aba (menos o e-mail), em português e em inglês; a
+1000 e 390 px a linha cabe sem estouro horizontal; com o mouse sobre o ícone do
+GitHub ele vai de 28 para 42 px, e o foco do teclado dá o mesmo; cor medida
+`rgb(168, 85, 247)` com a animação ativa. Não medido: o custo do `drop-shadow`
+animado em celular fraco (se pesar, o brilho passa a ser fixo) e a aparência
+em Safari e Firefox.
