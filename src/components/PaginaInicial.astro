@@ -8,6 +8,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ItemPost from './ItemPost.astro';
 import Icone from './Icone.astro';
 import BotaoAssinatura from './BotaoAssinatura.astro';
+import Redes from './Redes.astro';
 import { caminho } from '../utils/rotas';
 import { TEXTOS, type Idioma } from '../config/idiomas';
 import { listarPosts } from '../utils/posts';
@@ -33,14 +34,20 @@ const posts = await listarPosts();
       {textos.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
     </div>
 
-    <!-- "Minhas redes" é frase do dono, antes dos botões (2026-10-22). -->
+    <!-- "Minhas redes" é frase do dono, e a linha de ícones com a linha roxa
+         embaixo é a da seção "Sobre" do felixo.com.br (2026-10-22). -->
     <p class="mt-7 text-lg text-zinc-400">{textos.home.minhasRedes}</p>
+    <Redes idioma={idioma} class="mt-3" />
+    <div
+      class="mt-4 h-px w-full bg-purple-400/30 shadow-[0_0_10px_0] shadow-purple-400/50"
+    >
+    </div>
 
     <!-- Botões em pílula do felixo.com.br. Eram três; o "Ver posts" saiu
          porque só rolava até a lista logo abaixo (2026-09-30). O de e-mail
          abre a janela de assinatura, que ficava aberta num cartão aqui
          embaixo (2026-10-16). -->
-    <div class="mt-3 flex flex-wrap gap-3">
+    <div class="mt-6 flex flex-wrap gap-3">
       <a
         href="https://felixo.com.br/"
         target="_blank"
