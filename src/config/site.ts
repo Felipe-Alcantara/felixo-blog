@@ -11,10 +11,11 @@ export const SITE = {
 } as const;
 
 /**
- * Redes do dono, as mesmas da seção "Sobre" do felixo.com.br e na mesma ordem
- * (pedido do dono, 2026-10-22). São endereços que já são públicos no
- * portfólio. O `id` é também o nome do ícone em `Icone.astro` e a chave do
- * rótulo em `TEXTOS.<idioma>.home.redes`. `externo` abre em nova aba.
+ * Redes do dono, as da seção "Sobre" do felixo.com.br e na mesma ordem, menos
+ * o WhatsApp, que o dono pediu para tirar do blog (2026-10-22). São endereços
+ * que já são públicos no portfólio. O `id` é também o nome do ícone em
+ * `Icone.astro` e a chave do rótulo em `TEXTOS.<idioma>.home.redes`.
+ * `externo` abre em nova aba.
  */
 export const REDES = [
   { id: 'email', href: 'mailto:FelipeTheFeh@Gmail.com', externo: false },
@@ -24,7 +25,6 @@ export const REDES = [
     href: 'https://www.linkedin.com/in/felipealcantaramartins/',
     externo: true,
   },
-  { id: 'whatsapp', href: 'https://wa.me/NUMERO-REMOVIDO', externo: true },
   { id: 'discord', href: 'https://discord.gg/DmW9tHcGpV', externo: true },
   { id: 'twitter', href: 'https://x.com/Felixo_Tech', externo: true },
 ] as const;
