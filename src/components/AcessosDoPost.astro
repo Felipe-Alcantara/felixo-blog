@@ -6,11 +6,13 @@
  * este componente com `GOATCOUNTER.codigo` preenchido.
  *
  * Exige ligar "Allow adding visitor counts on your website" nas configurações
- * do painel. Começa escondido e só aparece quando o número chega: sem
- * JavaScript, com bloqueador de anúncio, com o contador desligado no painel ou
- * num post que ainda não teve acesso (o GoatCounter responde 404), o cabeçalho
- * fica como antes. O GoatCounter guarda o número em cache por até 4 horas,
- * então ele não sobe a cada recarga.
+ * do painel. Começa escondido e aparece quando o número chega, inclusive 0
+ * (pedido do dono, 2026-10-22): num post que ainda não teve acesso o
+ * GoatCounter responde 404 com `count` 0, e isso é um 0 de verdade. Sem
+ * JavaScript, com bloqueador de anúncio ou com o contador desligado no painel,
+ * a leitura falha e o cabeçalho fica como antes (o rodapé, em
+ * `AcessosNoRodape.astro`, mostra um traço nesses casos). O GoatCounter guarda
+ * o número em cache por até 4 horas, então ele não sobe a cada recarga.
  *
  * O separador de milhar do GoatCounter vem como espaço ("1 234"): o script
  * fica só com os dígitos e formata no idioma da página.
@@ -42,10 +44,10 @@ const endereco = `${contaGoatCounter()}/counter/${encodeURIComponent(Astro.url.p
 <script is:inline>
   document.querySelectorAll('[data-acessos]').forEach((el) => {
     fetch(el.dataset.acessos)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((r) => (r.ok || r.status === 404 ? r.json() : Promise.reject(r.status)))
       .then((dados) => {
-        const n = Number(String(dados.count ?? '').replace(/\D/g, ''));
-        if (!n) return;
+        if (dados.count === undefined) return;
+        const n = Number(String(dados.count).replace(/\D/g, ''));
         const numero = new Intl.NumberFormat(el.dataset.lang).format(n);
         const rotulo = n === 1 ? el.dataset.singular : el.dataset.plural;
         el.querySelector('[data-acessos-numero]').textContent = `${numero} ${rotulo}`;

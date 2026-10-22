@@ -11,11 +11,16 @@
  * o número da página: no post ele já aparece no cabeçalho, e na 404 o caminho
  * contado é o de todos os links quebrados juntos. O total aparece sempre.
  *
- * Mesmas regras do número do post: precisa de "Allow adding visitor counts on
- * your website" ligado no painel, começa escondido e só aparece quando chega
- * pelo menos um número (sem JavaScript, com bloqueador de anúncio, com o
- * contador desligado ou com zero acessos, o rodapé fica como era). O
- * GoatCounter guarda os números em cache por até 4 horas. O separador de
+ * Precisa de "Allow adding visitor counts on your website" ligado no painel.
+ * Começa escondido e aparece quando a leitura termina, sempre com os dois
+ * números, inclusive 0 (pedido do dono, 2026-10-22: com zero acessos o rodapé
+ * não mostrava nada e ele achou que o contador não existia). Para uma página
+ * sem nenhum acesso o GoatCounter responde 404 com `count` 0, e isso é um 0
+ * de verdade. Quando a leitura falha (bloqueador de anúncio, rede fora,
+ * contador desligado), o número vira um traço, para o contador não parecer
+ * ausente. Sem JavaScript, o rodapé fica como era.
+ *
+ * O GoatCounter guarda os números em cache por até 4 horas. O separador de
  * milhar vem como espaço ("1 234"): o script fica só com os dígitos e formata
  * no idioma da página.
  */
@@ -53,27 +58,27 @@ const endereco = (caminho: string) =>
     const rotulos = JSON.parse(el.dataset.rotulos);
     const formatar = new Intl.NumberFormat(el.dataset.lang);
 
-    // Devolve o texto pronto ("1 234 acessos no blog") ou null: endereço
-    // ausente, 404 (nenhum acesso ainda), rede fora ou contador desligado.
+    // Devolve o texto pronto ("1 234 acessos no blog", "0 acessos no blog") ou
+    // null quando não há endereço (número da página desligado). O 404 do
+    // GoatCounter traz JSON com `count` 0, então ele passa como resposta; qualquer
+    // outra falha vira o traço.
     const ler = (endereco, rotulo) =>
       endereco
         ? fetch(endereco)
-            .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+            .then((r) => (r.ok || r.status === 404 ? r.json() : Promise.reject(r.status)))
             .then((dados) => {
-              const n = Number(String(dados.count ?? '').replace(/\D/g, ''));
-              if (!n) return null;
+              if (dados.count === undefined) return Promise.reject('sem número');
+              const n = Number(String(dados.count).replace(/\D/g, ''));
               return `${formatar.format(n)} ${n === 1 ? rotulo.singular : rotulo.plural}`;
             })
-            .catch(() => null)
+            .catch(() => `– ${rotulo.plural}`)
         : Promise.resolve(null);
 
     Promise.all([
       ler(el.dataset.pagina, rotulos.pagina),
       ler(el.dataset.total, rotulos.total),
     ]).then((partes) => {
-      const visiveis = partes.filter(Boolean);
-      if (!visiveis.length) return;
-      el.textContent = visiveis.join(' · ');
+      el.textContent = partes.filter(Boolean).join(' · ');
       el.hidden = false;
     });
   });
