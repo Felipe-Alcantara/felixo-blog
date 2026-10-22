@@ -36,6 +36,7 @@ histórico de decisões.
 | Pergunta de idioma da primeira visita         | `src/components/EscolhaDeIdioma.astro`                                                             |
 | Abertura com o gatinho (a cada carregamento)  | `src/components/Abertura.astro`                                                                    |
 | Home (as duas versões: `/` e `/en/`)          | `src/components/PaginaInicial.astro`                                                               |
+| Redes do dono na home (ícones e endereços)    | `Redes.astro`, `REDES` em `src/config/site.ts`, `Icone.astro`                                      |
 | Cores, fontes, tipografia do corpo do post    | `src/styles/global.css`                                                                            |
 | `<head>`, SEO, Open Graph, canonical          | `src/layouts/BaseLayout.astro`                                                                     |
 | Cabeçalho do post, tags, tempo de leitura     | `src/layouts/PostLayout.astro`                                                                     |

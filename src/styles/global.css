@@ -165,6 +165,25 @@
     }
   }
 
+  /* Ícone das redes da home: o roxo e o brilho que pulsa são os do portfólio
+     (`.text-felixo-purple-glow`, só a parte do `drop-shadow`, a que vale para
+     SVG). Para com "reduzir movimento", no fim deste arquivo. */
+  .felixo-icone-brilho {
+    color: #a855f7;
+    filter: drop-shadow(0 0 26px rgb(168 85 247 / 0.28));
+    animation: felixo-icone-respirar 5.5s ease-in-out infinite;
+  }
+
+  @keyframes felixo-icone-respirar {
+    0%,
+    100% {
+      filter: drop-shadow(0 0 26px rgb(168 85 247 / 0.28));
+    }
+    50% {
+      filter: drop-shadow(0 0 56px rgb(168 85 247 / 0.6));
+    }
+  }
+
   /* Post na lista: texto solto em repouso. No hover, ou com o foco dentro,
      aparece o painel com o brilho de respiração do felixo.com.br. Caixa parada
      em volta de cada post era o que deixava a home com cara de template
@@ -503,7 +522,8 @@
   }
 
   .felixo-ambiente::before,
-  .felixo-ambiente::after {
+  .felixo-ambiente::after,
+  .felixo-icone-brilho {
     animation: none !important;
   }
 }

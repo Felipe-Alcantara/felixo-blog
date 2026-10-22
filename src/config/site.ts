@@ -11,6 +11,25 @@ export const SITE = {
 } as const;
 
 /**
+ * Redes do dono, as mesmas da seção "Sobre" do felixo.com.br e na mesma ordem
+ * (pedido do dono, 2026-10-22). São endereços que já são públicos no
+ * portfólio. O `id` é também o nome do ícone em `Icone.astro` e a chave do
+ * rótulo em `TEXTOS.<idioma>.home.redes`. `externo` abre em nova aba.
+ */
+export const REDES = [
+  { id: 'email', href: 'mailto:FelipeTheFeh@Gmail.com', externo: false },
+  { id: 'github', href: 'https://github.com/Felipe-Alcantara', externo: true },
+  {
+    id: 'linkedin',
+    href: 'https://www.linkedin.com/in/felipealcantaramartins/',
+    externo: true,
+  },
+  { id: 'whatsapp', href: 'https://wa.me/5524998545803', externo: true },
+  { id: 'discord', href: 'https://discord.gg/DmW9tHcGpV', externo: true },
+  { id: 'twitter', href: 'https://x.com/Felixo_Tech', externo: true },
+] as const;
+
+/**
  * Configuração do giscus (comentários via GitHub Discussions).
  * IDs obtidos com `gh api graphql` sobre o repositório felixo-blog — não são
  * segredo: aparecem no HTML renderizado de qualquer site que usa giscus.

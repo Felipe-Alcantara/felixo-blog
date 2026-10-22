@@ -1,0 +1,48 @@
+---
+/**
+ * Linha de redes do dono na home, como na seção "Sobre" do felixo.com.br
+ * (pedido do dono, 2026-10-22): só ícones de 28 px, em roxo com o brilho do
+ * portfólio, e cada um cresce 1,5× no hover. A ordem e os endereços estão em
+ * `REDES` (`src/config/site.ts`); os desenhos, em `Icone.astro`.
+ *
+ * Link só com ícone precisa de nome: `aria-label` para o leitor de tela e
+ * `title` para a dica do mouse, vindos de `TEXTOS.<idioma>.home.redes`. O
+ * crescimento no hover vale também para o foco do teclado. O brilho pulsante
+ * é `.felixo-icone-brilho` (`global.css`), que para com "reduzir movimento".
+ */
+import { REDES } from '../config/site';
+import { TEXTOS, type Idioma } from '../config/idiomas';
+import Icone from './Icone.astro';
+
+interface Props {
+  idioma: Idioma;
+  /** Classes de espaçamento do lugar onde entra. */
+  class?: string;
+}
+
+const { idioma, class: classe } = Astro.props;
+const rotulos = TEXTOS[idioma].home.redes;
+---
+
+<ul class:list={['flex flex-wrap gap-3', classe]}>
+  {
+    REDES.map(({ id, href, externo }) => (
+      <li>
+        <a
+          href={href}
+          target={externo ? '_blank' : undefined}
+          rel={externo ? 'noopener noreferrer' : undefined}
+          aria-label={rotulos[id]}
+          title={rotulos[id]}
+          class="group flex items-center"
+        >
+          <Icone
+            nome={id}
+            tamanho={28}
+            class="felixo-icone-brilho transition-transform group-hover:scale-150 group-focus-visible:scale-150"
+          />
+        </a>
+      </li>
+    ))
+  }
+</ul>
