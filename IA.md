@@ -1446,3 +1446,48 @@ fecha encolhendo e o botão volta; ✕ e clique fora fecham; Enter abre pelo
 teclado, Tab vai ao Assinar e Esc devolve o foco ao botão; com "reduzir
 movimento" e sem JavaScript, abre e fecha; contraste de 7,53:1 a 13,46:1 sobre
 o fundo da janela.
+
+[2026-10-22] **Espaço que faltava nos Comentários e acessos no rodapé de todas as
+páginas.** Pedido do dono, depois de conferir em produção se a assinatura, os
+comentários, as reações e o registro de visitas funcionavam (tudo funcionando):
+corrigir o espaço e mostrar o número de visitas acumulado em todas as
+páginas. Para o segundo, a pergunta "qual número?" teve a resposta "os dois": o
+da própria página e o total do blog.
+
+Espaço: o HTML publicado saía com `salvos como uma<a ...>Discussion pública`,
+porque o `compressHTML` do Astro tira a quebra de linha entre um texto e o link
+que vem na linha seguinte. Corrigido com `{' '}` em `Comentarios.astro`. Varredura
+do `dist/` inteiro atrás de palavra colada em `<a>`, `<strong>`, `<em>`, `<code>`
+ou `<time>`: nenhuma outra ocorrência. Regra para o futuro: texto seguido de
+link na linha de baixo, num componente Astro, precisa de `{' '}`.
+
+Rodapé: `AcessosNoRodape.astro`, dentro de `Rodape.astro`, mostra
+"3 acessos nesta página · 5 acessos no blog" (em inglês, "views of this page" e
+"views on the blog"). Lê o contador público do GoatCounter, o mesmo do
+`AcessosDoPost.astro`: o número da página vem de `/counter/<caminho>.json`, com
+o mesmo caminho que `ContagemDeAcessos.astro` manda na contagem, e o total vem
+do caminho especial `TOTAL`. Começa escondido e cada número só entra quando é
+maior que zero; sem JavaScript, com bloqueador ou com o contador desligado, o
+rodapé fica como era. Escolhas, e o motivo:
+
+- No post, o rodapé mostra só o total: o número da página já está no
+  cabeçalho. O `BaseLayout` decide isso pelo `tipoOG === 'article'`.
+- Na 404, só o total (`acessosDaPagina={false}` em `404.astro`): o caminho
+  contado ali é o de todos os links quebrados juntos, e o número não diria nada.
+- O texto é "acessos", como já está no cabeçalho do post, e o número é o `count`
+  do GoatCounter (acessos, não visitantes únicos). Trocar a palavra é mexer em
+  `acessosRodape` de `src/config/idiomas.ts`.
+
+Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No build de
+produção servido local, em Chrome headless com o `count.js` bloqueado (o teste
+não gerou visita): home "3 acessos nesta página · 5 acessos no blog", Sobre e
+Tags "1 acesso nesta página · 5 acessos no blog", `/tags/meta/` e `/en/` só o
+total (sem acesso ainda), post e 404 só o total, `/en/` em inglês; sem estouro
+horizontal em 390 e 1000 px.
+
+Achado: o contador público do GoatCounter responde com `Cache-Control: public`
+e uma leitura feita antes da primeira visita pode ficar em cache (vimos um 404
+com zeros enquanto, com um parâmetro a mais na URL, o valor real era 3). Para
+conferir o número de verdade, acrescente `?cb=<aleatório>`. E uma visita de
+teste feita por Chrome headless não apareceu no contador do post, o que é
+esperado se o GoatCounter a descarta como robô (inferência, não medido).
