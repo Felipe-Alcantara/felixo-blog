@@ -33,11 +33,14 @@ const posts = await listarPosts();
       {textos.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
     </div>
 
+    <!-- "Minhas redes" é frase do dono, antes dos botões (2026-10-22). -->
+    <p class="mt-7 text-lg text-zinc-400">{textos.home.minhasRedes}</p>
+
     <!-- Botões em pílula do felixo.com.br. Eram três; o "Ver posts" saiu
          porque só rolava até a lista logo abaixo (2026-09-30). O de e-mail
          abre a janela de assinatura, que ficava aberta num cartão aqui
          embaixo (2026-10-16). -->
-    <div class="mt-7 flex flex-wrap gap-3">
+    <div class="mt-3 flex flex-wrap gap-3">
       <a
         href="https://felixo.com.br/"
         target="_blank"

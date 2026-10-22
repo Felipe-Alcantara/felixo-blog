@@ -50,9 +50,11 @@ export const TEXTOS = {
       titulo: 'Oi, eu sou o Felixo!',
       // Texto do dono, ditado por ele (ver `LINGUAGEM-NATURAL.md`).
       apresentacao: [
-        'Sou desenvolvedor, engenheiro de IA, engenheiro de áudio e produtor musical, líder de uma startup brasileira e entusiasta de ativos criativos, como blogs, vídeos e produção de conteúdo.',
-        'Aqui eu escrevo sobre a minha história e o que ando construindo e aprendendo no caminho. Não são apenas notícias, muito menos tutoriais, é a minha visão de mercado e como foi meu aprendizado até chegar aonde cheguei.',
+        'Sou desenvolvedor, engenheiro de IA e engenheiro de áudio.',
+        'Sou criador de algumas startups brasileiras, entusiasta de ativos criativos, como blogs, vídeos e produção de conteúdo, e passo a maior parte do meu tempo estudando Inteligência Artificial.',
+        'Aqui, eu escrevo sobre a minha história, o que eu aprendi ao longo da jornada, e o que ando construindo nesse tempo. Aqui, você não encontrará apenas notícias, muito menos tutoriais, é a minha visão sobre a área, e como foi meu aprendizado até chegar aonde cheguei. E gostaria de passar pra frente e registrar minha visão e tudo que eu vi no caminho e resolvi deixar tudo isso público!',
       ],
+      minhasRedes: 'Minhas redes',
       verPortfolio: 'Ver portfólio',
       assinarRss: 'Assinar RSS',
       posts: 'Posts',
@@ -114,9 +116,11 @@ export const TEXTOS = {
       titulo: "Hi, I'm Felixo!",
       // Tradução do texto do dono, para ele revisar.
       apresentacao: [
-        "I'm a developer, AI engineer, audio engineer and music producer, leader of a Brazilian startup and an enthusiast of creative assets like blogs, videos and content production.",
-        "Here I write about my story and what I've been building and learning along the way. It's not just news, much less tutorials: it's my take on the market and how my learning got me to where I am today.",
+        "I'm a developer, AI engineer and audio engineer.",
+        "I'm the creator of a few Brazilian startups, an enthusiast of creative assets like blogs, videos and content production, and I spend most of my time studying Artificial Intelligence.",
+        "Here, I write about my story, what I've learned along the way, and what I've been building in the meantime. Here, you won't find just news, much less tutorials: it's my take on the field and how my learning got me to where I am today. And I'd like to pass it on and record my take and everything I saw along the way, and I decided to make all of this public!",
       ],
+      minhasRedes: 'My social networks',
       verPortfolio: 'See portfolio',
       assinarRss: 'RSS feed',
       posts: 'Posts',
