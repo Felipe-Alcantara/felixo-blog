@@ -1491,3 +1491,34 @@ com zeros enquanto, com um parâmetro a mais na URL, o valor real era 3). Para
 conferir o número de verdade, acrescente `?cb=<aleatório>`. E uma visita de
 teste feita por Chrome headless não apareceu no contador do post, o que é
 esperado se o GoatCounter a descarta como robô (inferência, não medido).
+
+[2026-10-22] **Os acessos aparecem mesmo com zero.** O dono abriu o blog e
+"não achou nada que indicasse as visitas", e pediu o número "mesmo que seja 0".
+A causa era o desenho da entrada anterior: cada número só aparecia quando era
+maior que zero, e nas páginas de hoje o post tem 0, então o cabeçalho do post
+ficava sem nada, e o rodapé de uma página sem acesso mostrava só o total.
+
+Agora o número aparece sempre. Para uma página sem acesso o GoatCounter
+responde 404, mas com JSON `count` 0; os dois scripts (`AcessosDoPost.astro` e
+`AcessosNoRodape.astro`) passaram a tratar o 404 como resposta, e isso vira
+"0 acessos" (em inglês, "0 views"). Qualquer outra falha na leitura (rede fora,
+bloqueador de anúncio, contador desligado no painel) é diferente de zero: no
+rodapé o número vira um traço ("– acessos nesta página · – acessos no blog"),
+para o contador não parecer ausente, e no cabeçalho do post a leitura que falha
+continua escondida, para não pôr um traço solto ao lado do tempo de leitura.
+Uma resposta sem o campo `count` também cai no traço, e não num 0 inventado.
+
+Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No build de
+produção servido local, em Chrome headless com o `count.js` bloqueado: post com
+"31 de julho de 2026 · 2 min de leitura · 0 acessos" no cabeçalho; `/tags/meta/`
+com "0 acessos nesta página · 5 acessos no blog"; `/en/` com "0 views of this
+page · 5 views on the blog"; home e Sobre com os números de antes (3 e 1). Com a
+leitura do contador bloqueada (`*goatcounter.com*`), o rodapé mostra os traços
+nas duas línguas e o cabeçalho do post continua escondido.
+
+Hipótese não medida: bloqueadores de anúncio (uBlock, Brave) costumam barrar o
+GoatCounter, tanto o `count.js` quanto a leitura do contador. Se o navegador do
+dono tem um, ele vê os traços e a contagem dele não entra; só dá para confirmar
+no navegador dele. O número só sai do navegador de quem lê; ler os números no
+build, para valerem mesmo com bloqueador, deixaria o valor velho até o próximo
+deploy, e por isso não foi feito sem o dono decidir.
