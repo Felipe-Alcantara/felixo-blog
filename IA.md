@@ -1628,3 +1628,26 @@ GitHub ele vai de 28 para 42 px, e o foco do teclado dá o mesmo; cor medida
 `rgb(168, 85, 247)` com a animação ativa. Não medido: o custo do `drop-shadow`
 animado em celular fraco (se pesar, o brilho passa a ser fixo) e a aparência
 em Safari e Firefox.
+
+[2026-10-22] **WhatsApp fora das redes da home.** O dono pediu: "Tira o
+whatsapp". A linha de redes (registro anterior) ficou com cinco ícones: e-mail,
+GitHub, LinkedIn, Discord e Twitter, na mesma ordem do portfólio, que continua
+com o WhatsApp.
+
+Saíram o item de `REDES` (`src/config/site.ts`), o rótulo `whatsapp` nos dois
+idiomas (`TEXTOS.<idioma>.home.redes`) e o desenho do WhatsApp em `Icone.astro`,
+que só ele usava; o comentário do `Icone` agora fala só em Discord e Twitter
+como marcas do Font Awesome. O número do WhatsApp não está mais no código nem
+no HTML gerado.
+
+Atenção, o que a retirada não faz: o número continua no **histórico do git**
+deste repositório público, nos commits a partir de `99c5a6f`, e no portfólio
+(site e repositório). Tirar do histórico exigiria reescrever o histórico e
+forçar o push, como se fez em 2026-09-30 com os rascunhos, e isso só com pedido
+explícito do dono. Pesa pouco, porque o mesmo número já é público no
+portfólio, mas fica dito.
+
+Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No `dist/`,
+nenhuma página tem o número nem `wa.me`; na home, em português e em inglês,
+restam cinco links com o nome e o endereço certos; no Chrome headless a 1000 px
+a linha cabe sem estouro horizontal e a captura mostra os cinco ícones.
