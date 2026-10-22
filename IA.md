@@ -1545,3 +1545,42 @@ o blog num navegador ou numa janela anônima sem a extensão ligada para o site.
 Não há correção de código: não se contorna bloqueador de anúncio num site
 estático sem um endereço próprio para o script de contagem, e isso não foi
 avaliado.
+
+[2026-10-22] **Apresentação da home refeita com as marcações do dono.** O dono
+mandou o texto da home com correções entre parênteses e um segundo parágrafo
+reescrito por ele, mais a frase "Minhas redes em baixo". Seguindo o
+`LINGUAGEM-NATURAL.md`, apliquei o que era claro e perguntei o que mudava o
+sentido (3 perguntas pela ferramenta interativa).
+
+Aplicado direto, como ele marcou: ponto final depois da primeira lista e a
+segunda frase na linha de baixo; "líder" virou "criador"; "uma startup
+brasileiraa" virou "algumas startups brasileiras" (a palavra "algumas" é dele; o
+plural de "startup" e "brasileiras" é concordância); entrou no fim "e passo a
+maior parte do meu tempo estudando Inteligência Artificial"; o segundo parágrafo
+é o que ele reescreveu, só com "Aqui" em maiúscula depois do ponto e "público"
+com acento. Mantive "pra frente" como ele escreveu: se "pra" fica ou vira "para"
+é pergunta em aberto no `LINGUAGEM-NATURAL.md`.
+
+Perguntado, com a resposta dele:
+
+- "meio redundante" em "engenheiro de áudio e produtor musical": **fica só
+  "engenheiro de áudio"** (a lista virou "desenvolvedor, engenheiro de IA e
+  engenheiro de áudio").
+- A segunda linha ficaria sem verbo ("Criador de algumas startups… e passo a
+  maior parte do meu tempo…"): **começa com "Sou"**.
+- "Minhas redes em baixo": **a frase "Minhas redes" antes dos botões** da home
+  ("Ver portfólio", "Assinar RSS", "Receber por e-mail"). Está em
+  `TEXTOS.<idioma>.home.minhasRedes` e é renderizada em `PaginaInicial.astro`.
+
+A segunda linha é um parágrafo próprio (`apresentacao` tem um item por
+parágrafo), com o mesmo espaço entre parágrafos, e não uma quebra de linha
+colada. Se ele quiser as duas linhas coladas, é trocar por `<br>`.
+
+O inglês acompanha como **tradução para o dono revisar** ("I'm a developer, AI
+engineer and audio engineer." etc.; "Minhas redes" virou "My social networks").
+Não passou pela revisão dele.
+
+Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No build de
+produção servido local, em Chrome headless a 1000 e 390 px: os três parágrafos
+na ordem e "Minhas redes" entre o texto e os botões (conferido olhando as
+capturas; o estouro horizontal não foi medido desta vez).
