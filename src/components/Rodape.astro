@@ -3,11 +3,15 @@ import { FOLLOWIT, SITE } from '../config/site';
 import { TEXTOS, type Idioma } from '../config/idiomas';
 import { caminho } from '../utils/rotas';
 import BotaoAssinatura from './BotaoAssinatura.astro';
+import AcessosNoRodape from './AcessosNoRodape.astro';
 
 interface Props {
   idioma: Idioma;
+  /** Mostra o número da página junto com o total do blog (ver `AcessosNoRodape`). */
+  acessosDaPagina?: boolean;
 }
 
+const { acessosDaPagina = true } = Astro.props;
 const textos = TEXTOS[Astro.props.idioma];
 
 const ano = new Date().getFullYear();
@@ -23,7 +27,10 @@ const ehExterno = (href: string) => href.startsWith('http');
     <div
       class="flex flex-col gap-4 border-t border-white/5 py-10 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between"
     >
-      <p>© {ano} {SITE.autor}. {textos.feitoCom}</p>
+      <div class="flex flex-col gap-1.5">
+        <p>© {ano} {SITE.autor}. {textos.feitoCom}</p>
+        <AcessosNoRodape idioma={Astro.props.idioma} daPagina={acessosDaPagina} />
+      </div>
       <ul class="flex flex-wrap gap-4">
         {
           textos.linksExternos.map(({ rotulo, href }) => (

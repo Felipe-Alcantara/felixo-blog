@@ -132,8 +132,10 @@ tema customizado em `public/temas/giscus.css`.
 ## Contagem de acessos
 
 As visitas são contadas pelo [GoatCounter](https://www.goatcounter.com), sem
-cookie e sem back-end próprio. Os números ficam no painel da conta, e cada post
-mostra quantos acessos teve ao lado do tempo de leitura. Para ligar:
+cookie e sem back-end próprio. Os números ficam no painel da conta. Cada post
+mostra quantos acessos teve ao lado do tempo de leitura, e o rodapé de todas as
+páginas mostra os acessos da página em que a pessoa está e o total do blog
+(`AcessosNoRodape.astro`). Para ligar:
 
 1. Crie a conta em [goatcounter.com/signup](https://www.goatcounter.com/signup).
    O _Account name_ vira o endereço `<codigo>.goatcounter.com`.
@@ -143,8 +145,8 @@ mostra quantos acessos teve ao lado do tempo de leitura. Para ligar:
 3. Preencha `codigo` em `GOATCOUNTER` (`src/config/site.ts`) e publique.
 
 Com `codigo` vazio, nada do GoatCounter entra no site. A contagem só roda no
-build de produção, então os testes no `npm run dev` não contam. O número no
-post fica em cache por até 4 horas no GoatCounter.
+build de produção, então os testes no `npm run dev` não contam. Os números do
+post e do rodapé ficam em cache por até 4 horas no GoatCounter.
 
 ## Assinatura dos posts novos
 

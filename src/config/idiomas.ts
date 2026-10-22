@@ -65,6 +65,11 @@ export const TEXTOS = {
     postEmOutroIdioma: '',
     /** Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`). */
     acessos: { singular: 'acesso', plural: 'acessos' },
+    /** Números no rodapé de todas as páginas (ver `AcessosNoRodape.astro`). */
+    acessosRodape: {
+      pagina: { singular: 'acesso nesta página', plural: 'acessos nesta página' },
+      total: { singular: 'acesso no blog', plural: 'acessos no blog' },
+    },
     /**
      * Assinatura do follow.it: a janela (`Assinatura.astro`) e os botões que a
      * abrem (`BotaoAssinatura.astro`). O padrão do plano grátis é um resumo
@@ -122,6 +127,10 @@ export const TEXTOS = {
     },
     postEmOutroIdioma: 'In Portuguese',
     acessos: { singular: 'view', plural: 'views' },
+    acessosRodape: {
+      pagina: { singular: 'view of this page', plural: 'views of this page' },
+      total: { singular: 'view on the blog', plural: 'views on the blog' },
+    },
     assinatura: {
       abrir: 'Get posts by email',
       chamada: 'Want to know when a new post is out?',

@@ -19,6 +19,8 @@ interface Props {
   publicadoEm?: Date;
   /** Capa do post (já otimizada pelo Astro), quando o post tiver uma. */
   imagemCapa?: { src: string; width: number; height: number };
+  /** `false` tira do rodapé o número de acessos da página (ex.: a 404). */
+  acessosDaPagina?: boolean;
 }
 
 // O idioma sai do caminho: tudo em `/en/` é inglês, o resto é português.
@@ -32,7 +34,12 @@ const {
   tipoOG = 'website',
   publicadoEm,
   imagemCapa,
+  acessosDaPagina = true,
 } = Astro.props;
+
+// No post o número da página já está no cabeçalho (`AcessosDoPost`), então o
+// rodapé do post mostra só o total do blog.
+const acessosDaPaginaNoRodape = acessosDaPagina && tipoOG !== 'article';
 
 const tituloCompleto =
   titulo === textos.tituloSite ? titulo : `${titulo} · ${textos.tituloSite}`;
@@ -145,7 +152,7 @@ const imagemCompartilhamento = imagemCapa
     <main id="conteudo" class="relative z-10 mx-auto max-w-3xl px-4 py-14 sm:px-6">
       <slot />
     </main>
-    <Rodape idioma={idioma} />
+    <Rodape idioma={idioma} acessosDaPagina={acessosDaPaginaNoRodape} />
     {FOLLOWIT.formulario !== '' && <Assinatura idioma={idioma} />}
     <EscolhaDeIdioma
       idioma={idioma}

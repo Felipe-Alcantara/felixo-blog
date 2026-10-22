@@ -4,7 +4,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icone from '../components/Icone.astro';
 ---
 
-<BaseLayout titulo="Página não encontrada" descricao="Esta página não existe.">
+<BaseLayout
+  titulo="Página não encontrada"
+  descricao="Esta página não existe."
+  acessosDaPagina={false}
+>
   <div class="py-16">
     <p class="font-mono text-sm text-zinc-400">404</p>
     <h1 class="mt-2 felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl">
