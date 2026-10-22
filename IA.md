@@ -1522,3 +1522,26 @@ dono tem um, ele vê os traços e a contagem dele não entra; só dá para confi
 no navegador dele. O número só sai do navegador de quem lê; ler os números no
 build, para valerem mesmo com bloqueador, deixaria o valor velho até o próximo
 deploy, e por isso não foi feito sem o dono decidir.
+
+[2026-10-22] **Confirmado: o "0" do dono era o bloqueador de anúncio dele.**
+Depois de o post passar a mostrar "0 acessos", o dono disse que tinha tido
+acessos em outros dias, e logo em seguida confirmou que era o bloqueador de
+anúncio do navegador dele. Fecha a hipótese da entrada anterior ("não medida").
+
+O que isso explica: o bloqueador barra o `count.js` do GoatCounter, então as
+visitas dele nunca chegam ao contador. A leitura do contador
+(`/counter/<caminho>.json`) passou, e por isso apareceu "0" e não o traço (se a
+leitura falhasse, o cabeçalho do post ficaria escondido e o rodapé mostraria
+traços). O zero estava certo para o que foi contado: o contador público do
+GoatCounter, lido na hora com `?cb=`, tinha 3 acessos em `/`, 1 em `/sobre/`, 1
+em `/tags/` e 5 no total, e 0 no post e em `/en/`, mesmo olhando as variações do
+caminho do post (com e sem barra final, `index.html`, `.html`). Todas as
+contagens vêm de quem não usa bloqueador.
+
+Consequência para quem for mexer nisso: os números são um mínimo, porque
+leitor com bloqueador não é contado, e as visitas do próprio dono, que usa
+bloqueador, também não entram. Para ver a contagem funcionando é preciso abrir
+o blog num navegador ou numa janela anônima sem a extensão ligada para o site.
+Não há correção de código: não se contorna bloqueador de anúncio num site
+estático sem um endereço próprio para o script de contagem, e isso não foi
+avaliado.
