@@ -13,6 +13,16 @@ function paginaFalsa(id: string, tituloProp: string, titulo: string) {
   };
 }
 
+/** Linha da "Ideias criativas": `formato` null é a coluna Formato sem valor. */
+function paginaComFormato(id: string, formato: string | null) {
+  const pagina = paginaFalsa(id, 'Nome', `Ideia ${id}`);
+  (pagina.properties as Record<string, unknown>).Formato = {
+    type: 'select',
+    select: formato === null ? null : { name: formato },
+  };
+  return pagina;
+}
+
 function clienteFalso(paginas: unknown[], has_more = false): Client {
   return {
     databases: {
@@ -33,6 +43,40 @@ describe('listarArtigosDaDatabase', () => {
       { id: 'p1', titulo: 'Artigo de exemplo' },
       { id: 'p2', titulo: 'Outro artigo' },
     ]);
+  });
+
+  it('lista só as linhas com Formato = Artigo, sem diferenciar maiúsculas', async () => {
+    const cliente = clienteFalso([
+      paginaComFormato('p1', 'Artigo'),
+      paginaComFormato('p2', 'Vídeo'),
+      paginaComFormato('p3', 'Música'),
+      paginaComFormato('p4', 'artigo'),
+    ]);
+
+    const artigos = await listarArtigosDaDatabase(cliente, 'db-1');
+    expect(artigos.map((a) => a.id)).toEqual(['p1', 'p4']);
+  });
+
+  it('mantém a linha com Formato vazio e a database sem a coluna Formato', async () => {
+    const cliente = clienteFalso([
+      paginaComFormato('p1', null),
+      paginaFalsa('p2', 'Nome', 'Sem a coluna'),
+      paginaComFormato('p3', 'Vídeo'),
+    ]);
+
+    const artigos = await listarArtigosDaDatabase(cliente, 'db-1');
+    expect(artigos.map((a) => a.id)).toEqual(['p1', 'p2']);
+  });
+
+  it('ignora uma coluna Formato que não é select', async () => {
+    const pagina = paginaFalsa('p1', 'Nome', 'Formato em outro tipo');
+    (pagina.properties as Record<string, unknown>).Formato = {
+      type: 'multi_select',
+      multi_select: [{ name: 'Vídeo' }],
+    };
+
+    const artigos = await listarArtigosDaDatabase(clienteFalso([pagina]), 'db-1');
+    expect(artigos.map((a) => a.id)).toEqual(['p1']);
   });
 
   it('segue a paginação até has_more ser falso', async () => {
