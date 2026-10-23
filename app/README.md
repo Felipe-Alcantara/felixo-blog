@@ -37,7 +37,8 @@ dados até você configurar (pela tela "Notion" dentro do app, ou editando o
   (`src/content.config.ts` — `testes/esquema-paridade.teste.ts` garante que
   os dois nunca divergem).
 - **Notion**: conectar na database "Artigos" (token + ID, telas
-  "Notion"/"Importar do Notion"), listar artigos, importar um deles
+  "Notion"/"Importar do Notion"), listar artigos (só linhas com
+  Formato = Artigo; as outras ideias da database não aparecem), importar um deles
   convertendo os blocos do Notion para Markdown (parágrafo, headings,
   listas, citação, callout, código com linguagem, imagem, divisória — bloco
   não suportado vira comentário HTML visível, nunca some em silêncio) e
