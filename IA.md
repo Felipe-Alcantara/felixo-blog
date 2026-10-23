@@ -1651,3 +1651,34 @@ Validado: `npm run check` (0 erros) e `npm run build` (8 páginas). No `dist/`,
 nenhuma página tem o número nem `wa.me`; na home, em português e em inglês,
 restam cinco links com o nome e o endereço certos; no Chrome headless a 1000 px
 a linha cabe sem estouro horizontal e a captura mostra os cinco ícones.
+
+[2026-10-23] **Felixo Editor lista só artigos na importação do Notion.** Em
+2026-09-27 a database que o editor lê como fila de posts virou "Ideias
+criativas" e passou a guardar também vídeos, músicas, prompts e outros formatos,
+com a coluna **Formato** (select, 12 opções, uma delas "Artigo"). Sem filtro, as
+linhas de vídeo apareciam na tela "Importar do Notion" como se fossem posts.
+
+`listarArtigosDaDatabase` (`app/src/principal/notion/paginasDaDatabase.ts`)
+agora descarta a linha cujo Formato é outro que não "Artigo" (sem diferenciar
+maiúsculas). Fica a linha com Formato vazio e toda linha de uma database que não
+tem a coluna, por compatibilidade: o editor aceita qualquer database
+configurada.
+
+O filtro roda no cliente, depois da consulta, e não como `filter` da API do
+Notion. Uma consulta filtrada por uma propriedade que a database não tem volta
+com erro 400, e justamente a database sem a coluna precisa continuar listando.
+O custo é baixar a lista inteira antes de filtrar, o que o editor já fazia.
+Limite assumido (marcado como `shortcut:` no código): a coluna só é reconhecida
+pelo nome "Formato" e pelo tipo select.
+
+Validado: três testes novos em `app/testes/notion-paginas-database.teste.ts`.
+Dois falham sem a correção e passam com ela; o terceiro (coluna Formato que não
+é select) só trava a compatibilidade e passa nos dois estados. `npm run check`
+do editor sem erros; `npm run check` (0 erros) e `npm run build` (8 páginas) na
+raiz. Na database real, com 19 linhas (9 Artigo, 9 Vídeo e 1 sem Formato), o
+critério mantém 10 e tira os 9 vídeos.
+
+Não medido: a tela do editor rodando (não há pasta de dados local nesta máquina)
+e a listagem contra a API do Notion. A suíte do editor tem 5 falhas que já
+existiam sem esta mudança: três em `midia-otimizacao` (EBUSY ao apagar arquivo
+temporário no Windows) e duas em `publicacao-gate`.
