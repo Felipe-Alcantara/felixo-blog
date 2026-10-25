@@ -34,7 +34,8 @@
     contador público do GoatCounter e escrevem o número (cabeçalho do post;
     rodapé, com a página e o total do blog).
   - `EscolhaDeIdioma.astro`: a pergunta de idioma da primeira visita (`<dialog>`,
-    escolha no `localStorage`); abre quando a abertura do gatinho começa a sumir.
+    escolha no `localStorage`); abre quando a abertura do gatinho começa a sumir e
+    fecha com uma saída suave de 0,25 s (o Esc e a troca de página são imediatos).
   - `RedirecionarParaIngles.astro`: inline, só na home em português; leva para
     `/en/` quem já escolheu inglês, antes da pintura.
   - `Assinatura.astro`: só a forma da animação da janela de assinatura, que cresce
@@ -1730,3 +1731,56 @@ Não medido: a tela do editor rodando (não há pasta de dados local nesta máqu
 e a listagem contra a API do Notion. A suíte do editor tem 5 falhas que já
 existiam sem esta mudança: três em `midia-otimizacao` (EBUSY ao apagar arquivo
 temporário no Windows) e duas em `publicacao-gate`.
+
+[2026-10-25] **Saída suave da pergunta de idioma.** A entrada da pergunta já era
+suave (2026-10-16), mas escolher "Português" ou "English" numa página que fica no
+mesmo lugar fechava o `<dialog>` na hora: o fundo escuro sumia num quadro e a
+página clareava de uma vez, o mesmo "pisca" que o dono pediu para tirar na
+entrada. Medido antes da mudança, no build de produção servido local, em Chrome
+headless (156) dirigido por CDP, lendo a opacidade da caixa e do `::backdrop` a
+cada quadro: depois do clique em "Português", zero quadros com a pergunta ainda
+aberta (fechava em 1 ms); com Esc, 15 ms.
+
+Como ficou (`src/components/EscolhaDeIdioma.astro`):
+
+- Ao escolher um idioma e **ficar na página** (o idioma é o da página, ou a
+  página não existe no outro idioma, como o Sobre), o `<dialog>` ganha a classe
+  `saindo`: caixa e fundo somem juntos em 0,25 s (`pergunta-sair` e
+  `pergunta-fundo-sair`, mais rápidas que a entrada). O `close()` vem no
+  `animationend` de `pergunta-sair`.
+- Ao escolher o **outro idioma com destino** (a home `/` para `/en/`), nada
+  muda: `close()` e `location.assign` na hora, sem esperar a animação.
+- O Esc continua fechando direto, como a task recomendava: o `cancel` não é
+  adiado, e quem aperta Esc quer fechar. Não testei interceptá-lo.
+- Um segundo clique durante a saída é ignorado (`saindo` já está na classe).
+- Tempo de reserva: um `setTimeout` de 600 ms chama o mesmo `fechar()`, que só
+  age se o `<dialog>` ainda estiver aberto. Existe porque, se a animação for
+  anulada ou cancelada, o `animationend` não vem e a pergunta ficaria presa na
+  frente da página, sem botão que a feche além do Esc.
+
+Validado (`npm run check` com 0 erros e `npm run build` com 8 páginas; mesmo
+método de medição de antes):
+
+- "Português" em `/sobre/`: 17 quadros com a pergunta aberta depois do clique,
+  fundo e caixa indo de 1 a 0 em ~289 ms (0,25 s da animação mais um quadro), e
+  só então fechada. "English" em `/sobre/` (que fica na página) deu a mesma
+  curva e salvou `en`.
+- Com `--force-prefers-reduced-motion`: fecha em ~33 ms. A regra global zera a
+  duração para 0,01 ms, mas o `animationend` vem mesmo assim, então o fechamento
+  não depende da reserva de 600 ms. Com Esc, 16 ms.
+- Reserva: com a animação anulada por CSS, fechou em 616 ms.
+- Esc em modo normal: fechou em 12 ms (instantâneo, como antes).
+- English na home: logo depois do clique, `saindo` é falso e o `<dialog>` já
+  está fechado; `/en/` carregou antes do primeiro sondado, 50 ms depois, e `en`
+  ficou salvo.
+- Três cliques seguidos em "Português": sem erro no console, `<dialog>` fechado,
+  `pt` salvo.
+- Depois de fechar: `document.activeElement` é o `body` (nada estava focado
+  antes de abrir) e não sobra nenhum `[inert]` na página.
+- Capturei um quadro com as animações pausadas no meio da saída: caixa e fundo
+  translúcidos, a página aparecendo aos poucos.
+
+Não medido: Safari e Firefox, tela de celular de verdade, e o foco devolvido
+quando algum elemento tinha foco antes de a pergunta abrir (na primeira visita
+não há nenhum). O `getComputedStyle(dialog, '::backdrop')` usado na medição
+funciona no Chrome 156; não foi conferido em outros navegadores.
