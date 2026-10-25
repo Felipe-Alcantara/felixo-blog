@@ -11,35 +11,66 @@
 
 ## 📊 ESTADO ATUAL (RESUMO VIVO)
 
-Última atualização: [2026-08-13]
+Última atualização: [2026-10-25]
 
-- **"Felixo Editor" (app/): as sete fatias concluídas e validadas com dado
-  real do Notion.** App desktop (Electron) para criar/editar posts e
-  publicar a partir da database **Artigos**
-  (`<database_id>`, propriedades: `Nome`
-  title/`Etapa` select/`URL publicada` url — achadas dinamicamente, sem
-  hardcode). `app/.env` já configurado nesta máquina (gitignored). Conexão e
-  listagem testadas contra a API real; importação de um artigo real testada
-  e comparada byte a byte com o `.md` escrito à mão (2 bugs de
-  conversão de lista encontrados e corrigidos nessa validação — ver registro
-  de hoje mais abaixo). Post aceita `capa` opcional no frontmatter, vira
-  `og:image`. **Falta só**: escrita de volta no Notion e publicação via git
-  ainda não testadas contra produção de verdade (evitado de propósito nesta
-  sessão). Ver os registros datados `[2026-08-13]` no fim deste arquivo.
-
-- **Fase**: v1 entregue + revisão de front + auditoria de qualidade + **comentários
-  via giscus** + **alinhamento visual de frontend e imagens** + **revisão final de
-  release (2026-08-10)** concluídos. Blog
-  estático funcionando ponta a ponta — home, post, tags, sobre, RSS, sitemap,
-  404, comentários e deploy automatizado — com listagem de posts em coluna única
-  e quadros inteiros clicáveis, identidade visual alinhada à do
-  `Felipe-Portifolio` e `start_app.py` como porta de entrada.
+- **Fase**: v1 entregue e em evolução. Blog estático funcionando ponta a ponta —
+  home, post, tags, sobre, RSS, sitemap, 404, comentários, contagem de acessos,
+  assinatura por e-mail e deploy automatizado — em **dois idiomas** e com a
+  abertura animada do gatinho. Identidade visual alinhada à do
+  `Felipe-Portifolio`; `start_app.py` é a porta de entrada de desenvolvimento. O
+  porquê de cada parte está nos registros datados mais abaixo.
 - **Stack**: Astro 7 + Tailwind CSS 4 (via `@tailwindcss/vite`), TypeScript
-  estrito, zero JavaScript no cliente **exceto** o script de terceiro do giscus
-  (comentários), inerentemente dinâmico. `start_app.py` (Python, só dev-tooling)
-  usa `questionary`/`rich` para o menu — não entra no bundle do site.
-- **Gate**: `npm run check` (0 erros) + `npm run build` (7 páginas) — ambos
-  verdes em 2026-08-05. `npm audit`: 0 vulnerabilidades.
+  estrito. `start_app.py` (Python, só dev-tooling) usa `questionary`/`rich` para o
+  menu — não entra no bundle do site.
+- **JavaScript no cliente**: o site **não é "zero JS"**. Cada script abaixo
+  existe de propósito; quem for mexer não deve removê-los por estranhamento. O que
+  dá para fazer só com HTML/CSS continua sem script: a abertura do gatinho, o
+  ícone do cabeçalho e abrir/fechar a janela de assinatura (`popover` nativo).
+  - `Comentarios.astro`: script do giscus (terceiro), os comentários.
+  - `ContagemDeAcessos.astro`: `count.js` do GoatCounter (terceiro), em toda
+    página, só no build de produção; pixel em `<noscript>` para quem está sem
+    JavaScript.
+  - `AcessosDoPost.astro` e `AcessosNoRodape.astro`: scripts inline que leem o
+    contador público do GoatCounter e escrevem o número (cabeçalho do post;
+    rodapé, com a página e o total do blog).
+  - `EscolhaDeIdioma.astro`: a pergunta de idioma da primeira visita (`<dialog>`,
+    escolha no `localStorage`); abre quando a abertura do gatinho começa a sumir.
+  - `RedirecionarParaIngles.astro`: inline, só na home em português; leva para
+    `/en/` quem já escolheu inglês, antes da pintura.
+  - `Assinatura.astro`: só a forma da animação da janela de assinatura, que cresce
+    a partir do botão (a do modal do portfólio). Sem JavaScript a janela abre só
+    com o esmaecimento.
+  - `PaginaInicial.astro`: o filtro da barra de pesquisa de posts.
+- **Dois idiomas** (2026-09-30): português na raiz, inglês em `/en/`. Texto de
+  interface em `TEXTOS` de `src/config/idiomas.ts`; `PAGINAS_EM_INGLES` hoje só
+  tem `/` → `/en/` (Tags, Sobre e posts não existem em inglês, e o menu em inglês
+  tem só "Posts"). A pergunta da primeira visita grava a escolha e o seletor
+  PT | EN troca a qualquer hora. Post só ganha versão em inglês depois de completo
+  em português e com a revisão do dono; a apresentação da home em inglês é
+  tradução que ainda espera essa revisão.
+- **Abertura e gatinho** (2026-10-16): `Abertura.astro`, primeiro filho do
+  `<body>` no `BaseLayout`, mostra o gatinho do FelixoVerse piscando uma vez
+  (cerca de 2 s) a cada carregamento. É só CSS, decorativa (`aria-hidden`) e some
+  com "reduzir movimento" e na impressão. Limite conhecido: voltar pelo histórico
+  pode restaurar a página do cache (bfcache) e a abertura não repete. O ícone do
+  cabeçalho é o mesmo gatinho em loop, `public/imagens/gatinho-piscando-headbang.svg`
+  usado como `<img>`; o `logo-felixo.png` continua no repositório porque o
+  `scripts/gerar-og-image.py` usa ele.
+- **Home e layout** (2026-09-30 a 2026-10-22): sem caixas. Lista de posts em
+  coluna única (`max-w-3xl`), cada `ItemPost` inteiro clicável, brilho só no hover
+  e no foco, títulos com gradiente e botões em pílula como no felixo.com.br. A
+  home abre com a apresentação em primeira pessoa, com as palavras do dono
+  (`TEXTOS.<idioma>.home.apresentacao`), depois "Minhas redes", uma linha de cinco
+  ícones (e-mail, GitHub, LinkedIn, Discord e Twitter: `Redes.astro`, `REDES` em
+  `src/config/site.ts`) e os botões do blog (portfólio, RSS, e-mail). A
+  `SITE.descricao` (buscador, cartão de compartilhamento, RSS) ainda fala em
+  "notícias de tecnologia", o que contradiz a home: fica para o dono.
+- **Gate**: `npm run check` (0 erros) + `npm run build` (8 páginas: `/`, `/en/`,
+  Sobre, Tags, as duas páginas de tag, o post `ola-mundo` e a 404) — verdes em
+  2026-10-25. `npm audit` em 2026-10-25: **12 vulnerabilidades** (1 crítica, 10
+  altas, 1 moderada; `astro`, `devalue`, `fast-uri`, `vite`, `zod` e outras). O
+  "0 vulnerabilidades" de 2026-08-05 não vale mais; nenhuma dependência foi
+  atualizada ainda.
 - **Conteúdo** (atualizado em 2026-09-30): nenhum post pronto. O
   `ola-mundo.md` no ar foi um teste e ainda vai ser revisado, assim como o
   site. Rascunho e post futuro não entram no repositório, que é público (ver
@@ -47,17 +78,33 @@
   repositório e do histórico em 2026-09-30.
 - **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
   "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
-- **Acessos** (2026-10-16): GoatCounter, conta `felixo`
+- **Acessos** (2026-10-16, ajustado em 2026-10-22): GoatCounter, conta `felixo`
   (`felixo.goatcounter.com`), com o contador público ligado no painel. O número
-  no post só aparece depois do primeiro acesso a ele.
+  aparece no cabeçalho do post e no rodapé de todas as páginas (a página e o
+  total do blog; no post e na 404, só o total), sempre, mesmo com zero. Se a
+  leitura falha, o rodapé mostra um traço e o cabeçalho do post fica sem o
+  número. Os números são um mínimo: leitor com bloqueador de anúncio não é
+  contado, e o dono usa um (confirmado), então as visitas dele não entram.
 - **Assinatura** (2026-10-16): follow.it, feed `blog-do-felixo` na conta do
   dono, plano grátis. Botão "Receber por e-mail" na home, no fim do post, no
   Sobre e no rodapé (`BotaoAssinatura.astro`), que abre uma janela com o
   formulário (`Assinatura.astro`, `FOLLOWIT`), com a animação dos modais do
   portfólio. Sem notificação no navegador.
-- **Deploy**: GitHub Pages ativado por API (`build_type=workflow`); primeiro
-  deploy verde em 2026-07-31. Identidade visual, `start_app.py` e comentários
-  via giscus já publicados (push feito, deploy verde em 2026-08-05).
+- **"Felixo Editor" (`app/`)**: as sete fatias concluídas e validadas com dado
+  real do Notion. App desktop (Electron) para criar/editar posts e publicar a
+  partir da database de ideias do Notion (`<database_id>`). Desde 2026-09-27 ela
+  se chama "Ideias criativas" e guarda também vídeos e outros formatos, por isso
+  a importação lista só as linhas com Formato "Artigo" (ou sem Formato). As
+  propriedades são achadas dinamicamente, sem hardcode. `app/.env` já configurado
+  nesta máquina (gitignored). Post aceita `capa` opcional no frontmatter, vira
+  `og:image`. **Falta**: a escrita de volta no Notion e a publicação via git
+  nunca foram testadas contra produção de verdade, e o importador grava o post
+  direto em `src/content/posts/`, onde o commit automático do Fetch All pode
+  levá-lo antes da hora de publicar (registro de 2026-09-30). A suíte do editor
+  tem 5 falhas que já existiam (três em `midia-otimizacao`, duas em
+  `publicacao-gate`).
+- **Deploy**: GitHub Pages por API (`build_type=workflow`), a cada push na
+  `main`; o último deploy conferido (2026-10-23) está verde.
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
 - **Compartilhamento**: cartão Open Graph genérico em `public/og-image.jpg`,
   gerado por `scripts/gerar-og-image.py` (Playwright, sob demanda — não entra no
@@ -67,11 +114,12 @@
   (`capa` opcional no frontmatter, ver `content.config.ts`); sem capa, o post
   cai no cartão genérico.
 - **Estado final**: pronto para divulgação. Não há pendência de publicação
-  conhecida neste repositório. Fica **uma decisão para o dono**: o blog assina
+  conhecida neste repositório. Ficam três coisas para o dono: o blog assina
   "Felipe Alcântara" e o portfólio assina "Felipe Martin" — os dois são ele, mas
-  quem lê os dois lado a lado vê dois nomes. A seção "Em Breve" do repositório
-  `Felipe-Portifolio` continua sendo uma tarefa separada, fora do escopo deste
-  blog.
+  quem lê os dois lado a lado vê dois nomes; a `SITE.descricao`, que ficou
+  genérica; e as vulnerabilidades do `npm audit` (acima). A seção "Em Breve" do
+  repositório `Felipe-Portifolio` continua sendo uma tarefa separada, fora do
+  escopo deste blog.
 
 ---
 
