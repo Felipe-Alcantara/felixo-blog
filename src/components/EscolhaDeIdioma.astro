@@ -115,16 +115,33 @@ const soEmPortugues = idioma === 'pt' && !destinos.en;
       Math.max(0, atraso - decorrido),
     );
 
+    const fechar = () => {
+      if (dialogo.open) dialogo.close();
+    };
+    dialogo.addEventListener('animationend', (evento) => {
+      if (evento.animationName === 'pergunta-sair') fechar();
+    });
+
     dialogo.addEventListener('click', (evento) => {
       const alvo = evento.target instanceof Element ? evento.target : null;
       const botao = alvo?.closest<HTMLButtonElement>('[data-idioma]');
       if (!botao) return;
+      if (dialogo.classList.contains('saindo')) return;
       const escolhido = botao.dataset.idioma;
       salvar(escolhido);
-      dialogo.close();
       const destino =
         escolhido === 'en' ? dialogo.dataset.destinoEn : dialogo.dataset.destinoPt;
-      if (escolhido !== idiomaDaPagina && destino) location.assign(destino);
+      if (escolhido !== idiomaDaPagina && destino) {
+        // Vai para outra página: navegar direto, sem esperar a animação.
+        dialogo.close();
+        location.assign(destino);
+        return;
+      }
+      // Fica na página: some com a saída suave, e não num quadro só.
+      dialogo.classList.add('saindo');
+      // `animationend` não vem se a animação for cancelada; sem o tempo de
+      // reserva, a pergunta ficaria presa na frente da página.
+      setTimeout(fechar, 600);
     });
 
     // Esc fecha e fica no idioma da página, sem perguntar de novo.
@@ -144,6 +161,15 @@ const soEmPortugues = idioma === 'pt' && !destinos.en;
     animation: pergunta-fundo-entrar 0.35s ease-out both;
   }
 
+  /* Saída suave: o fundo e a caixa somem juntos, mais rápido do que entram. */
+  dialog.saindo {
+    animation: pergunta-sair 0.25s ease-in both;
+  }
+
+  dialog.saindo::backdrop {
+    animation: pergunta-fundo-sair 0.25s ease-in both;
+  }
+
   @keyframes pergunta-entrar {
     from {
       opacity: 0;
@@ -153,6 +179,19 @@ const soEmPortugues = idioma === 'pt' && !destinos.en;
 
   @keyframes pergunta-fundo-entrar {
     from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pergunta-sair {
+    to {
+      opacity: 0;
+      transform: translateY(0.75rem) scale(0.97);
+    }
+  }
+
+  @keyframes pergunta-fundo-sair {
+    to {
       opacity: 0;
     }
   }
