@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // `caminhos.ts` calcula a raiz do blog a partir de `__dirname`. Para testar o
 // repositório sem depender do repositório real, mockamos o módulo inteiro
 // apontando para um diretório temporário — assim o teste também prova que
-// nada aqui vaza para fora da pasta de posts.
+// nada aqui vaza para fora das pastas de posts e de rascunhos.
 let pastaTemp: string;
 
 vi.mock('../src/principal/posts/caminhos', async () => {
@@ -15,8 +15,13 @@ vi.mock('../src/principal/posts/caminhos', async () => {
     get PASTA_DE_POSTS() {
       return joinReal(pastaTemp, 'posts');
     },
+    get PASTA_DE_RASCUNHOS() {
+      return joinReal(pastaTemp, 'rascunhos');
+    },
     caminhoDoPost: (slug: string) => joinReal(pastaTemp, 'posts', `${slug}.md`),
     pastaDeMidiaDoPost: (slug: string) => joinReal(pastaTemp, 'posts', slug),
+    caminhoDoRascunho: (slug: string) => joinReal(pastaTemp, 'rascunhos', `${slug}.md`),
+    pastaDeMidiaDoRascunho: (slug: string) => joinReal(pastaTemp, 'rascunhos', slug),
   };
 });
 
@@ -126,7 +131,7 @@ describe('conteúdo gravado em disco', () => {
       'corpo',
     );
 
-    const bruto = await readFile(join(pastaTemp, 'posts', 'formato.md'), 'utf-8');
+    const bruto = await readFile(join(pastaTemp, 'rascunhos', 'formato.md'), 'utf-8');
     expect(bruto).toContain('titulo: Formato');
     expect(bruto).toContain('- a');
     expect(bruto).toContain('- b');
@@ -152,7 +157,71 @@ describe('conteúdo gravado em disco', () => {
     const post = await lerPost('sem-capa');
     expect(post.frontmatter.capa).toBeUndefined();
 
-    const bruto = await readFile(join(pastaTemp, 'posts', 'sem-capa.md'), 'utf-8');
+    const bruto = await readFile(join(pastaTemp, 'rascunhos', 'sem-capa.md'), 'utf-8');
     expect(bruto).not.toContain('capa:');
+  });
+});
+
+describe('rascunho x post publicado', () => {
+  const frontmatter = (titulo: string, publicadoEm = '2026-08-13') => ({
+    titulo,
+    descricao: 'd',
+    publicadoEm,
+  });
+
+  async function publicadoNaPasta(slug: string, titulo: string, publicadoEm = '2026-08-13'): Promise<void> {
+    const { mkdir, writeFile } = await import('node:fs/promises');
+    await mkdir(join(pastaTemp, 'posts'), { recursive: true });
+    await writeFile(
+      join(pastaTemp, 'posts', `${slug}.md`),
+      `---
+titulo: ${titulo}
+descricao: d
+publicadoEm: ${publicadoEm}
+---
+corpo publicado`,
+    );
+  }
+
+  it('salvarPost grava só em rascunhos e nunca cria nada em src/content/posts', async () => {
+    await salvarPost('novo', frontmatter('Novo'), 'corpo');
+
+    const { existsSync } = await import('node:fs');
+    expect(existsSync(join(pastaTemp, 'rascunhos', 'novo.md'))).toBe(true);
+    expect(existsSync(join(pastaTemp, 'posts'))).toBe(false);
+  });
+
+  it('salvar um post já publicado deixa o arquivo publicado intacto', async () => {
+    await publicadoNaPasta('ja-no-ar', 'Título publicado');
+
+    await salvarPost('ja-no-ar', frontmatter('Título editado'), 'corpo editado');
+
+    const publicado = await readFile(join(pastaTemp, 'posts', 'ja-no-ar.md'), 'utf-8');
+    expect(publicado).toContain('Título publicado');
+    expect(publicado).toContain('corpo publicado');
+  });
+
+  it('lerPost devolve o rascunho quando existe, e o publicado quando não existe', async () => {
+    await publicadoNaPasta('ja-no-ar', 'Título publicado');
+    await publicadoNaPasta('so-publicado', 'Só publicado');
+    await salvarPost('ja-no-ar', frontmatter('Título editado'), 'corpo editado');
+
+    expect((await lerPost('ja-no-ar')).frontmatter.titulo).toBe('Título editado');
+    expect((await lerPost('so-publicado')).frontmatter.titulo).toBe('Só publicado');
+  });
+
+  it('listarPosts junta os dois, mostra cada slug uma vez (o rascunho vence) e marca a situação', async () => {
+    await publicadoNaPasta('so-publicado', 'Só publicado', '2026-03-01');
+    await publicadoNaPasta('com-alteracoes', 'Publicado antigo', '2026-02-01');
+    await salvarPost('com-alteracoes', frontmatter('Editado no rascunho', '2026-02-01'), 'x');
+    await salvarPost('so-rascunho', frontmatter('Rascunho novo', '2026-04-01'), 'x');
+
+    const lista = await listarPosts();
+
+    expect(lista.map((p) => [p.slug, p.situacao, p.frontmatter.titulo])).toEqual([
+      ['so-rascunho', 'so-rascunho', 'Rascunho novo'],
+      ['so-publicado', 'publicado', 'Só publicado'],
+      ['com-alteracoes', 'com-alteracoes', 'Editado no rascunho'],
+    ]);
   });
 });

@@ -31,9 +31,12 @@ __pycache__/
 *.pyc
 
 # Felixo Editor (app/) — dependências e build são locais, credencial do
-# Notion nunca entra no repositório público
+# Notion nunca entra no repositório público. Rascunho (texto, imagens e capa de
+# post ainda não publicado) também não: o commit automático leva tudo o que
+# está na árvore, e o repositório é público.
 app/node_modules/
 app/dist-electron/
 app/.env
 app/*.tsbuildinfo
 app/.notion-associacoes.json
+app/rascunhos/

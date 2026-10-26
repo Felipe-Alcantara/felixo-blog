@@ -4,7 +4,7 @@ import { comRetry } from './cliente';
 import { listarTodosOsBlocos } from './paginacao';
 import { blocosParaMarkdown } from './blocos';
 import { baixarImagensDoArtigo } from '../midia/download';
-import { pastaDeMidiaDoPost } from '../posts/caminhos';
+import { pastaDeMidiaDoRascunho } from '../posts/caminhos';
 import { registrarOrigemDoNotion } from './associacoes';
 
 export interface ArtigoImportado {
@@ -26,9 +26,11 @@ function extrairTitulo(pagina: PageObjectResponse): string {
  * Markdown, com as imagens do Notion já baixadas para a pasta do post (as
  * URLs do Notion expiram — ver `midia/download.ts`).
  *
- * Não grava nada em `src/content/posts/` — devolve os dados para a tela de
- * edição, onde quem usa preenche descrição/tags e decide salvar. Fonte da
- * verdade continua sendo o `.md`, não o Notion (decisão registrada no IA.md).
+ * Não grava nada em `src/content/posts/`: as imagens vão para a pasta do
+ * rascunho (`app/rascunhos/`, ignorada pelo git) e o texto volta para a tela de
+ * edição, onde quem usa preenche descrição/tags e decide salvar (também como
+ * rascunho). Fonte da verdade continua sendo o `.md`, não o Notion (decisão
+ * registrada no IA.md).
  */
 export async function importarArtigo(client: Client, pageId: string, slug: string): Promise<ArtigoImportado> {
   const pagina = await comRetry(() => client.pages.retrieve({ page_id: pageId }));
@@ -39,7 +41,7 @@ export async function importarArtigo(client: Client, pageId: string, slug: strin
   const titulo = extrairTitulo(pagina);
   const blocos = await listarTodosOsBlocos(client, pageId);
   const { markdown, imagens } = blocosParaMarkdown(blocos);
-  const corpo = await baixarImagensDoArtigo(markdown, imagens, pastaDeMidiaDoPost(slug), slug);
+  const corpo = await baixarImagensDoArtigo(markdown, imagens, pastaDeMidiaDoRascunho(slug), slug);
 
   await registrarOrigemDoNotion(slug, pageId);
 

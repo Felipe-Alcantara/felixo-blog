@@ -230,7 +230,7 @@ export function EditorDePost({ slugInicial, rascunhoInicial, aoVoltar }: Props):
     setSalvando(true);
     const sucesso = await salvarInterno();
     setSalvando(false);
-    if (sucesso) setMensagem('Salvo.');
+    if (sucesso) setMensagem('Salvo como rascunho. O texto só vai para o blog ao publicar.');
   }
 
   async function publicar(): Promise<void> {

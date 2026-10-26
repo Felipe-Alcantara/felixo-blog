@@ -1,41 +1,55 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import matter from 'gray-matter';
-import { caminhoDoPost, PASTA_DE_POSTS } from './caminhos';
+import { caminhoDoPost, caminhoDoRascunho, PASTA_DE_POSTS, PASTA_DE_RASCUNHOS } from './caminhos';
 import { esquemaFrontmatter, type Frontmatter } from './esquema';
 import { slugValido } from './slug';
 
 export class PostInvalidoError extends Error {}
 
+/**
+ * `publicado`: só existe em `src/content/posts/`. `so-rascunho`: ainda não foi
+ * publicado. `com-alteracoes`: já está publicado e há uma cópia em edição.
+ */
+export type SituacaoDoPost = 'publicado' | 'so-rascunho' | 'com-alteracoes';
+
 export interface ResumoDePost {
   slug: string;
   frontmatter: Frontmatter;
+  situacao: SituacaoDoPost;
 }
 
 export interface PostCompleto extends ResumoDePost {
   corpo: string;
 }
 
+/** Slugs dos `.md` de uma pasta (vazio se a pasta não existe). */
+async function slugsDaPasta(pasta: string): Promise<string[]> {
+  if (!existsSync(pasta)) return [];
+  const entradas = await readdir(pasta, { withFileTypes: true });
+  return entradas
+    .filter((e) => e.isFile() && e.name.endsWith('.md'))
+    .map((e) => e.name.replace(/\.md$/, ''));
+}
+
 /**
- * Lista os posts existentes em `src/content/posts/`, do mais recente para o
- * mais antigo. Posts com frontmatter inválido são reportados no console em
- * vez de derrubar a listagem inteira — um `.md` quebrado não pode travar o
- * app de ver os outros 20.
+ * Lista os posts publicados (`src/content/posts/`) e os rascunhos
+ * (`app/rascunhos/`), do mais recente para o mais antigo. Cada slug aparece
+ * uma vez: se há rascunho, ele vence o publicado. Posts com frontmatter inválido
+ * são reportados no console em vez de derrubar a listagem inteira — um `.md`
+ * quebrado não pode travar o app de ver os outros 20.
  */
 export async function listarPosts(): Promise<ResumoDePost[]> {
-  if (!existsSync(PASTA_DE_POSTS)) return [];
-
-  const entradas = await readdir(PASTA_DE_POSTS, { withFileTypes: true });
-  const arquivosMd = entradas.filter((e) => e.isFile() && e.name.endsWith('.md'));
+  const publicados = new Set(await slugsDaPasta(PASTA_DE_POSTS));
+  const rascunhos = new Set(await slugsDaPasta(PASTA_DE_RASCUNHOS));
 
   const resumos: ResumoDePost[] = [];
-  for (const arquivo of arquivosMd) {
-    const slug = arquivo.name.replace(/\.md$/, '');
+  for (const slug of new Set([...publicados, ...rascunhos])) {
     try {
       const post = await lerPost(slug);
-      resumos.push({ slug: post.slug, frontmatter: post.frontmatter });
+      resumos.push({ slug: post.slug, frontmatter: post.frontmatter, situacao: post.situacao });
     } catch (erro) {
-      console.error(`[felixo-editor] post ignorado na listagem (${arquivo.name}):`, erro);
+      console.error(`[felixo-editor] post ignorado na listagem (${slug}.md):`, erro);
     }
   }
 
@@ -44,18 +58,22 @@ export async function listarPosts(): Promise<ResumoDePost[]> {
   );
 }
 
-/** Lê e valida um post pelo slug. Lança `PostInvalidoError` se o schema não bater. */
+/**
+ * Lê e valida um post pelo slug: o rascunho, se existir, senão o publicado.
+ * Lança `PostInvalidoError` se o schema não bater.
+ */
 export async function lerPost(slug: string): Promise<PostCompleto> {
   if (!slugValido(slug)) {
     throw new PostInvalidoError(`Slug inválido: "${slug}".`);
   }
 
-  const caminho = caminhoDoPost(slug);
-  if (!existsSync(caminho)) {
+  const temRascunho = existsSync(caminhoDoRascunho(slug));
+  const temPublicado = existsSync(caminhoDoPost(slug));
+  if (!temRascunho && !temPublicado) {
     throw new PostInvalidoError(`Post não encontrado: "${slug}".`);
   }
 
-  const bruto = await readFile(caminho, 'utf-8');
+  const bruto = await readFile(temRascunho ? caminhoDoRascunho(slug) : caminhoDoPost(slug), 'utf-8');
   const { data, content } = matter(bruto);
 
   const validado = esquemaFrontmatter.safeParse(data);
@@ -67,11 +85,18 @@ export async function lerPost(slug: string): Promise<PostCompleto> {
     );
   }
 
-  return { slug, frontmatter: validado.data, corpo: content.trim() };
+  const situacao: SituacaoDoPost = !temRascunho
+    ? 'publicado'
+    : temPublicado
+      ? 'com-alteracoes'
+      : 'so-rascunho';
+  return { slug, frontmatter: validado.data, corpo: content.trim(), situacao };
 }
 
 /**
- * Grava um post, validando o frontmatter antes de tocar o disco.
+ * Grava o post como rascunho (`app/rascunhos/`), validando o frontmatter antes
+ * de tocar o disco. Nunca grava em `src/content/posts/`: só o "Publicar" leva o
+ * post para lá (ver `publicacao/publicar.ts`).
  *
  * Nunca sobrescreve silenciosamente um slug diferente do informado — o nome
  * do arquivo é a URL pública do post (ver AGENTS.md), então trocar o slug é
@@ -96,9 +121,9 @@ export async function salvarPost(
   }
   const frontmatter = removerCamposIndefinidos(validado.data);
 
-  await mkdir(PASTA_DE_POSTS, { recursive: true });
+  await mkdir(PASTA_DE_RASCUNHOS, { recursive: true });
   const arquivo = matter.stringify(`\n${corpo.trim()}\n`, frontmatter);
-  await writeFile(caminhoDoPost(slug), arquivo, 'utf-8');
+  await writeFile(caminhoDoRascunho(slug), arquivo, 'utf-8');
 }
 
 /**

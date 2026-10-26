@@ -65,6 +65,8 @@ export function ListaDePosts({ aoAbrir }: Props): JSX.Element {
             <div style={{ fontSize: '0.8rem', color: 'var(--cor-texto-fraco)' }}>
               {formatoData.format(post.frontmatter.publicadoEm)}
               {post.frontmatter.rascunho ? ' · rascunho' : ''}
+              {post.situacao === 'so-rascunho' ? ' · ainda não publicado' : ''}
+              {post.situacao === 'com-alteracoes' ? ' · alterações não publicadas' : ''}
             </div>
           </button>
         </li>

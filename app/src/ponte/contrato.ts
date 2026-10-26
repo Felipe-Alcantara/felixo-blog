@@ -15,10 +15,13 @@ import type { InfoDaDatabase } from '../principal/notion/descoberta';
 import type { ArtigoDoNotion } from '../principal/notion/paginasDaDatabase';
 import type { ArtigoImportado } from '../principal/notion/importacao';
 import type { ResultadoDaPublicacao } from '../principal/publicacao/publicar';
+import type { SituacaoDoPost } from '../principal/posts/repositorio';
 
 export interface ResumoDePost {
   slug: string;
   frontmatter: Frontmatter;
+  /** Publicado, só rascunho (ainda não publicado) ou publicado com cópia em edição. */
+  situacao: SituacaoDoPost;
 }
 
 export interface PostCompleto extends ResumoDePost {
@@ -47,11 +50,11 @@ export const CANAIS = {
 export interface PonteFelixoEditor {
   /** Versão do Felixo Editor (do `package.json`), para exibir no rodapé. */
   obterVersaoApp: () => Promise<string>;
-  /** Lista os posts existentes em `src/content/posts/`, mais recente primeiro. */
+  /** Lista os posts publicados (`src/content/posts/`) e os rascunhos (`app/rascunhos/`), mais recente primeiro. */
   listarPosts: () => Promise<ResumoDePost[]>;
   /** Lê um post pelo slug (nome do arquivo sem `.md`). */
   lerPost: (slug: string) => Promise<PostCompleto>;
-  /** Valida e grava um post. Lança erro se o frontmatter não bater o schema. */
+  /** Valida e grava o post como rascunho (`app/rascunhos/`). Lança erro se o frontmatter não bater o schema. */
   salvarPost: (slug: string, frontmatter: unknown, corpo: string) => Promise<void>;
   /** Lê o token/database ID salvos (não passa pelo repositório versionado). */
   obterConfiguracaoNotion: () => Promise<ConfiguracaoNotion>;
@@ -67,7 +70,7 @@ export interface PonteFelixoEditor {
   salvarImagemDoPost: (slug: string, nomeBase: string, bytes: ArrayBuffer) => Promise<string>;
   /** Gera a capa do post via scripts/gerar-og-image.py. Devolve o link relativo. */
   gerarCapaDoPost: (slug: string, titulo: string, descricao: string) => Promise<string>;
-  /** Gate + git add seletivo + commit + push + escrita de volta no Notion (best-effort). */
+  /** Copia o rascunho para `src/content/posts/`, gate + git add seletivo + commit + push + escrita de volta no Notion (best-effort). */
   publicarPost: (slug: string, titulo: string) => Promise<ResultadoDaPublicacao>;
 }
 

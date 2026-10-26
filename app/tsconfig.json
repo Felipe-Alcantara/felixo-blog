@@ -20,6 +20,8 @@
     "src/principal/notion/paginacao.ts",
     "src/principal/midia/download.ts",
     "src/principal/posts/caminhos.ts",
+    "src/principal/posts/rascunhos.ts",
+    "src/principal/posts/repositorio.ts",
     "src/principal/publicacao/publicar.ts",
     "src/principal/publicacao/gate.ts",
     "src/principal/publicacao/git.ts",

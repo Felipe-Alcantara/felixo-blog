@@ -21,3 +21,22 @@ export function caminhoDoPost(slug: string): string {
 export function pastaDeMidiaDoPost(slug: string): string {
   return join(PASTA_DE_POSTS, slug);
 }
+
+/**
+ * Onde o editor guarda tudo o que ainda não foi publicado: o texto importado ou
+ * escrito, as imagens e a capa. Fica em `app/`, ignorada pelo git (`.gitignore`
+ * da raiz), ao lado do `.env`: o repositório é público e o commit automático do
+ * Fetch All leva tudo o que está na árvore, então nada não publicado pode ficar
+ * em `src/content/posts/`. Só o "Publicar" copia o post para lá.
+ */
+export const PASTA_DE_RASCUNHOS = join(RAIZ_DO_BLOG, 'app', 'rascunhos');
+
+/** Caminho do `.md` do rascunho. */
+export function caminhoDoRascunho(slug: string): string {
+  return join(PASTA_DE_RASCUNHOS, `${slug}.md`);
+}
+
+/** Pasta de imagens do rascunho, com a mesma estrutura da pasta do post publicado. */
+export function pastaDeMidiaDoRascunho(slug: string): string {
+  return join(PASTA_DE_RASCUNHOS, slug);
+}
