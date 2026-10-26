@@ -3,6 +3,7 @@ import { caminho } from '../utils/rotas';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BotaoAssinatura from '../components/BotaoAssinatura.astro';
 import { SITE } from '../config/site';
+import { TEXTOS } from '../config/idiomas';
 ---
 
 <BaseLayout titulo="Sobre" descricao={`Sobre ${SITE.autor} e o ${SITE.titulo}.`}>
@@ -23,31 +24,9 @@ import { SITE } from '../config/site';
       <h1 class="felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl">Sobre</h1>
 
       <div class="conteudo-post mt-8">
-        <p>
-          Oi, eu sou <strong>{SITE.autor}</strong>. Depois de alguns anos estudando e
-          construindo ferramentas, resolvi abrir um espaço para registrar o que aprendo
-          pelo caminho — de preferência de um jeito que qualquer pessoa consiga
-          acompanhar.
-        </p>
-
-        <p>Por aqui você vai encontrar:</p>
-
-        <ul>
-          <li>
-            <strong>Programação descomplicada</strong> — explicações diretas, sem rodeio e sem
-            jargão desnecessário.
-          </li>
-          <li>
-            <strong>Boas práticas e automações</strong> — o que funciona no dia a dia, testado
-            nos meus próprios projetos.
-          </li>
-          <li>
-            <strong>FelixoVerse</strong> — bastidores do desenvolvimento, incluindo os ARGs.
-          </li>
-          <li>
-            <strong>Notícias de tecnologia</strong> — com opinião, quando vale a pena comentar.
-          </li>
-        </ul>
+        <!-- Os mesmos parágrafos da home, ditados pelo dono (2026-10-26): o Sobre e a
+             home dizem a mesma coisa porque o texto é um só. -->
+        {TEXTOS.pt.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
 
         <h2>Onde mais me encontrar</h2>
 

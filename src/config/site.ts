@@ -2,8 +2,10 @@
 export const SITE = {
   titulo: 'Blog do Felixo',
   autor: 'Felipe Alcântara',
+  // Frase do dono, tirada da apresentação da home (2026-10-26); vai para o buscador,
+  // o cartão de compartilhamento e o RSS. A versão em inglês está em `idiomas.ts`.
   descricao:
-    'Programação descomplicada, boas práticas, automações e notícias de tecnologia — o blog do FelixoVerse.',
+    'Aqui, eu escrevo sobre a minha história, o que eu aprendi ao longo da jornada, e o que ando construindo nesse tempo.',
   idioma: 'pt-BR',
   url: 'https://blog.felixo.com.br',
   /** Perfil usado no `twitter:site` do cartão — o mesmo do portfólio. */

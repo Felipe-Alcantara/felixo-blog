@@ -36,9 +36,12 @@ RAIZ = Path(__file__).resolve().parents[1]
 SAIDA_PADRAO = RAIZ / "public" / "og-image.jpg"
 LOGO = RAIZ / "public" / "imagens" / "logo-felixo.png"
 
-TITULO_PADRAO = "Programação descomplicada"
+# Os dois valem para o cartão genérico do site; a descrição é a mesma de
+# `SITE.descricao` em `src/config/site.ts` (mudou uma, muda a outra).
+TITULO_PADRAO = "Blog do Felixo"
 DESCRICAO_PADRAO = (
-    "Boas práticas, automações e notícias de tecnologia — o blog do FelixoVerse."
+    "Aqui, eu escrevo sobre a minha história, o que eu aprendi ao longo da jornada, "
+    "e o que ando construindo nesse tempo."
 )
 
 LARGURA, ALTURA = 1200, 630
@@ -190,7 +193,7 @@ def _analisar_argumentos(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--titulo",
         default=TITULO_PADRAO,
-        help="Título do cartão (padrão: chamada do site).",
+        help="Título do cartão (padrão: nome do blog).",
     )
     parser.add_argument(
         "--descricao",
