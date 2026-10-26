@@ -1,7 +1,9 @@
 /** Configuração única do blog — evita strings duplicadas pelas páginas. */
 export const SITE = {
   titulo: 'Blog do Felixo',
-  autor: 'Felipe Alcântara',
+  autor: 'Felipe Martin',
+  /** O nome da apresentação da home; o rodapé o mostra junto do autor. */
+  apelido: 'Felixo',
   // Frase do dono, tirada da apresentação da home (2026-10-26); vai para o buscador,
   // o cartão de compartilhamento e o RSS. A versão em inglês está em `idiomas.ts`.
   descricao:

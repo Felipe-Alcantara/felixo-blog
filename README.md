@@ -1,6 +1,6 @@
 # Blog do Felixo
 
-Blog pessoal de [Felipe Alcântara](https://felixo.com.br/) — programação
+Blog pessoal de [Felipe Martin](https://felixo.com.br/) — programação
 descomplicada, boas práticas, automações e bastidores do FelixoVerse.
 
 Site estático em **Astro + Tailwind CSS 4**, com posts em Markdown, publicado
@@ -233,4 +233,4 @@ app/                 # Felixo Editor — app desktop, package.json próprio
 ## Licença
 
 [MIT](LICENSE) para o código. Os textos dos posts são de autoria de Felipe
-Alcântara.
+Martin.

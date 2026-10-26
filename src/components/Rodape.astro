@@ -29,7 +29,7 @@ const ehExterno = (href: string) => href.startsWith('http');
       class="flex flex-col gap-4 border-t border-white/5 py-10 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between"
     >
       <div class="flex flex-col gap-1.5">
-        <p>© {ano} {SITE.autor}. {textos.feitoCom}</p>
+        <p>© {ano} {SITE.autor} ({SITE.apelido}). {textos.feitoCom}</p>
         <AcessosNoRodape idioma={Astro.props.idioma} daPagina={acessosDaPagina} />
       </div>
       <ul class="flex flex-wrap gap-4">
