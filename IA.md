@@ -128,8 +128,9 @@
   nunca foram testadas contra produção de verdade, e o importador grava o post
   direto em `src/content/posts/`, onde o commit automático do Fetch All pode
   levá-lo antes da hora de publicar (registro de 2026-09-30). A suíte do editor
-  tem 5 falhas que já existiam (três em `midia-otimizacao`, duas em
-  `publicacao-gate`).
+  passa inteira desde 2026-10-26 (74 testes): as 5 falhas que havia no Windows
+  eram um bug do gate, que chamava o `npm` sem shell (o botão de publicar não
+  passava do gate no Windows), e um teste que prendia o arquivo `.webp`.
 - **Deploy**: GitHub Pages por API (`build_type=workflow`), a cada push na
   `main`; o último deploy conferido (2026-10-26) está verde.
 - **Histórico do git**: em 2026-10-26 foi reescrito a partir de `99c5a6f` (31
@@ -2593,3 +2594,46 @@ também fora do git. Fechei o editor.
 Não medido: o editor empacotado (só a versão de desenvolvimento compilada); a
 importação de um artigo; e o que a tela mostra se a coluna Formato for renomeada
 ou mudar de tipo, que, pelo código, volta a listar tudo.
+
+[2026-10-26] **Felixo Editor: as 5 falhas da suíte no Windows eram um bug real
+do gate de publicação e um teste que prendia um arquivo; a suíte passa inteira
+(74 testes).** Pendência de 2026-10-23, quando a suíte do `app/` apareceu com 3
+falhas em `midia-otimizacao` e 2 em `publicacao-gate`, já antes da mudança do
+filtro por Formato.
+
+Reproduzido em 2026-10-26 (Windows 11, Node 25.3, vitest 3.2.7, Electron 43.4.0
+já instalado): as mesmas 5 falhas, então não dependiam de a instalação ter sido
+com `--ignore-scripts`.
+
+**Gate (2 testes, e é bug do produto).** `rodarGate` chamava
+`execFile('npm', ['run', ...])`. Medido nesta máquina: `execFile('npm')` sem
+shell dá `ENOENT`; `execFile('npm.cmd')` sem shell dá `EINVAL` (o Node recusa
+abrir `.cmd` sem shell desde a correção do CVE-2024-27980); com `shell: true`
+roda, mas o Node 25 avisa (DEP0190) quando se passa uma lista de argumentos
+junto com o shell. O erro caía no `catch`, então o gate do editor sempre
+devolvia "falhou na etapa check" no Windows: o botão de publicar nunca passaria
+do gate aqui. O teste "reporta falha na etapa check" passava pelo motivo errado,
+porque o `npm` nem chegava a abrir. Correção em
+`app/src/principal/publicacao/gate.ts`: `exec('npm run <script>')`, em que o
+script vem de um tipo fechado (`'check' | 'build'`), nunca de entrada de quem
+usa o editor, então o shell não abre brecha de injeção; `exec` com o comando
+inteiro evita o aviso DEP0190. O teste do `check` ausente agora também confere
+que o npm respondeu "Missing script".
+
+**Mídia (3 testes, só do teste).** Os três que falhavam são os que abrem o
+`.webp` gravado com `sharp(caminho).metadata()`; o quarto, que usa `stat`,
+passava. O `sharp` aberto por caminho deixa o arquivo preso no cache do libvips,
+e no Windows o `rm` do `afterEach` falha com `EBUSY` ao apagar o `.webp`.
+Correção só no teste: ler o arquivo com `readFile` e passar os bytes ao `sharp`.
+O código do produto (`salvarImagemOtimizada`, que recebe bytes) não tinha o
+problema.
+
+Medido depois da correção: `npm test` em `app/` passa por inteiro (17 arquivos,
+74 testes; eram 5 falhas); `npm run check` do app (tsc) sem erro; e o gate de
+verdade, `rodarGate` sobre o blog (`astro check`, `prettier --check .` e
+`build`), deu sucesso em 16 s.
+
+Não medido: Linux e macOS (o Docker desta máquina não estava rodando e o WSL só
+tem a distro do Docker); `publicarPost` com push de verdade (os testes usam
+repositório temporário); o editor empacotado. A suíte do `app/` não roda no CI
+do blog, o que deixou essas falhas passarem; virou task.
