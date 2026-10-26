@@ -73,14 +73,23 @@ export const TEXTOS = {
     },
     /** Selo para post que não está no idioma da página. */
     postEmOutroIdioma: '',
-    /** Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`). */
-    acessos: { singular: 'acesso', plural: 'acessos' },
+    /**
+     * Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`).
+     * `indisponivel` aparece quando a leitura do contador falha.
+     */
+    acessos: {
+      singular: 'acesso',
+      plural: 'acessos',
+      indisponivel: 'acessos indisponíveis (bloqueador de anúncio?)',
+    },
     /** Botão do rodapé que para as animações (ver `PausarAnimacoes.astro`). */
     animacoes: { pausar: 'Pausar animações', retomar: 'Retomar animações' },
     /** Números no rodapé de todas as páginas (ver `AcessosNoRodape.astro`). */
     acessosRodape: {
       pagina: { singular: 'acesso nesta página', plural: 'acessos nesta página' },
       total: { singular: 'acesso no blog', plural: 'acessos no blog' },
+      indisponivel:
+        'Os acessos não carregaram: um bloqueador de anúncio pode estar impedindo.',
     },
     /**
      * Assinatura do follow.it: a janela (`Assinatura.astro`) e os botões que a
@@ -147,11 +156,16 @@ export const TEXTOS = {
       nenhumResultado: 'No posts found.',
     },
     postEmOutroIdioma: 'In Portuguese',
-    acessos: { singular: 'view', plural: 'views' },
+    acessos: {
+      singular: 'view',
+      plural: 'views',
+      indisponivel: 'views unavailable (ad blocker?)',
+    },
     animacoes: { pausar: 'Pause animations', retomar: 'Resume animations' },
     acessosRodape: {
       pagina: { singular: 'view of this page', plural: 'views of this page' },
       total: { singular: 'view on the blog', plural: 'views on the blog' },
+      indisponivel: 'Views could not load: an ad blocker may be blocking them.',
     },
     assinatura: {
       abrir: 'Get posts by email',

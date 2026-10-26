@@ -148,6 +148,13 @@ Com `codigo` vazio, nada do GoatCounter entra no site. A contagem só roda no
 build de produção, então os testes no `npm run dev` não contam. Os números do
 post e do rodapé ficam em cache por até 4 horas no GoatCounter.
 
+Leitor com bloqueador de anúncio não é contado (o GoatCounter estima cerca de um
+terço das visitas), então os números são um mínimo. Se o navegador também barra
+a leitura do número, o cabeçalho do post e o rodapé avisam que um bloqueador de
+anúncio pode estar impedindo, em vez de sumir ou mostrar um traço mudo. Domínio
+próprio no GoatCounter é só nome bonito e não escapa dos bloqueadores; contar
+essas visitas exigiria um proxy próprio, fora do GitHub Pages.
+
 ## Assinatura dos posts novos
 
 Quem lê pode assinar os posts novos pelo [follow.it](https://follow.it), sem

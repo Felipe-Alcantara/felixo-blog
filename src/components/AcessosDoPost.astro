@@ -9,10 +9,12 @@
  * do painel. Começa escondido e aparece quando o número chega, inclusive 0
  * (pedido do dono, 2026-10-22): num post que ainda não teve acesso o
  * GoatCounter responde 404 com `count` 0, e isso é um 0 de verdade. Sem
- * JavaScript, com bloqueador de anúncio ou com o contador desligado no painel,
- * a leitura falha e o cabeçalho fica como antes (o rodapé, em
- * `AcessosNoRodape.astro`, mostra um traço nesses casos). O GoatCounter guarda
- * o número em cache por até 4 horas, então ele não sobe a cada recarga.
+ * JavaScript o cabeçalho fica como antes. Com a leitura falhando (bloqueador de
+ * anúncio, rede fora, contador desligado no painel), ele mostra "acessos
+ * indisponíveis (bloqueador de anúncio?)" em vez de sumir (pedido do dono,
+ * 2026-10-26: avisar que o bloqueador impede); o rodapé, em
+ * `AcessosNoRodape.astro`, faz o mesmo com uma frase inteira. O GoatCounter
+ * guarda o número em cache por até 4 horas, então ele não sobe a cada recarga.
  *
  * O separador de milhar do GoatCounter vem como espaço ("1 234"): o script
  * fica só com os dígitos e formata no idioma da página.
@@ -30,11 +32,12 @@ const endereco = `${contaGoatCounter()}/counter/${encodeURIComponent(Astro.url.p
 ---
 
 <span
-  class="contents"
+  class="inline-flex items-center gap-3"
   hidden
   data-acessos={endereco}
   data-singular={textos.acessos.singular}
   data-plural={textos.acessos.plural}
+  data-indisponivel={textos.acessos.indisponivel}
   data-lang={textos.lang}
 >
   <span aria-hidden="true">·</span>
@@ -43,16 +46,18 @@ const endereco = `${contaGoatCounter()}/counter/${encodeURIComponent(Astro.url.p
 
 <script is:inline>
   document.querySelectorAll('[data-acessos]').forEach((el) => {
+    const mostrar = (texto) => {
+      el.querySelector('[data-acessos-numero]').textContent = texto;
+      el.hidden = false;
+    };
     fetch(el.dataset.acessos)
       .then((r) => (r.ok || r.status === 404 ? r.json() : Promise.reject(r.status)))
       .then((dados) => {
-        if (dados.count === undefined) return;
+        if (dados.count === undefined) return Promise.reject('sem número');
         const n = Number(String(dados.count).replace(/\D/g, ''));
         const numero = new Intl.NumberFormat(el.dataset.lang).format(n);
-        const rotulo = n === 1 ? el.dataset.singular : el.dataset.plural;
-        el.querySelector('[data-acessos-numero]').textContent = `${numero} ${rotulo}`;
-        el.hidden = false;
+        mostrar(`${numero} ${n === 1 ? el.dataset.singular : el.dataset.plural}`);
       })
-      .catch(() => {});
+      .catch(() => mostrar(el.dataset.indisponivel));
   });
 </script>

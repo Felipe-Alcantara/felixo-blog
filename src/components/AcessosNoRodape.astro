@@ -17,8 +17,11 @@
  * não mostrava nada e ele achou que o contador não existia). Para uma página
  * sem nenhum acesso o GoatCounter responde 404 com `count` 0, e isso é um 0
  * de verdade. Quando a leitura falha (bloqueador de anúncio, rede fora,
- * contador desligado), o número vira um traço, para o contador não parecer
- * ausente. Sem JavaScript, o rodapé fica como era.
+ * contador desligado), o rodapé mostra uma frase avisando que um bloqueador de
+ * anúncio pode estar impedindo (pedido do dono, 2026-10-26; antes era um traço
+ * sem explicação), para o contador não parecer ausente. Se qualquer uma das
+ * duas leituras falha, a frase substitui os dois números. Sem JavaScript, o
+ * rodapé fica como era.
  *
  * O GoatCounter guarda os números em cache por até 4 horas. O separador de
  * milhar vem como espaço ("1 234"): o script fica só com os dígitos e formata
@@ -58,10 +61,11 @@ const endereco = (caminho: string) =>
     const rotulos = JSON.parse(el.dataset.rotulos);
     const formatar = new Intl.NumberFormat(el.dataset.lang);
 
-    // Devolve o texto pronto ("1 234 acessos no blog", "0 acessos no blog") ou
-    // null quando não há endereço (número da página desligado). O 404 do
+    // Devolve o texto pronto ("1 234 acessos no blog", "0 acessos no blog"), null
+    // quando não há endereço (número da página desligado) ou FALHOU. O 404 do
     // GoatCounter traz JSON com `count` 0, então ele passa como resposta; qualquer
-    // outra falha vira o traço.
+    // outra falha é FALHOU.
+    const FALHOU = Symbol('falhou');
     const ler = (endereco, rotulo) =>
       endereco
         ? fetch(endereco)
@@ -71,14 +75,16 @@ const endereco = (caminho: string) =>
               const n = Number(String(dados.count).replace(/\D/g, ''));
               return `${formatar.format(n)} ${n === 1 ? rotulo.singular : rotulo.plural}`;
             })
-            .catch(() => `– ${rotulo.plural}`)
+            .catch(() => FALHOU)
         : Promise.resolve(null);
 
     Promise.all([
       ler(el.dataset.pagina, rotulos.pagina),
       ler(el.dataset.total, rotulos.total),
     ]).then((partes) => {
-      el.textContent = partes.filter(Boolean).join(' · ');
+      el.textContent = partes.includes(FALHOU)
+        ? rotulos.indisponivel
+        : partes.filter(Boolean).join(' · ');
       el.hidden = false;
     });
   });
