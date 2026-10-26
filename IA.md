@@ -49,13 +49,17 @@
     no `localStorage`) e o atributo devolvido antes da primeira pintura.
   - `PaginaInicial.astro`: o filtro da barra de pesquisa de posts.
 - **Dois idiomas** (2026-09-30): português na raiz, inglês em `/en/`. Texto de
-  interface em `TEXTOS` de `src/config/idiomas.ts`; `PAGINAS_EM_INGLES` hoje só
-  tem `/` → `/en/` (Tags, Sobre e posts não existem em inglês, e o menu em inglês
-  tem só "Posts"). A pergunta da primeira visita grava a escolha e o seletor
-  PT | EN troca a qualquer hora. Post só ganha versão em inglês depois de completo
-  em português e com a revisão do dono. A apresentação da home em inglês, o
-  rótulo "My socials" e a descrição do site em inglês foram revisados pelo dono em
-  2026-10-26; o resto dos textos da interface em inglês segue sem revisão.
+  interface em `TEXTOS` de `src/config/idiomas.ts`. Existem em inglês a home, as
+  tags, o Sobre (`/en/about/`) e uma cópia de cada post (2026-10-26):
+  `/en/posts/<post>/` tem a interface em inglês, o texto em português e um
+  aviso, e não declara `hreflang`, porque a tradução do post ainda não existe
+  (`paginaEquivalente` guarda a regra dos endereços). A pergunta da primeira
+  visita grava a escolha e o seletor PT | EN troca a qualquer hora, ficando na
+  mesma página. Post só ganha tradução depois de completo em português e com a
+  revisão do dono. A apresentação da home em inglês, o rótulo "My socials" e a
+  descrição do site em inglês foram revisados pelo dono em 2026-10-26; o resto
+  dos textos da interface em inglês (os de Tags, Sobre e post incluídos) segue
+  sem revisão.
 - **Abertura e gatinho** (2026-10-16): `Abertura.astro`, primeiro filho do
   `<body>` no `BaseLayout`, mostra o gatinho do FelixoVerse piscando uma vez
   (cerca de 2 s) a cada carregamento. É só CSS, decorativa (`aria-hidden`) e some
@@ -2786,3 +2790,67 @@ guarda o histórico.
 Não medido: como o buscador e os cartões de compartilhamento passam a mostrar o
 nome (depende de reindexar). O nome de usuário do GitHub (`Felipe-Alcantara`, em
 links e no repositório) continua, porque é o nome da conta, e não o do autor.
+
+[2026-10-26] **Idioma: o post, as tags e o Sobre ganham a versão em inglês, e o
+seletor PT | EN deixa de jogar para a home.** Relato do dono: se muda o idioma,
+o site "buga" porque não tem as páginas de post em inglês. Era decisão de
+comportamento do dono, e eu não decidi sozinho.
+
+O que reproduzi (no Chrome, com o `dist` de antes): não dava 404, mas (1) quem
+escolhia inglês e abria um post pela home em inglês caía na página em português
+com toda a interface em português; (2) o EN dentro do post levava para a home em
+inglês e o leitor perdia o post; (3) na primeira visita num link de post,
+escolher English não mudava nada (só aparecia a nota "This page is only in
+Portuguese for now"). Tags e Sobre tinham o mesmo desvio. Era o desenho de
+2026-09-30 (posts só em português), mas o resultado confundia.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- O que acontece ao escolher inglês num post sem tradução? **O mesmo post, com a
+  interface em inglês** (deixar o post em português e o EN desativado; só
+  avisar, como era).
+- Alcance? **Posts, Tags e Sobre** (só os posts).
+- Como a cópia em inglês aparece nos buscadores? **Indexar as duas** (apontar
+  para a versão em português, com `canonical`, que foi o que recomendei). O
+  risco é o buscador ler a cópia como texto repetido; se isso aparecer, é uma
+  linha no `BaseLayout` (o `canonical` da cópia).
+
+O que mudou: `/en/posts/<post>/` é a cópia de cada post, com cabeçalho, rodapé,
+data, tempo de leitura, comentários e etiquetas em inglês, o texto do post em
+português (`lang="pt-BR"` no artigo) e o aviso "This post is only available in
+Portuguese for now". Nasceram também `/en/tags/`, `/en/tags/<tag>/` e
+`/en/about/` (o Sobre reaproveita a apresentação da home, já em inglês e
+revisada pelo dono), e o menu em inglês ganhou Tags e About. Para não repetir
+página por idioma, o corpo de Tags, de uma tag e do Sobre virou componente
+(`PaginaDeTags`, `PaginaDaTag`, `PaginaSobre`), como a home já era, e o
+agrupamento por tag foi para `agruparPorTag` em `utils/posts.ts`.
+`paginaEquivalente` passou a seguir uma regra (home, tags e posts só ganham o
+prefixo `/en`; o Sobre tem nome próprio em `NOMES_EM_INGLES`), no lugar do mapa
+`PAGINAS_EM_INGLES`, que só tinha a home. O seletor e a pergunta da primeira
+visita agora levam à mesma página no outro idioma, e as listas e as etiquetas em
+inglês apontam para as páginas em `/en/`.
+
+Decisão minha dentro do que o dono escolheu: a cópia em inglês **não declara
+`hreflang`** (prop `semTraducao` do `BaseLayout`, ligada em todo post), porque
+ele diria ao buscador que existe tradução, e o texto é o mesmo em português; os
+pares `hreflang` continuam na home, nas tags e no Sobre, que são traduzidos.
+Quando um post ganhar tradução, a prop sai dele.
+
+Medido, em 2026-10-26: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam (13 páginas, eram 8). Num script de Playwright (Chrome)
+sobre o `dist`, 46 conferências passam: post aberto pela home em inglês fica em
+`/en/posts/`, `lang="en"`, aviso e menu em inglês, data "31 July 2026" e "2 min
+read", etiqueta e "voltar" para `/en/`; PT e EN no post levam ao mesmo post; a
+pergunta da primeira visita num post leva English a `/en/posts/` (e não mostra
+mais a nota); tags, uma tag e Sobre trocam de idioma para a página certa nos
+dois sentidos; `/en/about/` usa a apresentação em inglês; `hreflang` (3 `link`)
+só onde há tradução e nenhum nos posts; o sitemap lista as páginas novas. A 360
+px o post em inglês não rola na horizontal.
+
+Não medido: Firefox e Safari (as trocas são links e texto de servidor; o script
+de pergunta não mudou); leitor de tela; como o buscador trata a cópia. Ficam
+como são: os acessos e os comentários (giscus, que mapeia pelo endereço) da
+cópia em inglês contam à parte do post em português, como a home em inglês já
+contava à parte; os textos novos da interface em inglês (Tags, Sobre, post e
+comentários) entram na revisão que o dono ainda não fez do resto da interface em
+inglês.
