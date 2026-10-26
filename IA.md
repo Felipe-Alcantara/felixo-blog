@@ -153,12 +153,10 @@
   (`capa` opcional no frontmatter, ver `content.config.ts`); sem capa, o post
   cai no cartão genérico.
 - **Estado final**: pronto para divulgação. Não há pendência de publicação
-  conhecida neste repositório. Ficam duas coisas para o dono: o blog assina
-  "Felipe Alcântara" e o portfólio assina "Felipe Martin" — os dois são ele, mas
-  quem lê os dois lado a lado vê dois nomes; e a `SITE.descricao`, que ficou
-  genérica. A seção "Em Breve" do
-  repositório `Felipe-Portifolio` continua sendo uma tarefa separada, fora do
-  escopo deste blog.
+  conhecida neste repositório. O blog assina "Felipe Martin (Felixo)", igual ao
+  portfólio (2026-10-26), e a `SITE.descricao` é uma frase do dono (2026-10-26).
+  A seção "Em Breve" do repositório `Felipe-Portifolio` continua sendo uma
+  tarefa separada, fora do escopo deste blog.
 
 ---
 
@@ -2748,3 +2746,43 @@ zero a cada abertura do app, então colar uma imagem num post já publicado pode
 gerar `imagem-01.webp` de novo e, no Publicar, sobrescrever a imagem publicada
 que tem esse nome (antes, a mesma colisão acontecia na hora de colar); virou
 task.
+
+[2026-10-26] **Identidade: o blog assina "Felipe Martin (Felixo)".** Resolve a
+"Pendência que não é código" de 2026-10-25 (o blog assinava "Felipe Alcântara" e
+o portfólio, "Felipe Martin"). Era decisão de identidade do dono, e eu não
+decidi sozinho.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- Qual nome o blog usa como autor? **Felipe Martin**, igual ao portfólio (Felipe
+  Alcântara, o que o blog tinha, e que deixaria o portfólio, a licença e o git
+  com outro nome; Felixo, o apelido da home).
+- Onde trocar além de `SITE.autor`? **Tudo, para não sobrar nome antigo**: o
+  `alt` do retrato e as duas menções do README (só o que aparece no site; só
+  `SITE.autor`).
+- O apelido aparece junto do nome no rodapé? **Sim, "© 2026 Felipe Martin
+  (Felixo)"** (só o nome).
+
+O que o código tinha (lido, não rodado): a task dizia que quatro pontos liam
+`SITE.autor`; eram três (o rodapé, o `<meta name="author">` e a descrição da
+página Sobre), e o resto estava escrito à mão: o `alt` do retrato em
+`sobre.astro` e duas menções no README (a abertura e "textos dos posts são de
+autoria de…"). A `LICENSE` e os 95 commits já estavam como "Felipe Martin".
+
+O que mudou: `SITE.autor` virou "Felipe Martin" e ganhou `SITE.apelido`
+("Felixo"), que só o rodapé mostra (o `meta author` e a descrição do Sobre ficam
+só com o nome); o `alt` do retrato passou a ler `SITE.autor`, então não fica
+mais nome solto na página; o README troca as duas menções. O texto do Sobre não
+foi tocado, é do dono.
+
+Medido, em 2026-10-26: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. No `dist`, o rodapé das quatro páginas (home, `/en/`,
+Sobre e 404) diz "© 2026 Felipe Martin (Felixo)", o `meta author` das quatro é
+"Felipe Martin", a descrição do Sobre é "Sobre Felipe Martin e o Blog do
+Felixo." e o `alt` do retrato é "Retrato de Felipe Martin". Não sobrou
+"Alcântara" com acento em `dist/` nem no repositório, fora deste arquivo, que
+guarda o histórico.
+
+Não medido: como o buscador e os cartões de compartilhamento passam a mostrar o
+nome (depende de reindexar). O nome de usuário do GitHub (`Felipe-Alcantara`, em
+links e no repositório) continua, porque é o nome da conta, e não o do autor.
