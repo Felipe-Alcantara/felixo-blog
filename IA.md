@@ -50,16 +50,19 @@
   - `PaginaInicial.astro`: o filtro da barra de pesquisa de posts.
 - **Dois idiomas** (2026-09-30): português na raiz, inglês em `/en/`. Texto de
   interface em `TEXTOS` de `src/config/idiomas.ts`. Existem em inglês a home, as
-  tags, o Sobre (`/en/about/`) e uma cópia de cada post (2026-10-26):
-  `/en/posts/<post>/` tem a interface em inglês, o texto em português e um
-  aviso, e não declara `hreflang`, porque a tradução do post ainda não existe
-  (`paginaEquivalente` guarda a regra dos endereços). A pergunta da primeira
-  visita grava a escolha e o seletor PT | EN troca a qualquer hora, ficando na
-  mesma página. Post só ganha tradução depois de completo em português e com a
-  revisão do dono. A apresentação da home em inglês, o rótulo "My socials" e a
-  descrição do site em inglês foram revisados pelo dono em 2026-10-26; o resto
-  dos textos da interface em inglês (os de Tags, Sobre e post incluídos) segue
-  sem revisão.
+  tags, o Sobre (`/en/about/`) e uma página de cada post (2026-10-26):
+  `/en/posts/<post>/` é a tradução quando há `src/content/traducoes/en/<post>.md`
+  (título, descrição, tags e texto em inglês; `revisado: false` mostra o aviso de
+  tradução por IA sem revisão do autor) e declara `hreflang`; sem o arquivo, é a
+  cópia com a interface em inglês, o texto em português e um aviso, sem
+  `hreflang`. Só "Olá, mundo" tem tradução, e ainda não foi revisada. A página
+  de uma tag não tem par exato (o nome da tag muda de idioma): o seletor leva ao
+  índice de tags do outro idioma (`paginaEquivalente` guarda a regra dos
+  endereços). A pergunta da primeira visita grava a escolha e o seletor PT | EN
+  troca a qualquer hora, ficando na mesma página. A apresentação da home em
+  inglês, o rótulo "My socials" e a descrição do site em inglês foram revisados
+  pelo dono em 2026-10-26; o resto dos textos da interface em inglês (os de Tags,
+  Sobre e post incluídos) e a tradução do post seguem sem revisão.
 - **Abertura e gatinho** (2026-10-16): `Abertura.astro`, primeiro filho do
   `<body>` no `BaseLayout`, mostra o gatinho do FelixoVerse piscando uma vez
   (cerca de 2 s) a cada carregamento. É só CSS, decorativa (`aria-hidden`) e some
@@ -2854,3 +2857,66 @@ cópia em inglês contam à parte do post em português, como a home em inglês 
 contava à parte; os textos novos da interface em inglês (Tags, Sobre, post e
 comentários) entram na revisão que o dono ainda não fez do resto da interface em
 inglês.
+
+[2026-10-26] **Idioma: o post "Olá, mundo" ganha a tradução em inglês, publicada
+com aviso de que não foi revisada.** O dono voltou depois da entrada anterior:
+"o post ainda não fica em inglês". De fato, `/en/posts/<post>/` tinha a
+interface em inglês, mas o texto era o original em português, como ele mesmo
+havia escolhido na rodada anterior, porque não existia tradução. O texto só vira
+inglês com uma tradução, e a decisão de como fazer era do dono.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- Como traduzir o post? **A IA traduz e publica já, com o aviso "traduzido por
+  IA, sem revisão do autor"** (traduzir, mostrar no chat e só publicar depois do
+  ok dele, que foi o que recomendei; ele traduzir e eu só preparar o site). A
+  regra do `AGENTS.md`, de que a tradução passa pela revisão do dono, continua
+  valendo: o dono revisa depois, e o aviso sai.
+- Onde fica o texto traduzido? **`src/content/traducoes/en/<post>.md`, à parte
+  dos posts** (um `<post>.en.md` ao lado do original, que apareceria como outro
+  post na lista do Felixo Editor).
+- As tags em inglês? **Traduzidas na tradução do post** (mantê-las em português,
+  que foi o que recomendei).
+
+O que mudou: coleção nova `traducoes` em `src/content.config.ts` (`titulo`,
+`descricao`, `tags` e `revisado`, que começa em `false`);
+`src/content/traducoes/en/ola-mundo.md` com o título, a descrição, as tags e o
+texto em inglês; `buscarTraducao` e `versaoDoPost` em `utils/posts.ts`, que dão
+ao post o título, a descrição e as tags da tradução numa página em inglês. A
+página `/en/posts/<post>/` renderiza o texto da tradução; sem o arquivo,
+continua a cópia com o texto em português e o aviso de antes. Com tradução, a
+página traz o aviso de tradução sem revisão e um link para o original, e passa a
+declarar `hreflang` nos dois sentidos (agora há par de verdade). A home em
+inglês lista o título e a descrição em inglês, sem o selo "In Portuguese", e a
+pesquisa procura no texto em inglês. As tags em inglês são `/en/tags/<tag>/`
+(`best-practices`, `meta`), e os posts sem tradução entram nelas pelas tags em
+português. Como o nome da tag muda de idioma, a página de uma tag não tem par
+exato: o seletor PT | EN a leva para o índice de tags do outro idioma, e ela não
+declara `hreflang`.
+
+A tradução segue o texto do Felipe sem "melhorar" (ver `LINGUAGEM-NATURAL.md`):
+mesma ordem, mesmos títulos, negrito, lista, citação e travessões, e o exemplo
+de código fica como está, com o comentário do código (a docstring) em inglês e
+os nomes das variáveis em português. Pontos em que escolhi entre duas leituras e
+que o dono deve conferir: "colocar minhas ideias em dia" virou "get my ideas in
+order"; "Programação descomplicada" virou "Uncomplicated programming"; "Boas
+práticas" virou "Best Practices" na tag e "best practices" no texto.
+
+Medido, em 2026-10-26: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam (13 páginas). Num script de Playwright (Chrome) sobre um
+build limpo, 53 conferências passam: a home em inglês lista o título e a
+descrição em inglês, sem o selo, com as tags em `/en/tags/`, e a pesquisa acha o
+texto em inglês e não acha o em português; o post em inglês tem `lang="en"`,
+título, `<title>` e descrição em inglês, o texto em inglês do começo ao fim (e o
+link do RSS preservado), um só aviso, o da tradução, com o link para o original,
+e etiquetas em inglês; o seletor leva ao mesmo post nos dois idiomas; a pergunta
+da primeira visita num link de post leva English à tradução; as páginas de tag
+trocam de idioma para o índice do outro; o `hreflang` aparece nos pares exatos
+(inclusive os dois do post) e não nas páginas de tag; e nenhum dos 17 links
+internos distintos, rastreados nas páginas em inglês e de tag, está quebrado.
+
+Não medido: Firefox e Safari, leitor de tela, e como o buscador trata as duas
+páginas do post. Ficam como estavam: os acessos e os comentários da página em
+inglês contam à parte; o Felixo Editor não conhece a pasta `traducoes` (escrever
+e publicar traduções pelo editor é outra tarefa); a tradução do título e do
+texto não passou pelo dono, e o aviso na página diz isso.
