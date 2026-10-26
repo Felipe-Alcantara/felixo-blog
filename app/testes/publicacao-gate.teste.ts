@@ -24,6 +24,9 @@ describe('rodarGate', () => {
     const resultado = await rodarGate(pastaTemp);
     expect(resultado.sucesso).toBe(false);
     expect(resultado.etapa).toBe('check');
+    // O npm de fato rodou e reclamou do script: sem isso, o teste também passaria
+    // quando o `npm` nem chega a abrir (no Windows, ENOENT/EINVAL).
+    expect(resultado.saida).toMatch(/missing script/i);
   });
 
   it('roda check e build de verdade quando os dois scripts existem e passam', async () => {

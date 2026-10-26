@@ -1,4 +1,4 @@
-import { mkdtemp, rm, stat } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -24,13 +24,22 @@ async function pngDeTeste(largura: number, altura: number): Promise<Buffer> {
     .toBuffer();
 }
 
+/**
+ * Metadados do arquivo gravado, lidos a partir dos bytes. `sharp(caminho)` deixa o
+ * arquivo aberto no cache do libvips, e no Windows o `rm` do `afterEach` falha com
+ * EBUSY ao apagar o `.webp`.
+ */
+async function metadadosDoArquivo(caminho: string) {
+  return sharp(await readFile(caminho)).metadata();
+}
+
 describe('salvarImagemOtimizada', () => {
   it('converte para webp e devolve o nome do arquivo gravado', async () => {
     const png = await pngDeTeste(400, 300);
     const nomeArquivo = await salvarImagemOtimizada(png, pastaTemp, 'imagem-01');
 
     expect(nomeArquivo).toBe('imagem-01.webp');
-    const info = await sharp(join(pastaTemp, nomeArquivo)).metadata();
+    const info = await metadadosDoArquivo(join(pastaTemp, nomeArquivo));
     expect(info.format).toBe('webp');
     expect(info.width).toBe(400);
     expect(info.height).toBe(300);
@@ -40,7 +49,7 @@ describe('salvarImagemOtimizada', () => {
     const png = await pngDeTeste(3200, 1600);
     const nomeArquivo = await salvarImagemOtimizada(png, pastaTemp, 'grande');
 
-    const info = await sharp(join(pastaTemp, nomeArquivo)).metadata();
+    const info = await metadadosDoArquivo(join(pastaTemp, nomeArquivo));
     expect(info.width).toBe(1600);
     expect(info.height).toBe(800);
   });
@@ -49,7 +58,7 @@ describe('salvarImagemOtimizada', () => {
     const png = await pngDeTeste(200, 100);
     const nomeArquivo = await salvarImagemOtimizada(png, pastaTemp, 'pequena');
 
-    const info = await sharp(join(pastaTemp, nomeArquivo)).metadata();
+    const info = await metadadosDoArquivo(join(pastaTemp, nomeArquivo));
     expect(info.width).toBe(200);
   });
 
