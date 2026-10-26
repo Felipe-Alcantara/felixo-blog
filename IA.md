@@ -68,10 +68,12 @@
   "notícias de tecnologia", o que contradiz a home: fica para o dono.
 - **Gate**: `npm run check` (0 erros) + `npm run build` (8 páginas: `/`, `/en/`,
   Sobre, Tags, as duas páginas de tag, o post `ola-mundo` e a 404) — verdes em
-  2026-10-25. `npm audit` em 2026-10-25: **12 vulnerabilidades** (1 crítica, 10
-  altas, 1 moderada; `astro`, `devalue`, `fast-uri`, `vite`, `zod` e outras). O
-  "0 vulnerabilidades" de 2026-08-05 não vale mais; nenhuma dependência foi
-  atualizada ainda.
+  2026-10-26. `npm audit` do blog em 2026-10-26: **0 vulnerabilidades** (eram 12
+  em 2026-10-25). O `astro` está preso em `~7.3.8` de propósito: a 7.4 exige Node
+  22.23.4 e o `setup-node` do CI ainda entrega a 22.23.3 (registro de
+  2026-10-26). O `app/` (Felixo Editor) tem `package.json` próprio e, em
+  2026-10-26, 10 vulnerabilidades (2 críticas, 7 altas, 1 moderada): ficam fora do
+  build do blog e ainda sem atualização.
 - **Conteúdo** (atualizado em 2026-09-30): nenhum post pronto. O
   `ola-mundo.md` no ar foi um teste e ainda vai ser revisado, assim como o
   site. Rascunho e post futuro não entram no repositório, que é público (ver
@@ -105,7 +107,7 @@
   tem 5 falhas que já existiam (três em `midia-otimizacao`, duas em
   `publicacao-gate`).
 - **Deploy**: GitHub Pages por API (`build_type=workflow`), a cada push na
-  `main`; o último deploy conferido (2026-10-23) está verde.
+  `main`; o último deploy conferido (2026-10-26) está verde.
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
 - **Compartilhamento**: cartão Open Graph genérico em `public/og-image.jpg`,
   gerado por `scripts/gerar-og-image.py` (Playwright, sob demanda — não entra no
@@ -115,10 +117,10 @@
   (`capa` opcional no frontmatter, ver `content.config.ts`); sem capa, o post
   cai no cartão genérico.
 - **Estado final**: pronto para divulgação. Não há pendência de publicação
-  conhecida neste repositório. Ficam três coisas para o dono: o blog assina
+  conhecida neste repositório. Ficam duas coisas para o dono: o blog assina
   "Felipe Alcântara" e o portfólio assina "Felipe Martin" — os dois são ele, mas
-  quem lê os dois lado a lado vê dois nomes; a `SITE.descricao`, que ficou
-  genérica; e as vulnerabilidades do `npm audit` (acima). A seção "Em Breve" do
+  quem lê os dois lado a lado vê dois nomes; e a `SITE.descricao`, que ficou
+  genérica. A seção "Em Breve" do
   repositório `Felipe-Portifolio` continua sendo uma tarefa separada, fora do
   escopo deste blog.
 
@@ -1835,3 +1837,90 @@ Firefox e WebKit por software (8 a 19 quadros por segundo na troca, contra 130 a
 celular fraco continuam sem resposta. No Firefox, a primeira foto (292 ms, antes
 do primeiro desenho) saiu branca; pode ser efeito de fotografar antes da página
 pintar, e não conferi a olho nu.
+
+[2026-10-26] **Vulnerabilidades do `npm audit` zeradas no blog, com o Astro
+preso na 7.3.x.** O `npm audit` acusava 12 vulnerabilidades desde 2026-10-25 (1
+crítica, 10 altas, 1 moderada, em `astro`, `devalue`, `fast-uri`,
+`http-cache-semantics`, `js-yaml`, `nanoid`, `sharp`, `smol-toml`,
+`source-map-js`, `svgo`, `vite` e `zod`). A crítica e quase todas as altas vêm
+do `astro` até a 7.3.2 e de dependências dele; onze das doze estão na árvore de
+`dependencies` (só uma é de dev). Todas tinham correção sem subir versão maior.
+
+**O primeiro deploy quebrou.** O `npm audit fix`, sem `--force`, rodado aqui
+(Node 25.3, npm 11.6.2), levou o Astro à 7.4.2 e deu 0 vulnerabilidades, com
+`check` e `build` verdes. Mas o deploy 40268048817 falhou no `npm ci`, e o
+`main` ficou vermelho por cerca de 15 minutos (a produção não mudou, porque o
+job de deploy é pulado quando o build falha). Eram dois problemas que só o CI
+mostra:
+
+- O `npm ci` do runner (npm 10.9.9, Node 22) recusou o lock gravado pelo npm 11:
+  "Missing: @emnapi/core@1.11.3" e "@emnapi/runtime@1.11.3". O npm 11 deixa de
+  gravar essas duas entradas hoisted, e o npm 10 as exige.
+- O `astro` 7.4.2 exige Node `>=22.23.4`, confere isso ao iniciar
+  (`bin/astro.mjs`) e sai. O `setup-node` com `node-version: 22` entregou a
+  22.23.3. A 7.4.0 já subiu para `>=22.22.0`; até a 7.3.8 o piso é `>=22.12.0`.
+
+**Correção** (commit `88d795c`): a faixa do `astro` passou de `^7.1.6` para
+`~7.3.8` (a 7.3.3 já corrige o aviso crítico, e a 7.3.8 é a última 7.3.x). O
+lock foi regravado do zero, com o npm 11 num diretório limpo
+(`npm install --package-lock-only`). Esse lock, ao contrário do primeiro, passa
+no npm 10. O npm 10.9.9 não serve para regravar: quebra com "Cannot read
+properties of null (reading 'edgesOut')" tanto trocando o Astro num lock
+existente quanto resolvendo sem lock, então ele só instala a partir de um lock
+pronto. Também saiu do `package.json` o `allowScripts` do `esbuild@0.28.1`
+(registro de 2026-08): o `esbuild` deixou a árvore (o Vite 8.3 usa o rolldown) e
+o único pacote com script de instalação que sobrou é o `fsevents` (opcional, só
+macOS).
+
+Versões: `astro` 7.1.6 → 7.3.8, `vite` 8.2.0 → 8.3.5, `sharp` 0.35.3 → 0.35.5,
+`zod` 4.4.3 → 4.6.7, `devalue` 5.9.0 → 5.9.4, `rolldown` 1.2.1 → 1.2.15. Como o
+lock foi regravado do zero, vieram junto atualizações dentro das faixas já
+declaradas (`@astrojs/check` 0.9.10 → 0.9.12, `prettier` 3.9.6 → 3.9.10,
+`@astrojs/sitemap` 3.7.3 → 3.7.4, `shiki` 4.4.1 → 4.5.0, `postcss` 8.5.25 →
+8.5.31): 162 pacotes com versão trocada, 26 novos e 57 fora.
+
+Validado (resultado final):
+
+- `npm audit`: 0 vulnerabilidades. `npm run check`: 0 erros, 0 avisos, 0 dicas
+  (34 arquivos). `npm run build`: 8 páginas.
+- Ensaio do CI numa cópia limpa do repositório, com as mesmas versões do runner:
+  `npx -y npm@10.9.9 ci --dry-run` reproduz o erro do lock (e passa com o lock
+  novo); `npm ci`, `astro check` e `astro build` rodando com o Node 22.23.3
+  (`npx -y node@22.23.3`) e o npm 10.9.9 passaram. Essa é a receita para
+  qualquer atualização futura: o Node 25 e o npm 11 locais escondem os dois
+  problemas acima.
+- Deploy 40269241461: sucesso. Em produção: gerador `Astro v7.3.8`, as sete URLs
+  conferidas (home, Sobre, `/en/`, o post, Tags, `rss.xml` e
+  `sitemap-index.xml`) respondem 200, e o CSS novo traz os prefixos `-webkit-`.
+- Comparação do `dist` com o de antes: nas 8 páginas só mudam a meta
+  `generator`, o hash do CSS e os dois scripts embutidos, e nestes o minificador
+  trocou `if(c){a;return}b` por `c?a:b`, o mesmo comportamento. O CSS ganhou
+  `-webkit-backdrop-filter`, `-webkit-mask-image` e `-webkit-background-clip`
+  (ajuda no Safari) e fundiu seletores do `popover-open`, sem declaração
+  perdida. `rss.xml`, o sitemap e os arquivos de `public/` ficaram idênticos.
+- A conferência de navegador do registro de hoje (Chrome, Firefox, WebKit e
+  Pixel 7 emulado) deu os mesmos números no build novo e na produção: a camada
+  de abertura some em ~2,2 a 2,5 s, o fundo da pergunta começa 16 a 85 ms depois
+  do começo da saída da camada, a pergunta fecha em 255 a 433 ms, o Esc fecha na
+  hora, "reduzir movimento" tira a abertura, a abertura repete ao recarregar e
+  os cinco ícones das redes continuam com o brilho de 26 a 56 px. Uma medição de
+  3,05 s no Chrome logo depois do deploy não se repetiu em quatro rodadas
+  seguintes (2,27 a 2,54 s): cache frio do CDN. No Firefox, `localhost` soma
+  ~1,9 s por causa da resolução de endereço; o mesmo `dist` em `127.0.0.1` volta
+  a ~2,4 s.
+- `astro dev` sobe e serve `/`, `/sobre/`, `/en/`, o post, `/tags/` e `/rss.xml`
+  com 200 e sem erro no log.
+
+**Ficou preso de propósito:** subir o `astro` para a 7.4 ou mais exige antes
+`node-version` do CI em 22.23.4 ou mais (o `setup-node` em `22` ainda entrega a
+22.23.3 hoje) ou numa versão maior, como a 24. Um `npm audit fix` ou
+`npm update` não cruza o `~7.3.8` sozinho. Se aparecer aviso novo no `astro`
+7.3.x, o caminho é subir o Node do CI primeiro.
+
+Não medido: a instalação dos binários nativos de Linux (o Docker Desktop estava
+desligado e não o subi; o CI de Linux foi a prova, e passou); o changelog do
+Astro 7.2 a 7.3 item por item (a prova foi a comparação do `dist` e a
+conferência de navegador); e o `app/` (Felixo Editor), que tem `package.json`
+próprio, não foi tocado e tem 10 vulnerabilidades no `npm audit` dele em
+2026-10-26 (2 críticas, 7 altas e 1 moderada, entre elas `electron`, `vitest` e
+`tinypool`).
