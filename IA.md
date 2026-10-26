@@ -105,7 +105,10 @@
   dono, plano grátis. Botão "Receber por e-mail" na home, no fim do post, no
   Sobre e no rodapé (`BotaoAssinatura.astro`), que abre uma janela com o
   formulário (`Assinatura.astro`, `FOLLOWIT`), com a animação dos modais do
-  portfólio. Sem notificação no navegador.
+  portfólio. Sem notificação no navegador por enquanto: em 2026-10-26 o dono
+  decidiu pelo OneSignal sob demanda, especificado em
+  `docs/superpowers/specs/2026-10-26-notificacao-no-navegador-onesignal-design.md`,
+  para implementar quando houver 3 posts publicados e a conta no OneSignal.
 - **"Felixo Editor" (`app/`)**: as sete fatias concluídas e validadas com dado
   real do Notion. App desktop (Electron) para criar/editar posts e publicar a
   partir da database de ideias do Notion (`<database_id>`). Desde 2026-09-27 ela
@@ -2086,3 +2089,55 @@ Limites e o que não foi medido:
   que são curtas.
 - A conta dos 5 s: o botão é o mecanismo exigido, então a duração deixa de
   importar; sem ele, o limite seria o movimento acabar em 5 s.
+
+[2026-10-26] **Notificação no navegador: decidido o OneSignal sob demanda,
+especificado, para implementar quando houver 3 posts.** Decisão do dono sobre a
+pendência de 2026-10-16 (A: continuar sem; B: OneSignal só para o navegador).
+Era decisão de produto, e eu não decidi sozinho.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- O blog deve ganhar notificação no navegador? **Implementar OneSignal sob
+  demanda** (continuar sem e reavaliar quando houver público, que era a
+  recomendada; continuar sem, decisão fechada; OneSignal padrão, com o script em
+  toda página).
+- Qual o gatilho para olhar de novo? (pergunta feita para quem continuasse sem)
+  **3 posts publicados** (50 assinantes no follow.it; 3 meses, em 2027-01-26).
+- No lugar da notificação, para quem quer aviso rápido hoje? **Abrir uma task
+  para avaliar outros serviços depois** (nada, e-mail, app e RSS já cobrem, que
+  era a recomendada; dar mais destaque ao app e ao RSS).
+- Esclarecimento, porque as respostas se cruzavam (implementar e, ao mesmo
+  tempo, um gatilho de 3 posts): **especificação agora, implementar quando
+  houver 3 posts** (especificação e código agora, desligado até haver conta; só
+  registrar a decisão).
+
+O que foi medido, em 2026-10-26: o plano grátis do OneSignal tem "máx. 10.000
+assinantes por envio" e API de envio ilimitada (página de preços, editada em
+2026-09-28). O script custa, com gzip, 42,6 KB (`OneSignalSDK.page.es6.js`, mais
+590 B do carregador) em toda página que o carregasse, contra 8,7 KB do CSS
+inteiro do blog e 3,5 KB do `count.js` do GoatCounter; por isso o modo sob
+demanda, que só carrega no clique. A lista EasyPrivacy barra as chamadas da API
+do OneSignal (`onesignal.com/api/v*/apps/`, `/api/v1/sync/` e outras), então
+quem usa bloqueador, como o dono no Brave, não consegue ativar, igual ao
+GoatCounter. A documentação do OneSignal exige HTTPS, o service worker na raiz,
+na mesma origem, a permissão da pessoa e, no iPhone, o site na Tela de Início;
+não funciona em janela anônima. O `rss.xml` tem 1 item hoje, o post de teste.
+
+Resultado: nenhuma mudança no site. A especificação ficou em
+`docs/superpowers/specs/2026-10-26-notificacao-no-navegador-onesignal-design.md`:
+botão "Avisar no navegador" dentro da janela de assinatura, com seis estados e
+carregamento só depois do clique; service worker de uma linha em `public/`;
+`ONESIGNAL.appId` em `site.ts` (vazio desliga tudo); e um job `avisar` no
+deploy, depois do `deploy`, que compara o `rss.xml` de antes e de depois e envia
+a notificação dos posts novos (no máximo 3, de até 7 dias), sem derrubar o
+deploy se falhar. A implementação virou uma task com o gatilho de 3 posts
+publicados e o pré-requisito de o dono criar a conta no OneSignal, o App ID e a
+chave de API (que vai só como secret do GitHub); a avaliação de outros serviços
+de aviso virou outra task.
+
+Não medido: o `Content-Type` do `.js` no GitHub Pages (hoje não existe nenhum
+`.js` estático no site), o comportamento do Brave com notificação push, a lista
+exata de dados que o OneSignal guarda (conferir na política dele antes de
+publicar a linha de privacidade) e os nomes exatos dos campos de título, de link
+e do segmento padrão da API de envio (a especificação manda conferir ao
+implementar). Nada disso foi testado com uma conta real, porque ela não existe.
