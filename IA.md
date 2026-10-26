@@ -130,7 +130,10 @@
   levá-lo antes da hora de publicar (registro de 2026-09-30). A suíte do editor
   passa inteira desde 2026-10-26 (74 testes): as 5 falhas que havia no Windows
   eram um bug do gate, que chamava o `npm` sem shell (o botão de publicar não
-  passava do gate no Windows), e um teste que prendia o arquivo `.webp`.
+  passava do gate no Windows), e um teste que prendia o arquivo `.webp`. A
+  escrita de volta no Notion acha a coluna de status e a de URL pelo conteúdo,
+  e não pela posição (2026-10-26; o "Ideias criativas" tem duas `select` e duas
+  `url`).
 - **Deploy**: GitHub Pages por API (`build_type=workflow`), a cada push na
   `main`; o último deploy conferido (2026-10-26) está verde.
 - **Histórico do git**: em 2026-10-26 foi reescrito a partir de `99c5a6f` (31
@@ -2637,3 +2640,42 @@ Não medido: Linux e macOS (o Docker desta máquina não estava rodando e o WSL 
 tem a distro do Docker); `publicarPost` com push de verdade (os testes usam
 repositório temporário); o editor empacotado. A suíte do `app/` não roda no CI
 do blog, o que deixou essas falhas passarem; virou task.
+
+[2026-10-26] **Felixo Editor: a escrita de volta no Notion acha a coluna de
+status e a de URL pelo conteúdo, e não pela posição.** Bug de 2026-10-23 (achado
+ao ler o código vizinho do filtro por Formato): `escreverStatusDeVolta` pegava a
+primeira coluna `url` e a primeira `select`/`status`, e o "Ideias criativas" tem
+duas de cada (Etapa e Formato; URL publicada e Arquivo no GitHub).
+
+Confirmado com o cliente do próprio editor (`@notionhq/client` 2.3.0) sobre o
+esquema real, com um ensaio que intercepta `pages.update` e não grava nada: a
+API devolve as colunas na ordem URL publicada (0), Arquivo no GitHub (1),
+Formato (2) e Etapa (5). O código antigo escrevia só em "URL publicada" e **não
+marcava a Etapa**: escolhia Formato como coluna de status e avisava
+`Achei a propriedade "Formato", mas nenhuma opção parece "publicado"`. A URL só
+caía na coluna certa porque ela vem antes de "Arquivo no GitHub"; se a ordem
+mudasse, o link do post publicado sobrescreveria o link do arquivo no GitHub.
+Depois da correção, o mesmo ensaio escreve em "URL publicada" e "Etapa" (status
+atualizado, sem aviso).
+
+Correção em `app/src/principal/notion/statusDeVolta.ts`: o status vai na
+primeira coluna `select`/`status` que tem uma opção parecida com "publicado" (em
+vez da primeira); a URL vai na coluna `url` cujo nome parece "publicada". Um
+refinamento meu em relação ao que a task pedia ("a primeira `url` como
+reserva"): sem nenhuma coluna de nome "publicada", a URL só é escrita se houver
+**uma única** coluna `url`; com mais de uma, escolher uma ao acaso poderia
+sobrescrever o link de outra coisa, e o post já foi publicado de qualquer forma.
+Quando há várias colunas de status e nenhuma tem a opção, o aviso cita todas
+(`Achei as propriedades "Formato", "Etapa", mas…`). Se mais de uma coluna tiver
+uma opção "publicado", vale a primeira, na ordem da API.
+
+Em TDD: quatro testes novos em `app/testes/notion-status-de-volta.teste.ts`, com
+um esquema parecido com o real e as colunas fora de ordem de propósito (Formato
+antes de Etapa, Arquivo no GitHub antes de URL publicada); falharam antes da
+correção e passam depois. A suíte do `app/` está em 78 testes passando (74 mais
+os 4), e o `tsc` do app sem erro.
+
+Não medido: uma publicação de verdade (o ensaio não grava no Notion); o
+comportamento se a coluna de status do "Ideias criativas" for renomeada de modo
+que nenhuma opção pareça "publicado" (cai no aviso, como antes); e a tela do
+editor mostrando o aviso.
