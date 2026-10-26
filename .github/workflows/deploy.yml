@@ -29,7 +29,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Verificação de tipos e conteúdo
+      - name: Verificação de tipos, conteúdo e formatação
         run: npm run check
 
       - run: npm run build

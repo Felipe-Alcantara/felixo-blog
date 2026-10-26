@@ -60,11 +60,13 @@ histórico de decisões.
 Antes de commitar, rode **os dois**:
 
 ```bash
-npm run check   # tipos + schema dos posts
+npm run check   # tipos + schema dos posts + formatação (Prettier)
 npm run build   # o build precisa passar; é o mesmo do CI
 ```
 
-`npm run format` antes do commit mantém o diff limpo.
+`npm run check` falha se algum arquivo estiver fora do Prettier (ficam de fora `app/`
+e `src/content/posts/`, ver `.prettierignore`); `npm run format` conserta e mantém o
+diff limpo.
 
 ## Cuidados
 

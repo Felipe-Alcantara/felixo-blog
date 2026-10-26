@@ -25,19 +25,19 @@ não um assistente.
 
 ## Sinais de texto polido por IA (cortar ou reescrever)
 
-| Sinal | Como aparece | Por que atrapalha |
-| --- | --- | --- |
-| Mudar ou "melhorar" o que ele disse | Trocar "faltava X" por "nunca faltou X, mas..." | Troca o fato. É o pior dos sinais |
-| Detalhe inventado | Sentimento, hábito ou motivação que ele nunca escreveu | Vira mentira educada |
-| Aforismo fechando parágrafo | "Blog é justamente isso: ..." | Frase de efeito que ninguém fala em conversa |
-| Virada dramática curta | "Parece pequeno, mas muda tudo." | Anuncia importância em vez de mostrar |
-| Frases soltas em par, sem verbo | "Dois minutos a mais. Útil para sempre." | Ritmo de anúncio |
-| "Não é X: é Y" | "o primeiro instinto não é clicar: é escrever um script" | Contraste montado |
-| Travessão como pausa de efeito | "... — e isso muda tudo" | Tique de IA; o Felipe emenda com vírgula |
-| Lista com negrito e frase de efeito em cada item | "**Boas práticas testadas.** Nada de regra copiada." | Formato de página de vendas |
-| Exemplo genérico no lugar de um real | Função de brinquedo inventada para ilustrar | Os projetos dele têm exemplos de verdade |
-| Fecho espirituoso | Piada sobre o próprio post no último parágrafo | Piada pronta |
-| Cortar o que é pessoal | Some a inspiração citada, some a ferramenta que ajudou | Tira justamente o que é dele |
+| Sinal                                            | Como aparece                                             | Por que atrapalha                            |
+| ------------------------------------------------ | -------------------------------------------------------- | -------------------------------------------- |
+| Mudar ou "melhorar" o que ele disse              | Trocar "faltava X" por "nunca faltou X, mas..."          | Troca o fato. É o pior dos sinais            |
+| Detalhe inventado                                | Sentimento, hábito ou motivação que ele nunca escreveu   | Vira mentira educada                         |
+| Aforismo fechando parágrafo                      | "Blog é justamente isso: ..."                            | Frase de efeito que ninguém fala em conversa |
+| Virada dramática curta                           | "Parece pequeno, mas muda tudo."                         | Anuncia importância em vez de mostrar        |
+| Frases soltas em par, sem verbo                  | "Dois minutos a mais. Útil para sempre."                 | Ritmo de anúncio                             |
+| "Não é X: é Y"                                   | "o primeiro instinto não é clicar: é escrever um script" | Contraste montado                            |
+| Travessão como pausa de efeito                   | "... — e isso muda tudo"                                 | Tique de IA; o Felipe emenda com vírgula     |
+| Lista com negrito e frase de efeito em cada item | "**Boas práticas testadas.** Nada de regra copiada."     | Formato de página de vendas                  |
+| Exemplo genérico no lugar de um real             | Função de brinquedo inventada para ilustrar              | Os projetos dele têm exemplos de verdade     |
+| Fecho espirituoso                                | Piada sobre o próprio post no último parágrafo           | Piada pronta                                 |
+| Cortar o que é pessoal                           | Some a inspiração citada, some a ferramenta que ajudou   | Tira justamente o que é dele                 |
 
 ## O que a IA pode e não pode fazer numa revisão
 

@@ -31,13 +31,13 @@ npm install
 npm run dev      # http://localhost:4321
 ```
 
-| Comando           | O que faz                                               |
-| ----------------- | ------------------------------------------------------- |
-| `npm run dev`     | Servidor de desenvolvimento com hot reload              |
-| `npm run check`   | Verificação de tipos e do schema dos posts (roda no CI) |
-| `npm run build`   | Build estático em `dist/`                               |
-| `npm run preview` | Serve o `dist/` já buildado                             |
-| `npm run format`  | Formata tudo com Prettier                               |
+| Comando           | O que faz                                                  |
+| ----------------- | ---------------------------------------------------------- |
+| `npm run dev`     | Servidor de desenvolvimento com hot reload                 |
+| `npm run check`   | Tipos, schema dos posts e formatação Prettier (roda no CI) |
+| `npm run build`   | Build estático em `dist/`                                  |
+| `npm run preview` | Serve o `dist/` já buildado                                |
+| `npm run format`  | Formata tudo com Prettier (menos `app/` e os posts)        |
 
 Requer Node 22.12 ou superior.
 

@@ -77,7 +77,8 @@
   `src/config/site.ts`) e os botões do blog (portfólio, RSS, e-mail). A
   `SITE.descricao` (buscador, cartão de compartilhamento, RSS) ainda fala em
   "notícias de tecnologia", o que contradiz a home: fica para o dono.
-- **Gate**: `npm run check` (0 erros) + `npm run build` (8 páginas: `/`, `/en/`,
+- **Gate**: `npm run check` (0 erros, mais `prettier --check .`, que deixa de
+  fora `app/` e os posts) + `npm run build` (8 páginas: `/`, `/en/`,
   Sobre, Tags, as duas páginas de tag, o post `ola-mundo` e a 404) — verdes em
   2026-10-26. `npm audit` do blog em 2026-10-26: **0 vulnerabilidades** (eram 12
   em 2026-10-25). O `astro` está preso em `~7.3.8` de propósito: a 7.4 exige Node
@@ -663,6 +664,7 @@ do Astro de verdade (regex sobre o bloco `z.object({...})`) e falha se um
 campo for adicionado ou removido de um lado só.
 
 Validação real, não presumida:
+
 - `npm run check` (tsc dos dois tsconfigs) e `npm run test` (9 testes, 3
   arquivos) verdes no app; `repositorio.teste.ts` grava/relê em diretório
   temporário de verdade (`mkdtemp`), não em mock de sistema de arquivos.
@@ -701,6 +703,7 @@ database.
 **Limite honesto desta fatia**: não tenho um `NOTION_TOKEN` real, então não
 validei a chamada de rede de verdade — isso é credencial do dono, não algo
 que eu deva simular. O que foi validado com evidência real:
+
 - 22 testes (6 arquivos, todos passando) — os 13 novos cobrem retry/backoff
   (incluindo respeito ao `Retry-After` e não repetir em erro não-transitório
   como 401) com o SDK do Notion mockado no nível certo (sem HTTP real);
@@ -796,6 +799,7 @@ webp) e capa por post.** Três entregas:
      erro claro se faltar Python/Playwright (não trava em silêncio).
 
 **Validação real, não presumida**:
+
 - Blog: `npm run check`/`build` limpos. Testei o pipeline de capa de ponta a
   ponta com um post temporário **não commitado** (criado e apagado nesta
   sessão): `npm run dev` mostrou o endpoint de imagem do Astro reconhecendo
@@ -846,6 +850,7 @@ ou sem opção parecida, avisa e não escreve nada, em vez de adivinhar um
 valor errado.
 
 **Validado com evidência real, não presumida**:
+
 - 58 testes (16 arquivos, 12 novos). Os mais importantes: `publicacao-git` e
   `publicacao-publicar` rodam contra **repositórios git reais** em diretório
   temporário (`git init --bare` como "remoto" + clone), não mock de git —
@@ -923,12 +928,12 @@ página, como suspeitado na fatia 3 — o ID real da database foi achado por
 busca na API (`POST /v1/search`, filtro `object: database`): **Artigos**,
 `<database_id>`. Schema real:
 
-| Propriedade | Tipo | Uso no app |
-|---|---|---|
-| `Nome` | title | título do artigo (achado dinamicamente, sem hardcode) |
-| `URL publicada` | url | alvo da escrita de volta |
-| `Etapa` | select (Ideia/Modelo/Rascunho/Revisão) | nenhuma opção contém "public" |
-| `Temas`, `Resumo`, `Tempo de leitura (min)`, `Data de publicação`, `Observações`, `ID` (unique_id) | — | não usados pelo app nesta fatia |
+| Propriedade                                                                                        | Tipo                                   | Uso no app                                            |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------- |
+| `Nome`                                                                                             | title                                  | título do artigo (achado dinamicamente, sem hardcode) |
+| `URL publicada`                                                                                    | url                                    | alvo da escrita de volta                              |
+| `Etapa`                                                                                            | select (Ideia/Modelo/Rascunho/Revisão) | nenhuma opção contém "public"                         |
+| `Temas`, `Resumo`, `Tempo de leitura (min)`, `Data de publicação`, `Observações`, `ID` (unique_id) | —                                      | não usados pelo app nesta fatia                       |
 
 Rodei o código do app de verdade (via `tsx`, sem mock) contra a API:
 `testarConexaoNotion`/`obterInfoDaDatabase` achou a database e as 10
@@ -990,7 +995,7 @@ porque usa `__dirname` corretamente (é a mesma pasta do bundle mesmo), o
 segundo porque coincidentemente precisa mesmo chegar na raiz do repo.
 
 Por que nenhum teste pegou isso: todo teste desses dois arquivos passa um
-caminho explícito (diretório temporário) — nenhum testava o valor *padrão*
+caminho explícito (diretório temporário) — nenhum testava o valor _padrão_
 de verdade. E a validação manual mais cedo (fatia 3/4, via `tsx`) chamava
 `criarClienteNotion` direto com o token, sem passar por
 `carregarConfiguracao`/`CAMINHO_ENV_PADRAO` — o caminho exato que tinha o
@@ -2235,3 +2240,48 @@ chegarem dois e-mails de confirmação, basta clicar em um). O que está medido:
 verificação do Cloudflare existe depois do envio e o Brave passou por ela. Como
 tentar passar por um anti-robô é contornar, o teste da assinatura fica para
 navegador de pessoa.
+
+[2026-10-26] **Prettier entra no `npm run check` (o gate), no repositório todo
+menos `app/` e os posts.** Task de 2026-10-22 ("formatar a tabela de campos do
+README, que já estava fora do padrão do Prettier"), que trazia um item opcional
+que era decisão do dono: o gate passar a verificar o Prettier.
+
+Pergunta e resposta do dono (as alternativas não escolhidas estão entre
+parênteses): o gate passa a rodar o Prettier em modo de verificação? **Checar o
+repositório todo** (manter como está, que era a recomendada; checar só o código
+e o README, num `format:check` limitado a `src/`, `README.md` e `AGENTS.md`).
+
+O que foi feito:
+
+- **Tabela do README** (commit `5ac281c`): o Prettier realinhava a tabela de
+  campos inteira porque a linha da `capa` entrou sem alinhar com as outras (a
+  descrição dela é longa). Só a tabela mudou; o resto do arquivo já estava no
+  padrão.
+- **`npm run check`** virou `astro check && prettier --check .`. O CI
+  (`deploy.yml`) e o botão de publicar do Felixo Editor (`rodarGate`) já rodavam
+  `check`, então os dois passam a verificar o Prettier sem outra mudança. Um
+  arquivo fora do padrão derruba o `check` e, no CI, o deploy.
+- **`"endOfLine": "auto"`** em `.prettierrc.json`: sem isso, no Windows
+  (checkout em CRLF, `autocrlf`) o `--check .` acusava 33 arquivos só pelo fim
+  de linha. Com `auto`, o Prettier respeita o de cada arquivo e o `--write`
+  deixa de converter CRLF em LF.
+- **Três arquivos formatados**, só formatação, sem mudar texto: `CLAUDE.md`
+  (quebra de linha no fim), `LINGUAGEM-NATURAL.md` (uma tabela realinhada) e
+  este `IA.md` (quatro linhas em branco, uma tabela realinhada no registro de
+  2026-08-13 do Felixo Editor, e `*padrão*` virando `_padrão_`).
+  Foi a exceção consciente à regra de não reescrever os registros antigos, que
+  decorre de o dono ter escolhido "o repositório todo"; nenhuma palavra de
+  registro nenhum mudou.
+- **`src/content/posts/` entrou no `.prettierignore`** (decisão minha, dentro da
+  escolha do dono): o texto dos posts é do Felipe, e um post fora do padrão
+  travaria o `check`, o deploy e o botão de publicar do Felixo Editor. `app/` já
+  estava ignorado.
+- `README.md` e `AGENTS.md` descrevem o novo `check`.
+
+O que foi medido, em 2026-10-26: antes, `prettier --check . --end-of-line auto`
+acusava 4 arquivos (`CLAUDE.md`, `IA.md`, `LINGUAGEM-NATURAL.md`, `README.md`);
+depois, nenhum. Ensaio do CI numa cópia da árvore com fim de linha LF e sem
+`node_modules` próprio (ligado ao do projeto): `prettier --check .` passa; com
+um `.ts` mal formatado acrescentado, falha com código 1; com um post fora do
+padrão acrescentado, ele não é listado. Não foi medido o CI real com esse passo
+novo, só o ensaio acima e o gate local.
