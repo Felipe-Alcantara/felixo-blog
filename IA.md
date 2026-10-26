@@ -130,6 +130,11 @@
   `publicacao-gate`).
 - **Deploy**: GitHub Pages por API (`build_type=workflow`), a cada push na
   `main`; o último deploy conferido (2026-10-26) está verde.
+- **Histórico do git**: em 2026-10-26 foi reescrito a partir de `99c5a6f` (31
+  commits com endereços novos) para tirar o número do WhatsApp do dono. Os hashes
+  citados neste arquivo e no Notion para commits de 2026-10-22 em diante são os
+  antigos; o mapa antigo para novo está na entrada de 2026-10-26. O GitHub ainda
+  serve os endereços antigos até o Suporte limpar o cache (task aberta).
 - **URL ativa**: https://blog.felixo.com.br (domínio próprio, servindo na raiz).
 - **Compartilhamento**: cartão Open Graph genérico em `public/og-image.jpg`,
   gerado por `scripts/gerar-og-image.py` (Playwright, sob demanda — não entra no
@@ -2484,3 +2489,70 @@ texto cabe sem estouro.
 Não revisado, e fora desta task: o resto dos textos da interface em inglês
 (botões como "RSS feed" e "Get posts by email", a janela de assinatura, os
 avisos de acessos e outros), que também são tradução minha. Virou uma task.
+
+[2026-10-26] **Segurança: e-mail e WhatsApp do dono no blog. O e-mail fica; o
+número do WhatsApp saiu do histórico público (reescrita), mas o GitHub ainda
+serve os endereços antigos.** Pendência de 2026-10-22: o e-mail e o número
+entraram em `REDES` quando a home ganhou a linha de redes do portfólio; o
+WhatsApp saiu da home no mesmo dia (`924fec4`). Era decisão do dono, e eu não
+decidi sozinho.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- O que fazer com o e-mail, hoje um link `mailto:` no HTML da home e em
+  `src/config/site.ts`? **Manter como está** (usar um e-mail só do blog; tirar o
+  ícone; apontar o ícone para o contato do portfólio).
+- Esse e-mail já recebe spam? **"Não sei"**; tratei como se não recebesse
+  (recebo spam; não recebo).
+- Tirar o número do WhatsApp dos dois commits antigos do histórico público?
+  **Reescrever o histórico** (não reescrever, que era a recomendada). Avisei que
+  isso muda o endereço de 31 commits e que a reescrita não apaga clones nem
+  cópias em cache. Na opção eu prometi pedir o ok final antes do push forçado, e
+  pedi.
+- Abrir uma task para o portfólio, que também mostra os dois? **Não, só o
+  blog.**
+
+O que foi medido, em 2026-10-26: o repositório público do portfólio mostra o
+e-mail e o WhatsApp em texto (`src/sections/about.jsx` e `contact.jsx`), e o
+"formulário de contato" dele só abre um aviso na tela, não envia nada, e a seção
+de contato mostra o e-mail em texto; apontar o ícone do blog para lá não
+reduziria a exposição. O blog não tem forks, estrelas nem PRs, e a branch `main`
+não tem proteção. O e-mail está só em `src/config/site.ts` e no HTML de `/` e de
+`/en/`. O número estava só no diff de dois commits (`99c5a6f`, que o põe, e
+`924fec4`, que o tira): nunca em mensagem de commit e não está no HEAD.
+
+Como foi feito: o `git filter-repo` não está instalado, então usei
+`git filter-branch` numa cópia nova do repositório, trocando o número por
+`NUMERO-REMOVIDO` em `src/config/site.ts` de `99c5a6f` em diante. Conferido na
+cópia, antes do push: o número (inteiro e os 9 dígitos locais) não aparece em
+nenhum dos 87 commits; os 31 commits de `99c5a6f` a `b3938c5` ganharam endereços
+novos, com autor, data e assunto idênticos; a árvore final é idêntica à anterior
+(`f2022618a16c`), então o site não mudou. O push forçado (`--force-with-lease`,
+`b3938c5` para `91e64f3`) foi bloqueado duas vezes pelo guarda de segurança do
+sistema; deixei o comando para o dono, que o rodou (as duas primeiras tentativas dele
+saíram quebradas em duas linhas e foram recusadas sem efeito). O deploy seguinte
+(run 40345209858) passou. Diferente de 2026-09-30, não guardei um `git bundle`
+do histórico antigo: ele só difere do novo pelo número.
+
+O que a reescrita não resolve, medido logo depois do push: o GitHub ainda serve
+o endereço antigo (a página e o `.patch` de `99c5a6f` respondem 200, e o
+`.patch` ainda tem a linha com `wa.me/`). Pela documentação do GitHub, os
+commits seguem alcançáveis pelo SHA em visões em cache até o Suporte do GitHub
+limpar, e clones e forks não são afetados; só o dono pode abrir esse pedido
+(virou task). O número também continua no portfólio e no histórico local desta
+máquina (reflog e objetos soltos).
+
+Efeito nos registros: os hashes de commit citados neste arquivo e no Notion para
+commits de 2026-10-22 em diante (inclusive de hoje) são os antigos. Mapa antigo
+para novo:
+
+```
+99c5a6f -> e075f95   0cb1be1 -> d3fc30a   924fec4 -> b10e0da   22828ce -> ca1c965
+f5c53a6 -> 54832ec   89b7a46 -> 51aec0d   4256d9c -> 0639a9c   9cc97fe -> 98626ff
+a107c03 -> 2d3dd97   7fe2cb8 -> 3983a75   f9cc027 -> 29cbdd6   88d795c -> 0702404
+9a9bc9d -> 8e51097   ef034ee -> aa04795   86aa9ad -> 20606bf   bddaca8 -> 299f149
+9f143c8 -> 6d3a812   dc189c5 -> 80f2a1b   50a3e34 -> c03e574   1c95a7b -> 1cd314a
+db65025 -> 0b67ef0   5ac281c -> 670e1b0   3965c1f -> c3a46b4   898ec0d -> 4f3fccb
+679764e -> c2e0359   436116c -> b822865   7b7201b -> caec772   9534c57 -> 22ad67f
+40108fb -> 099a67f   13573f6 -> 88304be   b3938c5 -> 91e64f3
+```
