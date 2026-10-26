@@ -13,7 +13,8 @@
  * O desenho e a animação vêm de `gatinho-piscando-headbang.svg` (FelixoVerse),
  * no modo de uma piscadinha só. A pergunta de idioma da primeira visita abre
  * quando `abertura-sumir` começa (ver `EscolhaDeIdioma.astro`): renomear essa
- * animação exige mudar lá também.
+ * animação exige mudar lá também. Os `@keyframes` `gatinho-*` daqui também
+ * servem ao gatinho do cabeçalho (`GatinhoDoCabecalho.astro`).
  */
 ---
 
@@ -407,11 +408,16 @@
     }
   }
 
-  /* Quem pediu menos movimento vai direto ao conteúdo; na impressão também. */
+  /* Quem pediu menos movimento vai direto ao conteúdo; na impressão também.
+     O botão "Pausar animações" do rodapé (`data-animacoes` no <html>) faz o mesmo. */
   @media (prefers-reduced-motion: reduce) {
     .abertura {
       display: none;
     }
+  }
+
+  :global(html[data-animacoes='pausadas']) .abertura {
+    display: none;
   }
 
   @media print {

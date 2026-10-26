@@ -9,6 +9,7 @@ import RedirecionarParaIngles from '../components/RedirecionarParaIngles.astro';
 import ContagemDeAcessos from '../components/ContagemDeAcessos.astro';
 import { FOLLOWIT, SITE } from '../config/site';
 import { TEXTOS, idiomaDoCaminho, paginaEquivalente } from '../config/idiomas';
+import { CHAVE_ANIMACOES } from '../config/animacoes';
 import '../styles/global.css';
 
 interface Props {
@@ -73,6 +74,14 @@ const imagemCompartilhamento = imagemCapa
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {redirecionarSeEscolheuIngles && <RedirecionarParaIngles />}
+    <!-- Quem pausou as animações já as encontra paradas: o atributo volta antes da
+         primeira pintura, e a abertura nem começa (ver `PausarAnimacoes.astro`). -->
+    <script is:inline define:vars={{ chave: CHAVE_ANIMACOES }}>
+      try {
+        if (localStorage.getItem(chave) === 'pausadas')
+          document.documentElement.dataset.animacoes = 'pausadas';
+      } catch {}
+    </script>
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
     <meta name="author" content={SITE.autor} />

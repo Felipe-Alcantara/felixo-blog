@@ -1,6 +1,7 @@
 ---
 import { caminho, caminhoSemBase } from '../utils/rotas';
 import { TEXTOS, destinoNoIdioma, type Idioma } from '../config/idiomas';
+import GatinhoDoCabecalho from './GatinhoDoCabecalho.astro';
 
 interface Props {
   idioma: Idioma;
@@ -33,20 +34,14 @@ const opcoesDeIdioma = [
   >
     <a
       href={caminho(home)}
+      data-marca
       class="group inline-flex shrink-0 items-center gap-2.5 font-bold text-zinc-100"
     >
       <!-- O gato fica sozinho, sem caixa com borda e brilho em volta: o brilho
            aparece só no hover, como acento da marca. É o gatinho do
-           FelixoVerse em loop (pisca a cada 3,5 s): a animação mora dentro do
-           próprio SVG, sem JavaScript, e para com "reduzir movimento". -->
-      <img
-        src={caminho('/imagens/gatinho-piscando-headbang.svg')}
-        alt=""
-        width="32"
-        height="32"
-        decoding="async"
-        class="size-8 object-contain transition group-hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]"
-      />
+           FelixoVerse: parado, e com 3 piscadas quando o mouse ou o foco do
+           teclado chega (ver `GatinhoDoCabecalho.astro`). -->
+      <GatinhoDoCabecalho />
       <span>{textos.tituloSite}</span>
     </a>
 

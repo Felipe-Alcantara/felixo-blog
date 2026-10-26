@@ -521,9 +521,53 @@
     transition-duration: 0.01ms !important;
   }
 
+  /* As animações que se repetem sozinhas ficam sem animação (e não com
+     0,01 ms, que num loop infinito ainda treme de vez em quando). Esta lista e a
+     do botão "Pausar animações", logo abaixo, são a mesma: quem criar uma
+     animação infinita nova põe o seletor nas duas. */
   .felixo-ambiente::before,
   .felixo-ambiente::after,
-  .felixo-icone-brilho {
+  .felixo-icone-brilho,
+  .felixo-text-glow,
+  .felixo-item-post:hover::before,
+  .felixo-item-post:focus-within::before {
     animation: none !important;
   }
+
+  /* Sem animação, o brilho do título e o do item de post param no quadro de repouso. */
+  .felixo-text-glow {
+    background-position: 50% 0%;
+  }
+
+  .felixo-item-post:hover::before,
+  .felixo-item-post:focus-within::before {
+    box-shadow:
+      0 0 0 1px rgb(168 85 247 / 0.3),
+      0 0 16px rgb(168 85 247 / 0.16);
+  }
+}
+
+/* Botão "Pausar animações" do rodapé (`PausarAnimacoes.astro`): a regra 2.2.2 do
+   WCAG pede um jeito de parar a animação automática que passa de 5 s. O
+   JavaScript põe `data-animacoes="pausadas"` no <html>. Mesma lista de "reduzir
+   movimento", acima. A abertura e o gatinho do cabeçalho tratam o atributo nos
+   próprios componentes. */
+html[data-animacoes='pausadas'] .felixo-ambiente::before,
+html[data-animacoes='pausadas'] .felixo-ambiente::after,
+html[data-animacoes='pausadas'] .felixo-icone-brilho,
+html[data-animacoes='pausadas'] .felixo-text-glow,
+html[data-animacoes='pausadas'] .felixo-item-post:hover::before,
+html[data-animacoes='pausadas'] .felixo-item-post:focus-within::before {
+  animation: none !important;
+}
+
+html[data-animacoes='pausadas'] .felixo-text-glow {
+  background-position: 50% 0%;
+}
+
+html[data-animacoes='pausadas'] .felixo-item-post:hover::before,
+html[data-animacoes='pausadas'] .felixo-item-post:focus-within::before {
+  box-shadow:
+    0 0 0 1px rgb(168 85 247 / 0.3),
+    0 0 16px rgb(168 85 247 / 0.16);
 }

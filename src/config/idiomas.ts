@@ -75,6 +75,8 @@ export const TEXTOS = {
     postEmOutroIdioma: '',
     /** Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`). */
     acessos: { singular: 'acesso', plural: 'acessos' },
+    /** Botão do rodapé que para as animações (ver `PausarAnimacoes.astro`). */
+    animacoes: { pausar: 'Pausar animações', retomar: 'Retomar animações' },
     /** Números no rodapé de todas as páginas (ver `AcessosNoRodape.astro`). */
     acessosRodape: {
       pagina: { singular: 'acesso nesta página', plural: 'acessos nesta página' },
@@ -146,6 +148,7 @@ export const TEXTOS = {
     },
     postEmOutroIdioma: 'In Portuguese',
     acessos: { singular: 'view', plural: 'views' },
+    animacoes: { pausar: 'Pause animations', retomar: 'Resume animations' },
     acessosRodape: {
       pagina: { singular: 'view of this page', plural: 'views of this page' },
       total: { singular: 'view on the blog', plural: 'views on the blog' },

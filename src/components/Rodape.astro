@@ -4,6 +4,7 @@ import { TEXTOS, type Idioma } from '../config/idiomas';
 import { caminho } from '../utils/rotas';
 import BotaoAssinatura from './BotaoAssinatura.astro';
 import AcessosNoRodape from './AcessosNoRodape.astro';
+import PausarAnimacoes from './PausarAnimacoes.astro';
 
 interface Props {
   idioma: Idioma;
@@ -46,6 +47,8 @@ const ehExterno = (href: string) => href.startsWith('http');
             </li>
           ))
         }
+        {/* Para as animações; só aparece com JavaScript e sem "reduzir movimento". */}
+        <PausarAnimacoes idioma={Astro.props.idioma} />
         {/* Abre a janela de assinatura; sem `li` vazio quando ela está desligada. */}
         {
           FOLLOWIT.formulario !== '' && (

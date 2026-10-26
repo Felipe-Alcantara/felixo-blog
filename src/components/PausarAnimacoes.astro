@@ -1,0 +1,74 @@
+---
+/**
+ * Botão "Pausar animações" do rodapé (decisão do dono, 2026-10-26): cumpre a
+ * regra 2.2.2 do WCAG, que pede um jeito de parar a animação que começa
+ * sozinha e passa de 5 s. Para de uma vez as que se repetem na página: as
+ * partículas e o brilho do fundo, o brilho dos títulos, o brilho dos ícones das
+ * redes e o pulso do item de post; também esconde a abertura e deixa o gatinho
+ * do cabeçalho parado.
+ *
+ * O botão põe `data-animacoes="pausadas"` no `<html>` e guarda a escolha no
+ * `localStorage`; um script do `<head>` (`BaseLayout.astro`) devolve o atributo
+ * antes da primeira pintura, para a abertura nem começar em quem já pausou. As
+ * regras de CSS que o atributo liga estão no fim de `global.css`.
+ *
+ * Fica escondido sem JavaScript (não teria o que fazer) e com "reduzir
+ * movimento" no sistema (as animações já estão paradas). Sem onde guardar a
+ * escolha, ela vale só para a página aberta.
+ */
+import { TEXTOS, type Idioma } from '../config/idiomas';
+import { CHAVE_ANIMACOES } from '../config/animacoes';
+
+interface Props {
+  idioma: Idioma;
+}
+
+const textos = TEXTOS[Astro.props.idioma].animacoes;
+---
+
+<li hidden data-pausar-animacoes-item>
+  <button
+    type="button"
+    data-pausar-animacoes
+    data-chave={CHAVE_ANIMACOES}
+    data-rotulo-pausar={textos.pausar}
+    data-rotulo-retomar={textos.retomar}
+    class="cursor-pointer transition hover:text-felixo-purple"
+  >
+    {textos.pausar}
+  </button>
+</li>
+
+<script>
+  const botao = document.querySelector<HTMLButtonElement>('[data-pausar-animacoes]');
+  const item = botao?.closest<HTMLElement>('[data-pausar-animacoes-item]');
+  // Com "reduzir movimento" as animações já estão paradas: o botão não teria o que fazer.
+  const semMovimento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (botao && item && !semMovimento) {
+    const raiz = document.documentElement;
+    const chave = botao.dataset.chave ?? '';
+
+    const aplicar = (pausadas: boolean) => {
+      if (pausadas) raiz.dataset.animacoes = 'pausadas';
+      else delete raiz.dataset.animacoes;
+      botao.textContent = pausadas
+        ? (botao.dataset.rotuloRetomar ?? '')
+        : (botao.dataset.rotuloPausar ?? '');
+    };
+
+    aplicar(raiz.dataset.animacoes === 'pausadas');
+    item.hidden = false;
+
+    botao.addEventListener('click', () => {
+      const pausar = raiz.dataset.animacoes !== 'pausadas';
+      aplicar(pausar);
+      try {
+        if (pausar) localStorage.setItem(chave, 'pausadas');
+        else localStorage.removeItem(chave);
+      } catch {
+        // Sem onde guardar, a escolha vale só para esta página.
+      }
+    });
+  }
+</script>
