@@ -60,14 +60,14 @@ O conteúdo em Markdown começa aqui.
 Campos do frontmatter (validados no build — erro de digitação quebra o build de
 propósito, em vez de publicar torto):
 
-| Campo          | Obrigatório | Descrição                                                   |
-| -------------- | ----------- | ----------------------------------------------------------- |
-| `titulo`       | sim         | Título do post                                              |
-| `descricao`    | sim         | Resumo usado em listagem, RSS e meta tags                   |
-| `publicadoEm`  | sim         | Data de publicação (`YYYY-MM-DD`)                           |
-| `atualizadoEm` | não         | Data da última revisão                                      |
-| `tags`         | não         | Lista de tags; cada uma ganha sua página em `/tags/<slug>/` |
-| `rascunho`     | não         | `true` mostra o post só em `npm run dev`, nunca em produção |
+| Campo          | Obrigatório | Descrição                                                                                                                                |
+| -------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `titulo`       | sim         | Título do post                                                                                                                           |
+| `descricao`    | sim         | Resumo usado em listagem, RSS e meta tags                                                                                                |
+| `publicadoEm`  | sim         | Data de publicação (`YYYY-MM-DD`)                                                                                                        |
+| `atualizadoEm` | não         | Data da última revisão                                                                                                                   |
+| `tags`         | não         | Lista de tags; cada uma ganha sua página em `/tags/<slug>/`                                                                              |
+| `rascunho`     | não         | `true` mostra o post só em `npm run dev`, nunca em produção                                                                              |
 | `capa`         | não         | Imagem de capa (caminho relativo, ex.: `./meu-post/capa.jpg`); vira o `og:image` do post. Sem capa, o post usa o cartão genérico do site |
 
 Blocos de código com marcação de linguagem (` ```python `) recebem realce de
