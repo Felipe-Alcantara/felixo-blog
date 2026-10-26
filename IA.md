@@ -2191,3 +2191,33 @@ lida da árvore de acessibilidade do Chrome.
 Não medido: leitor de tela de verdade (NVDA, VoiceOver, TalkBack): só a
 descrição calculada pelo Chrome; a descrição acessível no Firefox e no WebKit
 (só os atributos); Firefox e Safari de celular reais.
+
+[2026-10-26] **Teste ponta a ponta da assinatura: inscrição enviada e aceita
+pelo follow.it; falta confirmar o e-mail.** Pendência de 2026-10-16 ("testar com
+e-mail real e ver o primeiro aviso chegar"). O dono passou um e-mail de teste
+(pessoal, por isso fora deste repositório público) e autorizou o envio.
+
+O que foi feito e medido, em 2026-10-26, no site em produção: pelo post de
+teste, abri a janela de assinatura, preenchi o e-mail e cliquei em "Assinar" num
+Brave de verdade (conectado ao Claude in Chrome). O formulário abriu a aba nova
+do follow.it, que respondeu em `confirm-request` dizendo que mandou o link de
+confirmação para o e-mail informado. Ou seja: janela, `POST` ao follow.it e
+e-mail de confirmação funcionam do lado do blog.
+
+Achado: depois do envio, o follow.it passa o leitor por uma verificação de
+segurança do Cloudflare (a página "A executar uma rápida verificação de
+segurança… Verificando…"). No Chrome automatizado do Playwright a página ficou
+parada nela e nenhuma inscrição foi registrada; no Brave de uma pessoa ela
+passou sozinha em poucos segundos. Por isso esse teste não se automatiza (e a
+verificação não deve ser contornada): precisa de navegador de pessoa.
+
+Não feito: confirmar o e-mail e ver o assinante no painel do feed
+`blog-do-felixo`. No Brave da máquina do dono, o Gmail de teste não estava
+logado e o follow.it pedia login, e agente não digita senha. O primeiro aviso de
+um post novo também fica para depois, porque o blog só tem o post de teste.
+Nenhum código mudou; as duas pendências viraram tasks (confirmar e ver o painel;
+conferir o resumo do primeiro post novo).
+
+Não medido: que o e-mail de confirmação de fato chegou (só a página do follow.it
+diz que enviou), em quanto tempo e se caiu em spam; e tudo o que vem depois da
+confirmação.
