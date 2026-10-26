@@ -14,7 +14,11 @@
  * e-mail nenhum. O follow.it abre numa aba nova porque o plano grátis não
  * manda o leitor de volta ao blog. Com `FOLLOWIT.formulario` vazio, nada é
  * renderizado (e o `BaseLayout` nem inclui o componente, para o script
- * também não entrar).
+ * também não entrar). Com `FOLLOWIT.seguir` vazio, some só o link "Prefere
+ * app ou RSS?".
+ *
+ * Leitor de tela: o campo é descrito pela frase de privacidade e o botão
+ * "Assinar" pelo aviso de nova aba (é ele que abre a aba).
  *
  * A animação é a do modal de contato do felixo.com.br (pedido do dono): o
  * botão clicado cresce até virar a janela e, ao fechar, ela encolhe de volta
@@ -64,6 +68,7 @@ const ativo = FOLLOWIT.formulario !== '';
         action={FOLLOWIT.formulario}
         method="post"
         target="_blank"
+        rel="noopener"
         class="mt-5 flex flex-col gap-2 sm:flex-row sm:items-end"
       >
         <div class="flex-1">
@@ -78,61 +83,41 @@ const ativo = FOLLOWIT.formulario !== '';
             autofocus
             autocomplete="email"
             placeholder={textos.placeholder}
-            aria-describedby="assinatura-aviso"
-            class="assinatura-campo w-full"
+            aria-describedby="assinatura-privacidade"
+            class="felixo-campo py-2.5"
           />
         </div>
-        <button type="submit" class="felixo-botao cursor-pointer justify-center">
+        <button
+          type="submit"
+          aria-describedby="assinatura-nova-aba"
+          class="felixo-botao cursor-pointer justify-center"
+        >
           <span>{textos.botao}</span>
         </button>
       </form>
 
       <p class="mt-3 text-xs leading-relaxed text-zinc-400">
-        <span id="assinatura-aviso">
-          {textos.privacidade} {textos.novaAba}
-        </span>{' '}
-        <a
-          href={FOLLOWIT.seguir}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-zinc-300 underline decoration-white/20 underline-offset-2 transition hover:text-felixo-purple"
-        >
-          {textos.outrasOpcoes}
-        </a>
+        <span id="assinatura-privacidade">{textos.privacidade}</span>{' '}
+        <span id="assinatura-nova-aba">{textos.novaAba}</span>
+        {FOLLOWIT.seguir !== '' && (
+          <>
+            {' '}
+            <a
+              href={FOLLOWIT.seguir}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-zinc-300 underline decoration-white/20 underline-offset-2 transition hover:text-felixo-purple"
+            >
+              {textos.outrasOpcoes}
+            </a>
+          </>
+        )}
       </p>
     </dialog>
   )
 }
 
 <style>
-  /* Mesmo visual do campo de busca da home (`.felixo-busca input`), sem ícone. */
-  .assinatura-campo {
-    border-radius: 0.75rem;
-    border: 1px solid rgb(255 255 255 / 0.1);
-    background: rgb(0 0 0 / 0.4);
-    padding: 0.55rem 0.875rem;
-    font-size: 0.875rem;
-    color: #fff;
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  /* zinc-400, como a busca: o zinc-500 dava 4,35:1 sobre o preto (abaixo do AA). */
-  .assinatura-campo::placeholder {
-    color: rgb(161 161 170);
-  }
-
-  .assinatura-campo:hover,
-  .assinatura-campo:focus {
-    border-color: rgb(168 85 247 / 0.5);
-  }
-
-  .assinatura-campo:focus-visible {
-    outline: 2px solid var(--color-felixo-purple);
-    outline-offset: 2px;
-  }
-
   /* Esmaecimento do modal de contato do felixo.com.br: fundo e janela entram
      e saem juntos em 0,3 s, com a curva padrão de opacidade do framer-motion
      que o portfólio usa. */

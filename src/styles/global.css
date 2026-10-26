@@ -282,8 +282,39 @@
     box-shadow: 0 0 24px rgb(255 255 255 / 0.2);
   }
 
-  /* Pesquisa de posts: campo compacto ao lado do título da lista, no mesmo
-     desenho da "Busca rápida" do felixo.com.br. */
+  /* Campo de texto, no desenho da "Busca rápida" do felixo.com.br: a pesquisa
+     de posts da home e o e-mail da assinatura. */
+  .felixo-campo {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.4);
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    color: #fff;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  /* zinc-400: o zinc-500 dava 4,35:1 sobre o preto (abaixo do AA). */
+  .felixo-campo::placeholder {
+    color: rgb(161 161 170);
+  }
+
+  .felixo-campo:hover,
+  .felixo-campo:focus {
+    border-color: rgb(168 85 247 / 0.5);
+    box-shadow: 0 0 16px rgb(168 85 247 / 0.2);
+  }
+
+  .felixo-campo:focus-visible {
+    outline: 2px solid var(--color-felixo-purple);
+    outline-offset: 2px;
+  }
+
+  /* Pesquisa de posts: campo compacto ao lado do título da lista, com a lupa
+     dentro (por isso o recuo à esquerda). */
   .felixo-busca {
     position: relative;
   }
@@ -297,32 +328,8 @@
     pointer-events: none;
   }
 
-  .felixo-busca input {
-    width: 100%;
-    border-radius: 0.75rem;
-    border: 1px solid rgb(255 255 255 / 0.1);
-    background: rgb(0 0 0 / 0.4);
-    padding: 0.5rem 0.875rem 0.5rem 2.25rem;
-    font-size: 0.875rem;
-    color: #fff;
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .felixo-busca input::placeholder {
-    color: rgb(161 161 170);
-  }
-
-  .felixo-busca input:hover,
-  .felixo-busca input:focus {
-    border-color: rgb(168 85 247 / 0.5);
-    box-shadow: 0 0 16px rgb(168 85 247 / 0.2);
-  }
-
-  .felixo-busca input:focus-visible {
-    outline: 2px solid var(--color-felixo-purple);
-    outline-offset: 2px;
+  .felixo-busca .felixo-campo {
+    padding-left: 2.25rem;
   }
 }
 

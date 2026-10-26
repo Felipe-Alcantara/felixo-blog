@@ -67,8 +67,9 @@ export const contaGoatCounter = () => `https://${GOATCOUNTER.codigo}.goatcounter
  * `formulario` é o endereço de envio do formulário gerado pelo follow.it (POST,
  * um campo `email`); vazio desliga a assinatura em todas as páginas (ver
  * `Assinatura.astro`). `seguir` é a página do feed onde o leitor escolhe o
- * canal; o `?pub` mantém o e-mail dele na lista do dono. Os dois aparecem no
- * HTML de qualquer site que usa follow.it: não são segredo.
+ * canal; o `?pub` mantém o e-mail dele na lista do dono; vazio tira o link
+ * "Prefere app ou RSS?" da janela. Os dois aparecem no HTML de qualquer site
+ * que usa follow.it: não são segredo.
  */
 export const FOLLOWIT = {
   verificacao: 'nDnjKRVEAyctn8CkYXUb',

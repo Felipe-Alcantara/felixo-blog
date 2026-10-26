@@ -158,9 +158,10 @@ Sobre e no rodapé, e abre uma janela (`src/components/Assinatura.astro`) com um
 avisa os assinantes. A janela usa o `popover` nativo, então abre e fecha sem
 JavaScript; um script curto só faz a animação dos modais do felixo.com.br (o
 botão cresce até virar a janela). Configuração em `FOLLOWIT`
-(`src/config/site.ts`): `formulario` vazio desliga tudo, e `verificacao` é a
-meta tag que prova ao follow.it que o site é do dono do feed. Textos em
-`TEXTOS.<idioma>.assinatura`.
+(`src/config/site.ts`): `formulario` vazio desliga tudo; `verificacao` é a
+meta tag que prova ao follow.it que o site é do dono do feed; `seguir` é a
+página do feed para quem prefere app ou RSS ("Prefere app ou RSS?" na janela),
+e vazio tira só esse link. Textos em `TEXTOS.<idioma>.assinatura`.
 
 Limites do plano grátis: o follow.it lê o feed a cada 6 horas; o padrão do
 e-mail é um resumo diário (cada assinante pode trocar para um e-mail por post);
