@@ -5,3 +5,6 @@ app/
 # O texto dos posts é do Felipe: o Prettier não mexe neles, e um post fora do
 # padrão não trava o `check` (nem o deploy, nem o botão de publicar do Felixo Editor).
 src/content/posts/
+
+# A tradução também é texto do Felipe (ver acima).
+src/content/traducoes/

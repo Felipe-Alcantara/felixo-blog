@@ -11,7 +11,7 @@ import BotaoAssinatura from './BotaoAssinatura.astro';
 import Redes from './Redes.astro';
 import { caminho } from '../utils/rotas';
 import { TEXTOS, type Idioma } from '../config/idiomas';
-import { listarPosts } from '../utils/posts';
+import { buscarTraducao, listarPosts, versaoDoPost } from '../utils/posts';
 
 interface Props {
   idioma: Idioma;
@@ -20,6 +20,13 @@ interface Props {
 const { idioma } = Astro.props;
 const textos = TEXTOS[idioma];
 const posts = await listarPosts();
+// O filtro de pesquisa procura no texto que o leitor vê: o da tradução, em inglês.
+const versoes = await Promise.all(
+  posts.map(async (post) => ({
+    post,
+    versao: versaoDoPost(post, await buscarTraducao(post), idioma),
+  })),
+);
 ---
 
 <BaseLayout titulo={textos.tituloSite}>
@@ -97,9 +104,9 @@ const posts = await listarPosts();
       ) : (
         <>
           <ul id="lista-posts" class="mt-10 space-y-10">
-            {posts.map((post) => (
+            {versoes.map(({ post, versao }) => (
               <li
-                data-busca={[post.data.titulo, post.data.descricao, ...post.data.tags]
+                data-busca={[versao.titulo, versao.descricao, ...versao.tags]
                   .join(' ')
                   .toLowerCase()}
               >

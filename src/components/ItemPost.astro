@@ -13,7 +13,7 @@
 import { caminho } from '../utils/rotas';
 import Etiqueta from './Etiqueta.astro';
 import { formatarDataCurta, formatarDataISO } from '../utils/datas';
-import { type Post } from '../utils/posts';
+import { buscarTraducao, versaoDoPost, type Post } from '../utils/posts';
 import { TEXTOS, type Idioma } from '../config/idiomas';
 
 interface Props {
@@ -21,16 +21,23 @@ interface Props {
   /** Nível do título: `h3` dentro de uma seção com `h2`, `h2` logo abaixo do `h1`. */
   nivelTitulo?: 'h2' | 'h3';
   /**
-   * Idioma da página que lista o post. Os posts ainda são todos em português;
-   * numa página em inglês, o item ganha o selo "In Portuguese" e `lang="pt-BR"`
-   * para o leitor de tela pronunciar o título certo.
+   * Idioma da página que lista o post. Numa página em inglês, o post traduzido
+   * aparece com o título, a descrição e as tags da tradução; o que ainda não
+   * tem tradução ganha o selo "In Portuguese" e `lang="pt-BR"` para o leitor de
+   * tela pronunciar o título certo.
    */
   idioma?: Idioma;
 }
 
 const { post, nivelTitulo = 'h3', idioma = 'pt' } = Astro.props;
-const emOutroIdioma = idioma !== 'pt';
-const { titulo, descricao, publicadoEm, tags } = post.data;
+const { traducao, titulo, descricao, tags } = versaoDoPost(
+  post,
+  await buscarTraducao(post),
+  idioma,
+);
+const { publicadoEm } = post.data;
+// Em português o item é do idioma da página; em inglês, só se tiver tradução.
+const emOutroIdioma = idioma !== 'pt' && !traducao;
 const Titulo = nivelTitulo;
 ---
 
@@ -70,7 +77,11 @@ const Titulo = nivelTitulo;
           )}
           {tags.map((tag) => (
             <li class="pointer-events-auto">
-              <Etiqueta tag={tag} idioma={idioma} />
+              <Etiqueta
+                tag={tag}
+                idioma={idioma}
+                lang={emOutroIdioma ? 'pt-BR' : undefined}
+              />
             </li>
           ))}
         </ul>

@@ -10,7 +10,7 @@ import Comentarios from '../components/Comentarios.astro';
 import Etiqueta from '../components/Etiqueta.astro';
 import Icone from '../components/Icone.astro';
 import { formatarDataISO, formatarDataLonga, tempoDeLeitura } from '../utils/datas';
-import { type Post } from '../utils/posts';
+import { buscarTraducao, versaoDoPost, type Post } from '../utils/posts';
 
 interface Props {
   post: Post;
@@ -19,13 +19,18 @@ interface Props {
 }
 
 const { post, corpo } = Astro.props;
-const { titulo, descricao, publicadoEm, atualizadoEm, tags, capa } = post.data;
+const { publicadoEm, atualizadoEm, capa } = post.data;
 const minutos = tempoDeLeitura(corpo);
 const idioma = idiomaDoCaminho(caminhoSemBase(Astro.url));
 const textos = TEXTOS[idioma];
-// Os posts só existem em português: em `/en/` a página é a cópia com a
-// interface em inglês, o texto em português e um aviso.
-const copiaEmIngles = idioma === 'en';
+// A tradução existe quando há `src/content/traducoes/en/<post>.md`. A página em
+// inglês usa o texto dela; sem ela, é a cópia com a interface em inglês, o
+// texto em português e um aviso. A data e a capa são sempre as do original.
+const traducaoDoPost = await buscarTraducao(post);
+const { traducao, titulo, descricao, tags } = versaoDoPost(post, traducaoDoPost, idioma);
+const emIngles = idioma === 'en';
+const copiaEmPortugues = emIngles && !traducao;
+const semRevisao = traducao !== undefined && !traducao.data.revisado;
 
 // Capa em tamanho de cartão Open Graph (1200×630) — mesma proporção do
 // cartão genérico gerado por `scripts/gerar-og-image.py`.
@@ -43,10 +48,10 @@ const imagemCapa = capaOtimizada
   tipoOG="article"
   publicadoEm={publicadoEm}
   imagemCapa={imagemCapa}
-  semTraducao
+  semTraducao={!traducaoDoPost}
 >
   {
-    copiaEmIngles && (
+    copiaEmPortugues && (
       <p
         role="note"
         class="mb-8 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-300"
@@ -55,8 +60,26 @@ const imagemCapa = capaOtimizada
       </p>
     )
   }
+  {
+    semRevisao && (
+      <p
+        role="note"
+        class="mb-8 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-300"
+      >
+        {textos.post.avisoSemRevisao}{' '}
+        <a
+          href={caminho(`/posts/${post.id}/`)}
+          hreflang="pt-BR"
+          class="text-felixo-purple underline decoration-purple-400/35 underline-offset-4 transition hover:text-white"
+        >
+          {textos.post.lerOriginal}
+        </a>
+        .
+      </p>
+    )
+  }
 
-  <article lang={copiaEmIngles ? 'pt-BR' : undefined}>
+  <article lang={copiaEmPortugues ? 'pt-BR' : undefined}>
     <header class="border-b border-white/5 pb-8">
       <h1 class="felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl">
         {titulo}
@@ -91,7 +114,11 @@ const imagemCapa = capaOtimizada
           <ul class="mt-4 flex flex-wrap gap-2">
             {tags.map((tag) => (
               <li>
-                <Etiqueta tag={tag} idioma={idioma} />
+                <Etiqueta
+                  tag={tag}
+                  idioma={idioma}
+                  lang={copiaEmPortugues ? 'pt-BR' : undefined}
+                />
               </li>
             ))}
           </ul>
@@ -111,7 +138,7 @@ const imagemCapa = capaOtimizada
 
     <nav class="mt-16 border-t border-white/5 pt-6 text-sm">
       <a
-        href={caminho(copiaEmIngles ? '/en/' : '/')}
+        href={caminho(emIngles ? '/en/' : '/')}
         class="inline-flex items-center gap-2 text-felixo-purple underline decoration-purple-400/35 underline-offset-4 transition hover:text-white"
       >
         <Icone nome="seta-esquerda" />

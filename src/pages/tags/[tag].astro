@@ -4,7 +4,7 @@ import PaginaDaTag from '../../components/PaginaDaTag.astro';
 import { agruparPorTag, type Post } from '../../utils/posts';
 
 export const getStaticPaths: GetStaticPaths = async () =>
-  (await agruparPorTag()).map(({ slug, nome, posts }) => ({
+  (await agruparPorTag('pt')).map(({ slug, nome, posts }) => ({
     params: { tag: slug },
     props: { nome, posts },
   }));

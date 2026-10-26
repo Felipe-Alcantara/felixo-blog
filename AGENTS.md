@@ -30,6 +30,7 @@ histórico de decisões.
 | O pedido é sobre…                             | Arquivo                                                                                            |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Escrever ou editar um post                    | `src/content/posts/<slug>.md`                                                                      |
+| Traduzir um post para inglês                  | `src/content/traducoes/en/<slug>.md` (mesmo nome), esquema em `src/content.config.ts`              |
 | Tom, voz e revisão do texto de um post        | `LINGUAGEM-NATURAL.md`                                                                             |
 | Adicionar imagem a um post                    | pasta `src/content/posts/<slug>/`, ver [README § Imagens em um post](README.md#imagens-em-um-post) |
 | Adicionar campo ao frontmatter                | `src/content.config.ts` (schema Zod)                                                               |
@@ -89,12 +90,17 @@ diff limpo.
 - **Dois idiomas**: português na raiz, inglês em `/en/`. Texto de interface
   não fica solto na página: vai em `TEXTOS` de `src/config/idiomas.ts`, nos
   dois idiomas. Página nova em inglês entra em `src/pages/en/` **e** em
-  `paginaEquivalente` (mesmo nome com o prefixo `/en` para home, tags e posts;
-  nome diferente em `NOMES_EM_INGLES`); sem isso, o seletor PT | EN leva para a
-  home e a pergunta da primeira visita não troca de página. Todo post tem
-  `/en/posts/<post>/`, a cópia com a interface em inglês, o texto em português
-  e um aviso, sem `hreflang` (`semTraducao` do `BaseLayout`). A tradução de um
-  post só entra depois dele completo em português e passa pela revisão do dono.
+  `paginaEquivalente` (mesmo nome com o prefixo `/en` para home, índice de tags
+  e posts; nome diferente em `NOMES_EM_INGLES`; a página de uma tag não tem par,
+  porque o nome da tag muda); sem isso, o seletor PT | EN leva para a home e a
+  pergunta da primeira visita não troca de página. Todo post tem
+  `/en/posts/<post>/`: com `src/content/traducoes/en/<post>.md` (mesmo nome do
+  post; título, descrição, tags e texto em inglês) a página é a tradução e traz
+  `hreflang`; sem o arquivo, é a cópia com a interface em inglês, o texto em
+  português e um aviso, sem `hreflang` (`semTraducao` do `BaseLayout`). A
+  tradução nasce com `revisado: false`, que mostra o aviso "traduzido por IA,
+  sem revisão do autor"; só o dono vira para `true`, depois de revisar. A IA
+  traduz fiel ao texto (sem "melhorar"), como no guia de linguagem natural.
 - Trocar de domínio é mexer nas constantes `SITE`/`BASE` no topo de
   `astro.config.mjs` (ou nas variáveis `SITE_URL`/`BASE_PATH`), no
   `public/CNAME` e em `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do

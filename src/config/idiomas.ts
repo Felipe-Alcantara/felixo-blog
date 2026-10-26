@@ -16,16 +16,19 @@ export type Idioma = 'pt' | 'en';
 export const CHAVE_IDIOMA = 'felixo-blog:idioma';
 
 /**
- * Como uma página em português vira a página em inglês: a home, as tags e os
- * posts ganham só o prefixo `/en`; as de nome diferente ficam neste mapa
- * (caminho em português → em inglês). Uma página fora das duas regras existe
- * só em português (a 404): o seletor PT | EN leva para a home do outro idioma,
- * e a pergunta da primeira visita não troca de página.
+ * Como uma página em português vira a página em inglês: a home, o índice de
+ * tags e os posts ganham só o prefixo `/en`; as de nome diferente ficam neste
+ * mapa (caminho em português → em inglês). A página de uma tag não tem par,
+ * porque o nome da tag muda de idioma: o outro idioma abre o índice de tags.
+ * Uma página fora dessas regras existe só em português (a 404): o seletor
+ * PT | EN leva para a home do outro idioma, e a pergunta da primeira visita não
+ * troca de página.
  */
 const NOMES_EM_INGLES: Record<string, string> = {
   '/sobre/': '/en/about/',
 };
-const SO_COM_PREFIXO = /^\/(tags|posts)\//;
+const IGUAL_COM_PREFIXO = /^\/(tags\/|posts\/.+)?$/;
+const PAGINA_DE_TAG = /^\/tags\/.+/;
 
 type Link = { rotulo: string; href: string };
 
@@ -83,6 +86,8 @@ export const TEXTOS = {
       atualizadoEm: 'atualizado em',
       voltar: 'Voltar para todos os posts',
       avisoSoPortugues: '',
+      avisoSemRevisao: '',
+      lerOriginal: '',
     },
     comentarios: {
       titulo: 'Comentários',
@@ -200,6 +205,9 @@ export const TEXTOS = {
       atualizadoEm: 'updated',
       voltar: 'Back to all posts',
       avisoSoPortugues: 'This post is only available in Portuguese for now.',
+      avisoSemRevisao:
+        'This post was translated by AI and has not been reviewed by the author yet.',
+      lerOriginal: 'Read the original in Portuguese',
     },
     comentarios: {
       titulo: 'Comments',
@@ -277,16 +285,16 @@ export function paginaEquivalente(
   const atual = normalizar(caminhoSemBase);
   if (idiomaDoCaminho(atual) === alvo) return atual;
   if (alvo === 'en') {
-    return atual === '/' || SO_COM_PREFIXO.test(atual)
-      ? `/en${atual}`
-      : NOMES_EM_INGLES[atual];
+    if (IGUAL_COM_PREFIXO.test(atual)) return `/en${atual}`;
+    return PAGINA_DE_TAG.test(atual) ? '/en/tags/' : NOMES_EM_INGLES[atual];
   }
   const nomeEmPortugues = Object.entries(NOMES_EM_INGLES).find(
     ([, en]) => en === atual,
   )?.[0];
   if (nomeEmPortugues) return nomeEmPortugues;
   const semPrefixo = atual.slice('/en'.length);
-  return semPrefixo === '/' || SO_COM_PREFIXO.test(semPrefixo) ? semPrefixo : undefined;
+  if (IGUAL_COM_PREFIXO.test(semPrefixo)) return semPrefixo;
+  return PAGINA_DE_TAG.test(semPrefixo) ? '/tags/' : undefined;
 }
 
 /** Para o seletor PT | EN: a página equivalente ou, se não houver, a home do idioma. */

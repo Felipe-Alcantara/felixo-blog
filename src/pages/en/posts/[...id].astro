@@ -1,11 +1,11 @@
 ---
-// A cópia em inglês do post: o mesmo texto em português, com a interface em
-// inglês e um aviso (ver `PostLayout.astro`). Quando um post ganhar tradução,
-// ela entra neste mesmo endereço.
+// O post em inglês: o texto da tradução (`src/content/traducoes/en/<post>.md`)
+// quando ela existe; sem ela, a cópia com o texto em português, a interface em
+// inglês e um aviso (ver `PostLayout.astro`).
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
 import PostLayout from '../../../layouts/PostLayout.astro';
-import { listarPosts, type Post } from '../../../utils/posts';
+import { buscarTraducao, listarPosts, type Post } from '../../../utils/posts';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await listarPosts();
@@ -17,9 +17,10 @@ interface Props {
 }
 
 const { post } = Astro.props as Props;
-const { Content } = await render(post);
+const conteudo = (await buscarTraducao(post)) ?? post;
+const { Content } = await render(conteudo);
 ---
 
-<PostLayout post={post} corpo={post.body ?? ''}>
+<PostLayout post={post} corpo={conteudo.body ?? ''}>
   <Content />
 </PostLayout>

@@ -23,9 +23,10 @@ interface Props {
   /** `false` tira do rodapé o número de acessos da página (ex.: a 404). */
   acessosDaPagina?: boolean;
   /**
-   * Post cujo texto só existe em português (`PostLayout`): a cópia em inglês
-   * serve o seletor e a pergunta de idioma, mas não vira `hreflang`, que diria
-   * ao buscador que existe tradução. Sai daqui quando o post ganhar a dele.
+   * Página sem par exato no outro idioma: o post que só existe em português (a
+   * cópia em inglês) e a página de uma tag (o nome muda de idioma). O seletor e
+   * a pergunta de idioma ainda levam à página mais próxima, mas ela não vira
+   * `hreflang`, que diria ao buscador que uma é a tradução da outra.
    */
   semTraducao?: boolean;
 }

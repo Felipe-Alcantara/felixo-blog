@@ -73,6 +73,16 @@ propósito, em vez de publicar torto):
 Blocos de código com marcação de linguagem (` ```python `) recebem realce de
 sintaxe automaticamente.
 
+### Tradução de um post
+
+A versão em inglês de um post é um arquivo com o mesmo nome em
+`src/content/traducoes/en/<slug>.md`, com `titulo`, `descricao`, `tags` (em
+inglês) e `revisado`, e o texto em inglês. A data, a capa e o endereço vêm do
+original. Com `revisado: false` (o padrão), a página em inglês mostra o aviso
+"traduzido por IA, sem revisão do autor"; o autor vira para `true` depois de
+revisar. Sem o arquivo, `/en/posts/<slug>/` mostra o texto em português com
+um aviso.
+
 ### Imagens em um post
 
 Editar o `.md` não publica nada sozinho: o site é gerado por build, então a
@@ -185,8 +195,9 @@ navegador não é oferecida. Assinantes e estatísticas ficam no painel do feed
 - `/sobre` — página institucional
 - `/en/`, `/en/tags/`, `/en/tags/<slug>/`, `/en/about/` — as mesmas páginas com a
   interface em inglês
-- `/en/posts/<slug>/` — o post com a interface em inglês e o texto em português,
-  com um aviso, até ele ganhar tradução
+- `/en/posts/<slug>/` — o post em inglês: a tradução (`src/content/traducoes/en/<slug>.md`,
+  com `titulo`, `descricao`, `tags` e `revisado`) ou, sem ela, o texto em
+  português com a interface em inglês e um aviso
 - `/rss.xml` — feed RSS
 - `/sitemap-index.xml` — sitemap para buscadores
 - `/404` — página de erro

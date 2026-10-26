@@ -16,7 +16,7 @@ interface Props {
 const { idioma } = Astro.props;
 const textos = TEXTOS[idioma].tags;
 const prefixo = idioma === 'en' ? '/en' : '';
-const tags = await listarTags();
+const tags = await listarTags(idioma);
 ---
 
 <BaseLayout titulo={textos.titulo} descricao={textos.descricao}>
@@ -30,11 +30,11 @@ const tags = await listarTags();
       <p class="mt-8 text-zinc-400">{textos.nenhuma}</p>
     ) : (
       <ul class="mt-8 flex flex-wrap gap-3">
-        {tags.map(({ nome, total }) => (
+        {tags.map(({ nome, total, traduzida }) => (
           <li>
             <a
               href={caminho(`${prefixo}/tags/${slugDaTag(nome)}/`)}
-              lang={idioma === 'en' ? 'pt-BR' : undefined}
+              lang={idioma === 'en' && !traduzida ? 'pt-BR' : undefined}
               class="inline-flex items-center gap-2 rounded-full border border-purple-500/25 bg-purple-500/10 px-4 py-1.5 text-sm text-felixo-purple transition hover:border-purple-400/50 hover:bg-purple-500/20 hover:shadow-[0_0_18px_rgba(168,85,247,0.3)]"
             >
               {nome}
