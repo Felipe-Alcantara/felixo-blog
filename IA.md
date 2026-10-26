@@ -53,8 +53,9 @@
   tem `/` → `/en/` (Tags, Sobre e posts não existem em inglês, e o menu em inglês
   tem só "Posts"). A pergunta da primeira visita grava a escolha e o seletor
   PT | EN troca a qualquer hora. Post só ganha versão em inglês depois de completo
-  em português e com a revisão do dono; a apresentação da home em inglês é
-  tradução que ainda espera essa revisão.
+  em português e com a revisão do dono. A apresentação da home em inglês, o
+  rótulo "My socials" e a descrição do site em inglês foram revisados pelo dono em
+  2026-10-26; o resto dos textos da interface em inglês segue sem revisão.
 - **Abertura e gatinho** (2026-10-16): `Abertura.astro`, primeiro filho do
   `<body>` no `BaseLayout`, mostra o gatinho do FelixoVerse piscando uma vez
   (cerca de 2 s) a cada carregamento. É só CSS, decorativa (`aria-hidden`) e some
@@ -2437,3 +2438,49 @@ ferramentas de cada um); o post `ola-mundo`, que ainda tem a lista "O que você
 vai encontrar aqui" com a mesma linha antiga, por ser um teste que o dono vai
 revisar; "pra frente" na apresentação, que segue como ele escreveu (a pergunta
 sobre "pra" segue em aberto no `LINGUAGEM-NATURAL.md`).
+
+[2026-10-26] **Tradução em inglês da apresentação da home revisada pelo dono.**
+Pendência de 2026-10-22: a versão em inglês (`TEXTOS.en.home.apresentacao`, o
+rótulo "My social networks" e a descrição do site em inglês) era tradução
+minha, no ar sem a revisão dele. Pelo
+`LINGUAGEM-NATURAL.md`, eu mostrei o texto, marquei o que me parecia duvidoso e
+só mudei o que ele apontou, sem trocar o sentido.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- Título e dois primeiros parágrafos ("Hi, I'm Felixo!", "I'm a developer, AI
+  engineer and audio engineer." e "I'm the creator of a few Brazilian
+  startups…")? **Aprovados como estão** (ajustar algo).
+- Terceiro parágrafo, primeira parte, com "the field" e os dois-pontos (que eu
+  achava meus, porque no português ele usa vírgula)? **"the field" vira "the
+  industry"** e **os dois-pontos viram ponto final**, duas frases (nenhum
+  ajuste). Escolha de múltipla marcação.
+- Última frase, com "pass it on" e "record my take"? **"share it" no lugar de
+  "pass it on"** (como estava; "pass it forward"). Avisei que "passar pra
+  frente" perde um pouco a ideia de repassar.
+- "My social networks"? **"My socials"** (como estava; "My social media").
+- Descrição do site em inglês? **Igual à primeira frase do terceiro parágrafo**,
+  na mesma ordem do português (como estava: "Here I write about my story and
+  what I've been building and learning along the way.", que juntava e invertia a
+  ordem da frase dele). Na pergunta eu disse que a frase tinha 111 caracteres;
+  são 107.
+
+Resultado em `src/config/idiomas.ts`: terceiro parágrafo "Here, I write about my
+story, what I've learned along the way, and what I've been building in the
+meantime. Here, you won't find just news, much less tutorials. It's my take on
+the industry and how my learning got me to where I am today. And I'd like to
+share it and record my take and everything I saw along the way, and I decided to
+make all of this public!"; `minhasRedes` "My socials"; `descricao` "Here, I
+write about my story, what I've learned along the way, and what I've been
+building in the meantime."; o comentário do código passou de "para ele revisar"
+para "revisada por ele em 2026-10-26".
+
+Medido: o `dist` de `/en/` traz o texto novo na página e em `description` e
+`og:description`, sem "the field", "pass it on" nem "My social networks";
+Playwright (Chrome, Firefox e WebKit) lê na home em inglês o título, os três
+parágrafos exatamente como acima e o rótulo "My socials"; capturei a tela e o
+texto cabe sem estouro.
+
+Não revisado, e fora desta task: o resto dos textos da interface em inglês
+(botões como "RSS feed" e "Get posts by email", a janela de assinatura, os
+avisos de acessos e outros), que também são tradução minha. Virou uma task.
