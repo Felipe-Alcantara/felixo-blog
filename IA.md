@@ -99,9 +99,10 @@
   (`felixo.goatcounter.com`), com o contador público ligado no painel. O número
   aparece no cabeçalho do post e no rodapé de todas as páginas (a página e o
   total do blog; no post e na 404, só o total), sempre, mesmo com zero. Se a
-  leitura falha, o rodapé mostra um traço e o cabeçalho do post fica sem o
-  número. Os números são um mínimo: leitor com bloqueador de anúncio não é
-  contado, e o dono usa um (confirmado), então as visitas dele não entram. Em
+  leitura falha, o cabeçalho do post e o rodapé avisam que um bloqueador de
+  anúncio pode estar impedindo (decisão do dono em 2026-10-26). Os números são
+  um mínimo: leitor com bloqueador de anúncio não é contado, e o dono usa um
+  (confirmado), então as visitas dele não entram. Em
   2026-10-26 o contador tinha 10 acessos no total, 6 na home e 2 no post: a
   primeira visita real já aconteceu e o número aparece.
 - **Assinatura** (2026-10-16): follow.it, feed `blog-do-felixo` na conta do
@@ -2328,3 +2329,57 @@ com GitHub", a página já estava de volta e logada, e o widget mostrava "Escrev
 um comentário". Se uma tela de autorização do app giscus passou no meio do
 caminho, não a vi. Para um leitor novo, que ainda não autorizou o app, a tela
 provavelmente aparece; isso não foi medido.
+
+[2026-10-26] **Acessos com bloqueador de anúncio: o blog passa a avisar que o
+bloqueador pode estar impedindo; as visitas de quem bloqueia continuam fora da
+contagem.** Decisão do dono sobre a pendência de 2026-10-22 ("decidir se o
+número de acessos deve aparecer também com bloqueador"). Era decisão de produto,
+e eu não decidi sozinho.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- Quando o navegador barra a leitura do contador, o que o blog mostra no lugar
+  do número? **"Avisar que o bloqueador impede"**, resposta livre (deixar o
+  traço, que era a recomendada; mostrar o número da última publicação; esconder
+  o rodapé de acessos).
+- Vale tentar contar também as visitas de quem usa bloqueador? **Não, aceitar o
+  mínimo** (abrir task para avaliar um proxy próprio; abrir task para avaliar
+  outro contador).
+- Quando o número não carrega, o traço deve explicar o motivo? **"Sempre
+  mostrar"**, resposta livre, que entendi como "a explicação sempre visível"
+  (texto ao passar o mouse, que era a recomendada; só o traço).
+
+O que foi medido, em 2026-10-26: no Brave do dono, com os Shields ligados, o
+post mostra "2 acessos" e o rodapé "10 acessos no blog", então a leitura do
+número passa nesse navegador. Se a visita dele entra na contagem não foi medido,
+porque o painel do GoatCounter pede login. Segundo a documentação do
+GoatCounter: "a maioria dos bloqueadores barra goatcounter.com", e o autor
+estima "cerca de um terço" das visitas perdidas; domínio próprio (CNAME) não
+impede os bloqueadores, é só nome bonito; hospedar só o `count.js` no site não
+adianta, porque o envio da visita continua indo para
+`<conta>.goatcounter.com/count`. Só escapam um proxy próprio ou um GoatCounter
+hospedado por conta própria (os dois precisam de servidor, fora do GitHub Pages)
+ou a importação de logs (o GitHub Pages não dá logs).
+
+O que foi feito: quando a leitura do contador falha, o cabeçalho do post mostra
+"acessos indisponíveis (bloqueador de anúncio?)" (antes sumia) e o rodapé mostra
+"Os acessos não carregaram: um bloqueador de anúncio pode estar impedindo."
+(antes era um traço mudo), com os textos em português e em inglês em
+`src/config/idiomas.ts`. Se qualquer uma das duas leituras do rodapé falha, a
+frase substitui os dois números. O ponto separador do cabeçalho agora quebra de
+linha junto com o texto (`inline-flex`), para não sobrar um ponto no fim da
+linha no celular. O aviso diz "pode estar impedindo", e não "impede", porque a
+leitura também falha com a rede fora ou com o contador desligado no painel; o
+404 do GoatCounter com `count` 0 continua sendo um zero de verdade.
+
+Validação com Playwright sobre o `dist` (Chrome, Firefox e WebKit, mais um Pixel
+7 emulado no Chrome), sem enviar visita nem carregar comentários: com a leitura
+normal, os números aparecem como antes; com tudo bloqueado, o aviso aparece no
+cabeçalho e no rodapé, em português e, no rodapé da home, em inglês; com só a
+leitura da página bloqueada, o cabeçalho avisa; com o 404 do GoatCounter,
+aparece 0; sem JavaScript, nada aparece; a cor do aviso é a mesma dos números e
+não há rolagem lateral no celular. As asserções rodaram sem falha.
+
+Não medido: o aviso num bloqueador que realmente barra a leitura (no Brave do
+dono a leitura passa, então o aviso não apareceu lá); leitor de tela real; e
+quantas visitas se perdem de fato neste blog.
