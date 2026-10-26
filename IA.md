@@ -75,8 +75,9 @@
   (`TEXTOS.<idioma>.home.apresentacao`), depois "Minhas redes", uma linha de cinco
   ícones (e-mail, GitHub, LinkedIn, Discord e Twitter: `Redes.astro`, `REDES` em
   `src/config/site.ts`) e os botões do blog (portfólio, RSS, e-mail). A
-  `SITE.descricao` (buscador, cartão de compartilhamento, RSS) ainda fala em
-  "notícias de tecnologia", o que contradiz a home: fica para o dono.
+  `SITE.descricao` (buscador, cartão de compartilhamento, RSS) e a página Sobre
+  usam as mesmas frases da home, escolhidas pelo dono em 2026-10-26; o cartão
+  `public/og-image.jpg` foi regerado com o título "Blog do Felixo".
 - **Gate**: `npm run check` (0 erros, mais `prettier --check .`, que deixa de
   fora `app/` e os posts) + `npm run build` (8 páginas: `/`, `/en/`,
   Sobre, Tags, as duas páginas de tag, o post `ola-mundo` e a 404) — verdes em
@@ -2383,3 +2384,56 @@ não há rolagem lateral no celular. As asserções rodaram sem falha.
 Não medido: o aviso num bloqueador que realmente barra a leitura (no Brave do
 dono a leitura passa, então o aviso não apareceu lá); leitor de tela real; e
 quantas visitas se perdem de fato neste blog.
+
+[2026-10-26] **Descrição do site, página Sobre e cartão de compartilhamento
+alinhados à apresentação da home.** Pendência de 2026-09-30 e de 2026-10-22: a
+`SITE.descricao` e a lista do Sobre ainda diziam "notícias de tecnologia", o que
+contradiz a home do dono. O texto é dele, então, seguindo o
+`LINGUAGEM-NATURAL.md`, eu não escrevi nada: perguntei, com opções feitas só de
+frases dele (as da apresentação da home), com a origem marcada.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- Qual frase vira a descrição do site (buscador, cartão de compartilhamento e
+  RSS)? **"Aqui, eu escrevo sobre a minha história, o que eu aprendi ao longo da
+  jornada, e o que ando construindo nesse tempo."**, sem mudar uma palavra (essa
+  mesma frase com "Sou desenvolvedor, engenheiro de IA e engenheiro de áudio."
+  antes, com 175 caracteres; a frase do "não é notícia", com 148).
+- Qual título grande vai no cartão? **"Blog do Felixo"** ("Oi, eu sou o
+  Felixo!"; manter "Programação descomplicada"). Avisei que o nome já aparece ao
+  lado do logo, no alto do cartão, e que o título repetiria; ele manteve a
+  escolha.
+- O que fazer com a abertura e a lista do Sobre, que eram texto da IA? **Usar as
+  frases da home** (tirar só "Notícias de tecnologia"; deixar como está).
+- O "o blog do FelixoVerse" da descrição antiga entra na descrição e no cartão?
+  **Não, fica fora** (no fim da descrição; só no cartão).
+
+O que foi feito: `SITE.descricao` em `src/config/site.ts` virou a frase
+escolhida; o cartão (`public/og-image.jpg`) foi regerado com o título "Blog do
+Felixo" e essa descrição (os padrões de `scripts/gerar-og-image.py` mudaram
+junto); o Sobre passou a mostrar os três parágrafos da home, lidos de
+`TEXTOS.pt.home.apresentacao` (uma fonte só, então não divergem), e manteve a
+foto e a seção "Onde mais me encontrar". O RSS usa a descrição nova. A descrição
+em inglês já era a tradução da mesma frase ("Here I write about my story and
+what I've been building and learning along the way."), então não mudou; ela
+continua sendo tradução que o dono ainda não revisou. Meta `description` da
+página Sobre não mudou ("Sobre Felipe Alcântara e o Blog do Felixo.").
+
+Medido, em 2026-10-26: o `dist` traz a frase nova em `description`,
+`og:description` e no RSS, e nenhuma ocorrência de "notícias de tecnologia"; o
+Sobre tem os mesmos três parágrafos da home, no Chrome, no Firefox, no WebKit e
+num Pixel 7 emulado, sem rolagem lateral. O cartão novo tem 1200 por 630 px e 70
+kB, com a Space Grotesk carregada (pesos 400, 500 e 700). Como o Python daqui
+não tem Playwright, montei o HTML com a própria `montar_html` do script e o
+renderizei com o Chrome do Playwright em Node, no mesmo tamanho e com a mesma
+qualidade (JPEG 92): o resultado deve ser igual ao do script, mas não foi gerado
+por ele. O rodapé "BLOG.FELIXO.COM.BR" saiu mais leve que no cartão antigo; o
+CSS pede o peso 500 e a fonte carregou o 500, e não investiguei por que o antigo
+saiu mais pesado.
+
+Não medido: como o cartão aparece de verdade no WhatsApp, no LinkedIn e no X
+(eles guardam o cartão antigo em cache; é preciso reinspecionar o link nas
+ferramentas de cada um); o post `ola-mundo`, que ainda tem a lista "O que você
+vai encontrar aqui" com a mesma linha antiga, por ser um teste que o dono vai
+revisar; "pra frente" na apresentação, que segue como ele escreveu (a pergunta
+sobre "pra" segue em aberto no `LINGUAGEM-NATURAL.md`).
