@@ -51,7 +51,9 @@ dados até você configurar (pela tela "Notion" dentro do app, ou editando o
   (nunca `-A` — o repositório recebe trabalho de mais de um agente/pessoa em
   paralelo), commit `post: <título>` e push. Se o post veio do Notion, tenta
   (best-effort, sem desfazer a publicação caso falhe) escrever a URL e o
-  status de volta na página de origem.
+  status de volta na página de origem. As colunas são achadas pelo conteúdo, e
+  não pela posição: a `url` de nome "publicada" e a `select`/`status` que tem uma
+  opção "publicado".
 
 ## Scripts
 
