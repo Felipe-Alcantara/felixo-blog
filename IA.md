@@ -2320,3 +2320,11 @@ Não medido: o fluxo com a conta de um leitor comum (o teste usou a conta do
 dono, que é mantenedora); Firefox, Safari e celular reais; se o GitHub mandou
 e-mail de notificação ao dono por causa do comentário e da resposta de teste; e
 se o widget oferece apagar (apaguei pela API).
+
+[2026-10-26] **Correção da entrada anterior (comentários): não vi se houve tela
+de autorização.** Na entrada acima escrevi que a entrada pelo giscus voltou "sem
+tela de autorização". O que eu vi foi só o resultado: depois do clique em "Entre
+com GitHub", a página já estava de volta e logada, e o widget mostrava "Escreva
+um comentário". Se uma tela de autorização do app giscus passou no meio do
+caminho, não a vi. Para um leitor novo, que ainda não autorizou o app, a tela
+provavelmente aparece; isso não foi medido.
