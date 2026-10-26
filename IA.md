@@ -1784,3 +1784,54 @@ Não medido: Safari e Firefox, tela de celular de verdade, e o foco devolvido
 quando algum elemento tinha foco antes de a pergunta abrir (na primeira visita
 não há nenhum). O `getComputedStyle(dialog, '::backdrop')` usado na medição
 funciona no Chrome 156; não foi conferido em outros navegadores.
+
+[2026-10-26] **Abertura e pergunta de idioma conferidas em Firefox, WebKit e
+celular emulado.** A abertura (2026-10-16) e a saída suave da pergunta
+(2026-10-25) só tinham sido medidas no Chrome. Rodei o site publicado em cinco
+perfis com o Playwright 1.64, instalado fora do repositório (nada entrou no
+`package.json`; os scripts ficaram na pasta temporária da sessão): Chrome 156,
+Chrome com a tela de um Pixel 7, Firefox 157 (Gecko), WebKit 27.2 e WebKit com a
+tela de um iPhone 15. GoatCounter e giscus ficaram bloqueados para os testes não
+entrarem na contagem de acessos.
+
+Resultado nos cinco perfis:
+
+- **Camada de abertura:** aparece com a animação rodando e termina de sumir
+  (`visibility` em `hidden`) entre 2,1 e 2,7 s depois do início da navegação, já
+  contando a rede. Depois disso o centro da tela deixa de ser a camada e tocar
+  ou clicar num link interno navega. Capturas no meio da piscadinha, em Firefox
+  e WebKit, mostram o gatinho de olho fechado em arco e a boquinha sorrindo,
+  como no Chrome.
+- **Entrada da pergunta:** lendo a hora de início das animações
+  (`document.getAnimations()`, que não depende da taxa de quadros), o fundo e a
+  caixa começam de 23 a 44 ms depois do começo da saída da camada. A claridade
+  estimada da página (camada preta e fundo a 70%) ficou entre 0,30 e 0,37
+  durante a troca, contra 0,30 no estado final; os 0,37 vieram das primeiras
+  rodadas de Firefox e WebKit, que tiram poucos quadros por segundo. Nas fotos
+  da tela, a luminosidade média nunca passou da fase do gatinho (afora o quadro
+  branco do Firefox, comentado abaixo) e só sobe de 0,2 a 1,1 no fim, quando a
+  caixa da pergunta entra.
+- **Saída da pergunta:** "Português" faz caixa e fundo esmaecerem juntos até 0 e
+  fecha entre 258 e 459 ms, antes da reserva de 600 ms. Logo, o `animationend`
+  de `pergunta-sair` chega também em Gecko e WebKit. Depois, o foco fica no
+  `body`, nada fica `[inert]` e `pt` está salvo. O Esc fecha em 6 a 36 ms (só
+  nos perfis de computador).
+- **"Reduzir movimento":** a camada fica em `display: none`, a pergunta abre e
+  fecha ao clicar sem ficar presa, em 9 a 110 ms (360 ms no iPhone emulado com
+  tela 3x, que roda a 3 quadros por segundo nesta máquina).
+- **Post e recarregar:** a abertura repete.
+- **Redes da home:** cinco ícones roxos (`rgb(168, 85, 247)`), com o brilho indo
+  de 26 a 56 px de desfoque em todos e parado em 26 px com "reduzir movimento".
+  A task de origem fala em seis ícones: são cinco desde a retirada do WhatsApp
+  (2026-10-22).
+
+Nada falhou, então `Abertura.astro` e `EscolhaDeIdioma.astro` não mudaram.
+
+Não medido: Safari do iPhone e do Mac, Firefox e Chrome do celular de verdade. O
+WebKit e o Firefox do Playwright são o motor, não o navegador final, e o celular
+é emulação de tela e toque, sem a GPU e o toque reais. Esta máquina desenha
+Firefox e WebKit por software (8 a 19 quadros por segundo na troca, contra 130 a
+140 no Chrome), então a suavidade a olho nu e o peso do brilho animado em
+celular fraco continuam sem resposta. No Firefox, a primeira foto (292 ms, antes
+do primeiro desenho) saiu branca; pode ser efeito de fotografar antes da página
+pintar, e não conferi a olho nu.
