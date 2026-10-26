@@ -2141,3 +2141,53 @@ exata de dados que o OneSignal guarda (conferir na política dele antes de
 publicar a linha de privacidade) e os nomes exatos dos campos de título, de link
 e do segmento padrão da API de envio (a especificação manda conferir ao
 implementar). Nada disso foi testado com uma conta real, porque ela não existe.
+
+[2026-10-26] **Assinatura: ajustes menores da revisão final (acessibilidade e
+CSS).** Pendência aberta em 2026-10-16 e parcialmente resolvida em 2026-10-17,
+quando a janela substituiu o cartão. Era melhoria de código, sem decisão de
+produto para o dono.
+
+O que já não valia mais (a troca do cartão pela janela removeu o objeto): o
+`aria-label` duplicado da variante compacta, os dois formulários colados no
+Sobre (a variante `compacta` não existe; hoje a página tem um botão de chamada
+e, no rodapé, um link de texto) e o link "Prefere app ou RSS?" dentro da
+descrição do campo. A pergunta "a compacta some onde há destaque?" ficou sem
+objeto e a página ficou como está.
+
+O que foi feito:
+
+- **Leitor de tela:** `aria-describedby` do campo agora aponta só para a frase
+  de privacidade (`assinatura-privacidade`), e o botão "Assinar" ganhou
+  `aria-describedby` para o aviso de nova aba (`assinatura-nova-aba`), porque é
+  o botão que abre a aba. Antes, o campo era descrito pelas duas frases juntas
+  (descrição calculada pelo Chrome: "...cancelar a qualquer momento. Abre o
+  follow.it em nova aba.") e o botão não tinha descrição. Agora cada frase
+  aparece uma vez, no PT e no EN.
+- **`rel="noopener"` no `<form>` voltou.** A decisão de 2026-10-16 o tirou
+  porque os tipos do Astro não aceitam `rel` em formulário. `src/env.d.ts`
+  (novo) amplia `astroHTML.JSX.FormHTMLAttributes` com `rel`. Prova: sem o
+  arquivo, `npm run check` dá 1 erro
+  (`Property 'rel' does not exist on type 'FormHTMLAttributes'`); com ele, 0.
+- **`.felixo-campo`** (em `src/styles/global.css`) é o desenho único do campo de
+  texto, usado pela busca da home e pelo e-mail da assinatura; saiu o
+  `.assinatura-campo` do `Assinatura.astro` e o `.felixo-busca input` virou só o
+  recuo da lupa (`.felixo-busca .felixo-campo`). A busca não mudou (39 px,
+  `padding` 8/14/8/36 px). O campo da assinatura ganhou o brilho roxo no hover e
+  no foco, que a busca já tinha, e passou de 40,6 px para 43 px, a altura do
+  botão "Assinar", que não mudou; antes os dois ficavam 2,4 px fora de
+  alinhamento. O campo maior também aumenta a área de toque.
+- **`FOLLOWIT.seguir`** passou a constar no README e no comentário de `site.ts`.
+  Vazio, antes virava `<a href="">`; agora tira só o link "Prefere app ou RSS?"
+  (build com `seguir: ''`: nenhuma ocorrência do texto nem `href=""`).
+
+O que foi medido, em 2026-10-26, com Playwright sobre o `dist`: campo e botão
+com 43 px e a mesma posição vertical no Chrome (desktop e Pixel 7 emulado), no
+Firefox e no WebKit (desktop), em português e em inglês no Chrome;
+`aria-describedby` apontando para ids que existem; `relList` do formulário com
+`noopener`; brilho e contorno de 2 px no foco do campo; busca da home sem
+mudança. As asserções do script rodaram sem falha. A descrição acessível foi
+lida da árvore de acessibilidade do Chrome.
+
+Não medido: leitor de tela de verdade (NVDA, VoiceOver, TalkBack): só a
+descrição calculada pelo Chrome; a descrição acessível no Firefox e no WebKit
+(só os atributos); Firefox e Safari de celular reais.

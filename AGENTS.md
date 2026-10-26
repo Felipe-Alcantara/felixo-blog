@@ -41,6 +41,7 @@ histórico de decisões.
 | Botão "Pausar animações" do rodapé            | `PausarAnimacoes.astro`, `CHAVE_ANIMACOES` em `src/config/animacoes.ts`, fim de `global.css`       |
 | Home (as duas versões: `/` e `/en/`)          | `src/components/PaginaInicial.astro`                                                               |
 | Redes do dono na home (ícones e endereços)    | `Redes.astro`, `REDES` em `src/config/site.ts`, `Icone.astro`                                      |
+| Campo de texto (busca da home, e-mail)        | `.felixo-campo` em `src/styles/global.css`                                                         |
 | Cores, fontes, tipografia do corpo do post    | `src/styles/global.css`                                                                            |
 | `<head>`, SEO, Open Graph, canonical          | `src/layouts/BaseLayout.astro`                                                                     |
 | Cabeçalho do post, tags, tempo de leitura     | `src/layouts/PostLayout.astro`                                                                     |
