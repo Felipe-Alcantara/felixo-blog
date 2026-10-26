@@ -2221,3 +2221,17 @@ conferir o resumo do primeiro post novo).
 Não medido: que o e-mail de confirmação de fato chegou (só a página do follow.it
 diz que enviou), em quanto tempo e se caiu em spam; e tudo o que vem depois da
 confirmação.
+
+[2026-10-26] **Correção da entrada anterior (teste da assinatura): o Playwright
+não "travou" na verificação do Cloudflare, ficou sem resposta conclusiva.** Na
+entrada acima escrevi que, no Chrome automatizado do Playwright, a página do
+follow.it "ficou parada" na verificação de segurança e que "nenhuma inscrição
+foi registrada", e daí que o teste "não se automatiza". Isso foi exagero: fechei
+aquele navegador cerca de 3 s depois do envio, ainda em "Verificando…", e no
+Brave a página seguinte (`confirm-request`) apareceu em até 4 s. Não sei se a
+verificação passaria sozinha no Playwright, nem se aquela tentativa registrou
+uma inscrição (pode haver duas inscrições pendentes para o mesmo e-mail; se
+chegarem dois e-mails de confirmação, basta clicar em um). O que está medido: a
+verificação do Cloudflare existe depois do envio e o Brave passou por ela. Como
+tentar passar por um anti-robô é contornar, o teste da assinatura fica para
+navegador de pessoa.
