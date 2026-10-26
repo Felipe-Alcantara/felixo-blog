@@ -87,7 +87,9 @@
   total do blog; no post e na 404, só o total), sempre, mesmo com zero. Se a
   leitura falha, o rodapé mostra um traço e o cabeçalho do post fica sem o
   número. Os números são um mínimo: leitor com bloqueador de anúncio não é
-  contado, e o dono usa um (confirmado), então as visitas dele não entram.
+  contado, e o dono usa um (confirmado), então as visitas dele não entram. Em
+  2026-10-26 o contador tinha 10 acessos no total, 6 na home e 2 no post: a
+  primeira visita real já aconteceu e o número aparece.
 - **Assinatura** (2026-10-16): follow.it, feed `blog-do-felixo` na conta do
   dono, plano grátis. Botão "Receber por e-mail" na home, no fim do post, no
   Sobre e no rodapé (`BotaoAssinatura.astro`), que abre uma janela com o
@@ -1924,3 +1926,35 @@ conferência de navegador); e o `app/` (Felixo Editor), que tem `package.json`
 próprio, não foi tocado e tem 10 vulnerabilidades no `npm audit` dele em
 2026-10-26 (2 críticas, 7 altas e 1 moderada, entre elas `electron`, `vitest` e
 `tinypool`).
+
+[2026-10-26] **Primeira visita real ao post confirmada pelo contador público.**
+A pendência de 2026-10-16 era ver uma visita de verdade passar por todo o
+caminho: o `count.js` no navegador, a contagem no GoatCounter e o número
+aparecendo no post. Em 2026-10-22 o post ainda tinha 0 (registro daquele dia).
+Lido hoje, com o parâmetro `?cb=` aleatório para furar o cache de até 4 horas do
+contador (`/counter/<caminho>.json`): total 10, `/` 6, `/sobre/` 1, `/tags/` 1,
+**`/posts/ola-mundo/` 2** e `/en/` 0 (404 com zeros). Em 2026-10-22 eram total
+5, `/` 3, `/sobre/` 1, `/tags/` 1 e post 0. O post saiu de 0 para 2, então o
+caminho inteiro funciona em produção.
+
+O número aparece na tela. Abri o site publicado num Chrome sem bloqueador
+(Playwright, uma janela por página) com o envio da visita (`POST /count`)
+bloqueado, para o teste não entrar na estatística: o post mostra "2 acessos" no
+cabeçalho e "10 acessos no blog" no rodapé; a home, "6 acessos nesta página · 10
+acessos no blog"; o Sobre, "1 acesso nesta página · 10 acessos no blog"
+(singular certo). As leituras do contador responderam 200. Os três envios do
+teste foram abortados, e uma leitura nova depois mostrou os mesmos números
+(total 10, post 2, home 6).
+
+Não medido:
+
+- O painel em si (`felixo.goatcounter.com`) exige o login do dono: não o abri, e
+  o contador público é o mesmo dado "ligado no painel". Por isso não sei dizer
+  de onde vieram as 2 visitas ao post (navegador, país, origem).
+- Quem fez as 2 visitas. O navegador do dono tem bloqueador (registro de
+  2026-10-22), então elas não vêm dele, a não ser que ele tenha aberto o blog em
+  outro. O servidor descarta robôs (`HeadlessChrome/`), e as 2 passaram nesse
+  filtro.
+- O `skipgc` (`localStorage.setItem('skipgc', 't')`, que o dono pode ligar nos
+  navegadores sem bloqueador para não contar as próprias visitas) não foi
+  aplicado.
