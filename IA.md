@@ -93,6 +93,8 @@
   repositório e do histórico em 2026-09-30.
 - **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
   "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
+  Em 2026-10-26 o fluxo de escrita (entrar, comentar, responder e reagir) foi
+  conferido à mão em produção, logado como o dono, e funciona.
 - **Acessos** (2026-10-16, ajustado em 2026-10-22): GoatCounter, conta `felixo`
   (`felixo.goatcounter.com`), com o contador público ligado no painel. O número
   aparece no cabeçalho do post e no rodapé de todas as páginas (a página e o
@@ -2285,3 +2287,36 @@ depois, nenhum. Ensaio do CI numa cópia da árvore com fim de linha LF e sem
 um `.ts` mal formatado acrescentado, falha com código 1; com um post fora do
 padrão acrescentado, ele não é listado. Não foi medido o CI real com esse passo
 novo, só o ensaio acima e o gate local.
+
+[2026-10-26] **Comentários conferidos à mão, logado no GitHub: entrar, comentar,
+responder e reagir funcionam.** Pendência de 2026-10-22: só a leitura tinha sido
+validada, porque escrever exige login e agente não entra em contas. Em
+2026-10-26, com o ok do dono para publicar e depois apagar, usei o Brave dele,
+que já estava logado no GitHub com a conta dele (mantenedora do repositório).
+
+O que foi medido, no post `ola-mundo` em produção (discussão 1):
+
+- **Entrar:** o clique em "Entre com GitHub" no widget voltou para a página já
+  logado, sem tela de autorização (o app giscus já estava autorizado pelo dono).
+  A caixa passou de "Entre para comentar" para "Escreva um comentário".
+- **Comentar:** o comentário de teste apareceu no widget (contador de 4 para 5)
+  e na discussão do GitHub, com o autor do dono, a marca "with giscus" e o selo
+  de mantenedor.
+- **Responder:** a resposta apareceu no widget ("1 resposta") e na discussão.
+- **Reagir:** 🚀 no post (de 2 para 3 reações) e 🚀 no comentário de teste, os
+  dois salvos na discussão. A reação 👀 do post já era do dono antes do teste e
+  ficou intocada.
+- **Limpeza:** apaguei o comentário, a resposta e a reação 🚀 do post pela API
+  do GitHub (`deleteDiscussionComment` e `removeReaction`), pelos ids, depois de
+  listar a discussão. Estado final igual ao inicial: 4 comentários, reações do
+  post 👀 (dono) e ❤️ (outra pessoa), nenhum dos 4 comentários de outras pessoas
+  mexido. Também saí da conta no widget, que começou deslogado.
+
+Observação, sem correção: os botões "Comment" e "Reply" do widget saem em inglês
+mesmo com `idioma: 'pt'` em `GISCUS` (o resto está em português). Não verifiquei
+se a causa é a tradução do próprio giscus.
+
+Não medido: o fluxo com a conta de um leitor comum (o teste usou a conta do
+dono, que é mantenedora); Firefox, Safari e celular reais; se o GitHub mandou
+e-mail de notificação ao dono por causa do comentário e da resposta de teste; e
+se o widget oferece apagar (apaguei pela API).
