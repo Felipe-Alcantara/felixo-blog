@@ -124,11 +124,14 @@
   Notion" foi conferida com o Notion real em 2026-10-26: 10 itens, nenhum vídeo.
   `app/.env` (gitignored) foi recriado nesta máquina na mesma data, pela tela
   Configurações. Post aceita `capa` opcional no frontmatter, vira
-  `og:image`. **Falta**: a escrita de volta no Notion e a publicação via git
-  nunca foram testadas contra produção de verdade, e o importador grava o post
-  direto em `src/content/posts/`, onde o commit automático do Fetch All pode
-  levá-lo antes da hora de publicar (registro de 2026-09-30). A suíte do editor
-  passa inteira desde 2026-10-26 (74 testes): as 5 falhas que havia no Windows
+  `og:image`. O rascunho (texto, imagens e capa) vive em `app/rascunhos/`,
+  ignorada pelo git, e só o "Publicar" copia o post para `src/content/posts/`
+  (2026-10-26; antes o commit automático do Fetch All podia levá-lo antes da hora,
+  registro de 2026-09-30). **Falta**: a escrita de volta no Notion e a publicação
+  via git nunca foram testadas contra produção de verdade (a publicação foi
+  exercitada numa cópia do repositório, com o gate de verdade e um remoto local).
+  A suíte do editor passa inteira desde 2026-10-26 (99 testes): as 5 falhas que
+  havia no Windows
   eram um bug do gate, que chamava o `npm` sem shell (o botão de publicar não
   passava do gate no Windows), e um teste que prendia o arquivo `.webp`. A
   escrita de volta no Notion acha a coluna de status e a de URL pelo conteúdo,
@@ -2679,3 +2682,69 @@ Não medido: uma publicação de verdade (o ensaio não grava no Notion); o
 comportamento se a coluna de status do "Ideias criativas" for renomeada de modo
 que nenhuma opção pareça "publicado" (cai no aviso, como antes); e a tela do
 editor mostrando o aviso.
+
+[2026-10-26] **Felixo Editor: o rascunho vive fora de `src/content/posts/`, e só
+o "Publicar" leva o post para lá.** Risco aberto desde 2026-09-30: o commit
+automático do Fetch All leva tudo o que está na árvore e já levou rascunho duas
+vezes, num repositório público. Era decisão de desenho do dono, e eu não decidi
+sozinho.
+
+Perguntas e respostas (as alternativas não escolhidas estão entre parênteses):
+
+- Qual desenho? **A: rascunho fora de `src/content/posts/`, e só o Publicar
+  copia para lá** (B: manter a pasta e ignorar no `.gitignore`, que não consegue
+  ignorar por `rascunho: true` e acabaria numa pasta de rascunhos dentro de
+  `src/content/posts`; C: não mudar e aceitar o risco, já recusado em 30/09).
+- Onde ficam os rascunhos? **`app/rascunhos/`, ignorada pelo git** (a outra
+  opção era a pasta de dados do app, fora do repositório). Fica ao lado do
+  `app/.env`, que também depende do `.gitignore`.
+- E o post já publicado que se abre para mexer? **Edita numa cópia de rascunho,
+  e o Publicar sobrescreve** (continuar editando no lugar, como era).
+
+O que o código fazia (lido, não rodado): quatro pontos tocavam a pasta pública,
+e dois não estavam na task. A importação já baixava as imagens do artigo para
+`src/content/posts/<slug>/` (a task e este arquivo diziam que só o `.md` ia para
+lá, no Salvar); o Salvar gravava o `.md` ali; colar imagem e gerar capa gravavam
+na pasta do post.
+
+O que mudou, em `app/`: `caminhos.ts` ganhou `PASTA_DE_RASCUNHOS` e os caminhos
+do rascunho; `salvarPost` grava só no rascunho; `lerPost` e `listarPosts` leem
+os dois lugares, e o rascunho vence o publicado do mesmo slug, com a `situacao`
+de cada um (`publicado`, `so-rascunho`, `com-alteracoes`), que a lista mostra
+("ainda não publicado", "alterações não publicadas"); as imagens da importação,
+as coladas e a capa vão para a pasta do rascunho; o `.gitignore` ignora
+`app/rascunhos/`. O módulo novo `posts/rascunhos.ts` copia o rascunho (o `.md` e
+a pasta de imagens) para `src/content/posts/` e sabe desfazer a cópia,
+devolvendo o que sobrescreveu. O `publicarPost` agora faz: `pull --rebase`,
+copia o rascunho, gate, `add` seletivo, commit, push e apaga o rascunho. O
+`pull` passou para antes da cópia porque o `git pull --rebase` recusa uma árvore
+com arquivo rastreado modificado, e editar um post publicado modifica um. Se o
+gate, o `add` ou o commit falham, a cópia é desfeita (e o stage, se for o caso)
+e o rascunho fica intacto; se o push falha, o commit e o rascunho ficam. Há uma
+etapa nova, `copiar`, para quando não existe rascunho nem post publicado.
+
+Medido, em 2026-10-26: a suíte do `app/` está em 99 testes passando (eram 78),
+21 deles novos, com `tsc` sem erro. Os novos cobrem a cópia e o desfazer
+(inclusive restaurar o que foi sobrescrito), a publicação com repositórios git
+reais em diretório temporário (arquivos do commit, rascunho apagado, falha do
+gate, edição de post publicado, falha do push), a importação (as imagens vão
+para o rascunho; o teste falha com o código antigo) e a regra do `.gitignore`
+real, com `git check-ignore`. Ponta a ponta, **numa cópia do repositório** com
+remoto local e sem tocar no GitHub nem no Notion, usando o gate de verdade
+(`astro check`, `prettier` e `build`): depois de importar uma imagem e de
+salvar, `git status` ficou limpo e `src/content/posts/` sem nada; o Publicar
+levou só `post-e2e.md` e a imagem num commit, o gate passou, o rascunho sumiu e
+a lista passou a marcar "publicado" (18 s).
+
+Não medido: o editor aberto na tela (a lista e a mensagem nova de "Salvo como
+rascunho"), o clique no botão, e uma publicação de verdade contra o GitHub e o
+Notion; Linux e macOS.
+
+Duas coisas que notei e não mexi. (1) `RAIZ_DO_BLOG` é calculado por `__dirname`
+e só dá a raiz no app empacotado (`dist-electron/principal`); com o código-fonte
+solto, como nos testes, dá `app/`; por isso os testes mockam o módulo
+`caminhos`. (2) O contador de imagens do editor (`contadorDeImagem`) volta a
+zero a cada abertura do app, então colar uma imagem num post já publicado pode
+gerar `imagem-01.webp` de novo e, no Publicar, sobrescrever a imagem publicada
+que tem esse nome (antes, a mesma colisão acontecia na hora de colar); virou
+task.

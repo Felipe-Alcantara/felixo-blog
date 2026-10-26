@@ -46,10 +46,17 @@ dados até você configurar (pela tela "Notion" dentro do app, ou editando o
 - **Mídia**: colar/arrastar imagem no editor (otimizada para webp,
   redimensionada); gerar a capa do post reaproveitando
   `scripts/gerar-og-image.py` do blog.
-- **Publicar**: roda o mesmo gate do CI (`npm run check` + `npm run build`
-  do blog), `git pull --rebase`, `git add` **só** dos arquivos daquele post
-  (nunca `-A` — o repositório recebe trabalho de mais de um agente/pessoa em
-  paralelo), commit `post: <título>` e push. Se o post veio do Notion, tenta
+- **Rascunhos**: tudo o que ainda não foi publicado (texto, imagens da
+  importação e coladas, capa) fica em `app/rascunhos/`, ignorada pelo git: o
+  repositório é público e o commit automático leva tudo o que está na árvore.
+  Abrir um post já publicado edita uma cópia ali; a lista mostra "ainda não
+  publicado" e "alterações não publicadas".
+- **Publicar**: `git pull --rebase`, copia o rascunho para `src/content/posts/`,
+  roda o mesmo gate do CI (`npm run check` + `npm run build` do blog), `git add`
+  **só** dos arquivos daquele post (nunca `-A` — o repositório recebe trabalho
+  de mais de um agente/pessoa em paralelo), commit `post: <título>`, push e
+  apaga o rascunho. Se o gate, o add ou o commit falham, a cópia é desfeita e o
+  rascunho fica. Se o post veio do Notion, tenta
   (best-effort, sem desfazer a publicação caso falhe) escrever a URL e o
   status de volta na página de origem. As colunas são achadas pelo conteúdo, e
   não pela posição: a `url` de nome "publicada" e a `select`/`status` que tem uma

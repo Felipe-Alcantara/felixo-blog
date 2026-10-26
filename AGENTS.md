@@ -75,9 +75,10 @@ diff limpo.
 - `rascunho: true` esconde o post apenas no build de produção; em `npm run dev`
   ele continua visível, e o arquivo commitado fica aberto no GitHub. Não use
   isso como controle de segredo: **post em rascunho, de teste ou futuro não é
-  commitado**. Rascunho vive só no Notion, e o arquivo entra aqui na hora de
-  publicar. O commit automático do Fetch All leva tudo o que está na árvore e
-  já levou rascunhos duas vezes; ver `IA.md`, registro de 2026-09-30.
+  commitado**. Rascunho vive só no Notion e, no Felixo Editor, em `app/rascunhos/`
+  (ignorada pelo git); o arquivo entra aqui na hora de publicar. O commit
+  automático do Fetch All leva tudo o que está na árvore e já levou rascunhos
+  duas vezes; ver `IA.md`, registro de 2026-09-30.
 - **Nunca escreva um link interno na mão** (`href="/tags"`). Hoje o site serve na
   raiz de `blog.felixo.com.br` e caminho absoluto até funcionaria, mas basta um
   `BASE_PATH` (preview em subpasta) para tudo quebrar de uma vez — CSS e
