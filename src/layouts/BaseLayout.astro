@@ -22,6 +22,12 @@ interface Props {
   imagemCapa?: { src: string; width: number; height: number };
   /** `false` tira do rodapé o número de acessos da página (ex.: a 404). */
   acessosDaPagina?: boolean;
+  /**
+   * Post cujo texto só existe em português (`PostLayout`): a cópia em inglês
+   * serve o seletor e a pergunta de idioma, mas não vira `hreflang`, que diria
+   * ao buscador que existe tradução. Sai daqui quando o post ganhar a dele.
+   */
+  semTraducao?: boolean;
 }
 
 // O idioma sai do caminho: tudo em `/en/` é inglês, o resto é português.
@@ -36,6 +42,7 @@ const {
   publicadoEm,
   imagemCapa,
   acessosDaPagina = true,
+  semTraducao = false,
 } = Astro.props;
 
 // No post o número da página já está no cabeçalho (`AcessosDoPost`), então o
@@ -51,7 +58,7 @@ const equivalentes = {
   pt: paginaEquivalente(atual, 'pt'),
   en: paginaEquivalente(atual, 'en'),
 };
-const temOsDois = Boolean(equivalentes.pt && equivalentes.en);
+const temOsDois = Boolean(equivalentes.pt && equivalentes.en) && !semTraducao;
 const absoluta = (rota: string) => new URL(caminho(rota), Astro.site ?? SITE.url);
 
 // Quem já escolheu inglês e abre a home em português vai direto para `/en/`.

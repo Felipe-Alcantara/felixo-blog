@@ -34,6 +34,25 @@ export async function listarTags(): Promise<{ nome: string; total: number }[]> {
     .sort((a, b) => b.total - a.total || a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 
+/** Os posts de cada tag, pelo slug da tag: uma página de tag por entrada, nos dois idiomas. */
+export async function agruparPorTag(): Promise<
+  { slug: string; nome: string; posts: Post[] }[]
+> {
+  const posts = await listarPosts();
+  const porTag = new Map<string, { slug: string; nome: string; posts: Post[] }>();
+
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const slug = slugDaTag(tag);
+      const grupo = porTag.get(slug) ?? { slug, nome: tag, posts: [] };
+      grupo.posts.push(post);
+      porTag.set(slug, grupo);
+    }
+  }
+
+  return [...porTag.values()];
+}
+
 /** Converte uma tag em slug de URL (`Boas Práticas` → `boas-praticas`). */
 export function slugDaTag(tag: string): string {
   return tag

@@ -40,6 +40,7 @@ histórico de decisões.
 | Gatinho do cabeçalho (hover e foco)           | `GatinhoDoCabecalho.astro` (usa os `@keyframes` do `Abertura.astro`)                               |
 | Botão "Pausar animações" do rodapé            | `PausarAnimacoes.astro`, `CHAVE_ANIMACOES` em `src/config/animacoes.ts`, fim de `global.css`       |
 | Home (as duas versões: `/` e `/en/`)          | `src/components/PaginaInicial.astro`                                                               |
+| Tags e Sobre (as duas versões)                | `PaginaDeTags.astro`, `PaginaDaTag.astro`, `PaginaSobre.astro`; o post em inglês: `src/pages/en/`  |
 | Redes do dono na home (ícones e endereços)    | `Redes.astro`, `REDES` em `src/config/site.ts`, `Icone.astro`                                      |
 | Campo de texto (busca da home, e-mail)        | `.felixo-campo` em `src/styles/global.css`                                                         |
 | Cores, fontes, tipografia do corpo do post    | `src/styles/global.css`                                                                            |
@@ -88,10 +89,12 @@ diff limpo.
 - **Dois idiomas**: português na raiz, inglês em `/en/`. Texto de interface
   não fica solto na página: vai em `TEXTOS` de `src/config/idiomas.ts`, nos
   dois idiomas. Página nova em inglês entra em `src/pages/en/` **e** em
-  `PAGINAS_EM_INGLES`; sem isso, o seletor PT | EN leva para a home e a
-  pergunta da primeira visita não troca de página. Post só ganha versão em
-  inglês depois de completo em português, e a tradução passa pela revisão do
-  dono.
+  `paginaEquivalente` (mesmo nome com o prefixo `/en` para home, tags e posts;
+  nome diferente em `NOMES_EM_INGLES`); sem isso, o seletor PT | EN leva para a
+  home e a pergunta da primeira visita não troca de página. Todo post tem
+  `/en/posts/<post>/`, a cópia com a interface em inglês, o texto em português
+  e um aviso, sem `hreflang` (`semTraducao` do `BaseLayout`). A tradução de um
+  post só entra depois dele completo em português e passa pela revisão do dono.
 - Trocar de domínio é mexer nas constantes `SITE`/`BASE` no topo de
   `astro.config.mjs` (ou nas variáveis `SITE_URL`/`BASE_PATH`), no
   `public/CNAME` e em `SITE.url` de `src/config/site.ts`. Ver a seção Deploy do

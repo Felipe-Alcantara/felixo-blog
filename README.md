@@ -183,6 +183,10 @@ navegador não é oferecida. Assinantes e estatísticas ficam no painel do feed
 - `/posts/<slug>/` — post individual, com tempo de leitura e tags
 - `/tags/` e `/tags/<slug>/` — índice e listagem por assunto
 - `/sobre` — página institucional
+- `/en/`, `/en/tags/`, `/en/tags/<slug>/`, `/en/about/` — as mesmas páginas com a
+  interface em inglês
+- `/en/posts/<slug>/` — o post com a interface em inglês e o texto em português,
+  com um aviso, até ele ganhar tradução
 - `/rss.xml` — feed RSS
 - `/sitemap-index.xml` — sitemap para buscadores
 - `/404` — página de erro

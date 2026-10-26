@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import { caminho, caminhoSemBase } from '../utils/rotas';
-import { idiomaDoCaminho } from '../config/idiomas';
+import { TEXTOS, idiomaDoCaminho } from '../config/idiomas';
 import { GOATCOUNTER } from '../config/site';
 import BaseLayout from './BaseLayout.astro';
 import AcessosDoPost from '../components/AcessosDoPost.astro';
@@ -22,6 +22,10 @@ const { post, corpo } = Astro.props;
 const { titulo, descricao, publicadoEm, atualizadoEm, tags, capa } = post.data;
 const minutos = tempoDeLeitura(corpo);
 const idioma = idiomaDoCaminho(caminhoSemBase(Astro.url));
+const textos = TEXTOS[idioma];
+// Os posts só existem em português: em `/en/` a página é a cópia com a
+// interface em inglês, o texto em português e um aviso.
+const copiaEmIngles = idioma === 'en';
 
 // Capa em tamanho de cartão Open Graph (1200×630) — mesma proporção do
 // cartão genérico gerado por `scripts/gerar-og-image.py`.
@@ -39,25 +43,43 @@ const imagemCapa = capaOtimizada
   tipoOG="article"
   publicadoEm={publicadoEm}
   imagemCapa={imagemCapa}
+  semTraducao
 >
-  <article>
+  {
+    copiaEmIngles && (
+      <p
+        role="note"
+        class="mb-8 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-300"
+      >
+        {textos.post.avisoSoPortugues}
+      </p>
+    )
+  }
+
+  <article lang={copiaEmIngles ? 'pt-BR' : undefined}>
     <header class="border-b border-white/5 pb-8">
       <h1 class="felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl">
         {titulo}
       </h1>
       <p class="mt-3 text-lg leading-relaxed text-zinc-400">{descricao}</p>
 
-      <div class="mt-5 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+      <div
+        lang={textos.lang}
+        class="mt-5 flex flex-wrap items-center gap-3 text-sm text-zinc-400"
+      >
         <time datetime={formatarDataISO(publicadoEm)}>
-          {formatarDataLonga(publicadoEm)}
+          {formatarDataLonga(publicadoEm, textos.localeDatas)}
         </time>
         <span aria-hidden="true">·</span>
-        <span>{minutos} min de leitura</span>
+        <span>{minutos} {textos.post.minLeitura}</span>
         {
           atualizadoEm && (
             <>
               <span aria-hidden="true">·</span>
-              <span>atualizado em {formatarDataLonga(atualizadoEm)}</span>
+              <span>
+                {textos.post.atualizadoEm}{' '}
+                {formatarDataLonga(atualizadoEm, textos.localeDatas)}
+              </span>
             </>
           )
         }
@@ -69,7 +91,7 @@ const imagemCapa = capaOtimizada
           <ul class="mt-4 flex flex-wrap gap-2">
             {tags.map((tag) => (
               <li>
-                <Etiqueta tag={tag} />
+                <Etiqueta tag={tag} idioma={idioma} />
               </li>
             ))}
           </ul>
@@ -85,15 +107,15 @@ const imagemCapa = capaOtimizada
   <BotaoAssinatura idioma={idioma} variante="chamada" class="mt-16" />
 
   <div>
-    <Comentarios />
+    <Comentarios idioma={idioma} />
 
     <nav class="mt-16 border-t border-white/5 pt-6 text-sm">
       <a
-        href={caminho('/')}
+        href={caminho(copiaEmIngles ? '/en/' : '/')}
         class="inline-flex items-center gap-2 text-felixo-purple underline decoration-purple-400/35 underline-offset-4 transition hover:text-white"
       >
         <Icone nome="seta-esquerda" />
-        <span>Voltar para todos os posts</span>
+        <span>{textos.post.voltar}</span>
       </a>
     </nav>
   </div>

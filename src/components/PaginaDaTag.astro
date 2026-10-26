@@ -1,0 +1,53 @@
+---
+/**
+ * Página de uma tag, a mesma nos dois idiomas: `src/pages/tags/[tag].astro`
+ * (português) e `src/pages/en/tags/[tag].astro` (inglês) só escolhem o idioma.
+ */
+import { caminho } from '../utils/rotas';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ItemPost from './ItemPost.astro';
+import Icone from './Icone.astro';
+import { TEXTOS, type Idioma } from '../config/idiomas';
+import { type Post } from '../utils/posts';
+
+interface Props {
+  idioma: Idioma;
+  nome: string;
+  posts: Post[];
+}
+
+const { idioma, nome, posts } = Astro.props;
+const textos = TEXTOS[idioma].tags;
+const prefixo = idioma === 'en' ? '/en' : '';
+const rotuloQuantidade = `${posts.length} ${posts.length === 1 ? textos.post.singular : textos.post.plural}`;
+---
+
+<BaseLayout titulo={`Tag: ${nome}`} descricao={`${textos.postsSobre} ${nome}.`}>
+  <h1
+    lang={idioma === 'en' ? 'pt-BR' : undefined}
+    class="felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl"
+  >
+    {nome}
+  </h1>
+  <p class="mt-3 text-zinc-400">{rotuloQuantidade}</p>
+
+  <ul class="mt-10 space-y-9">
+    {
+      posts.map((post) => (
+        <li>
+          <ItemPost post={post} nivelTitulo="h2" idioma={idioma} />
+        </li>
+      ))
+    }
+  </ul>
+
+  <nav class="mt-12 text-sm">
+    <a
+      href={caminho(`${prefixo}/tags`)}
+      class="inline-flex items-center gap-2 text-felixo-purple transition hover:text-white"
+    >
+      <Icone nome="seta-esquerda" />
+      <span>{textos.todas}</span>
+    </a>
+  </nav>
+</BaseLayout>

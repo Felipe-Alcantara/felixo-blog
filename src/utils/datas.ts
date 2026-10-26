@@ -1,6 +1,9 @@
-/** Formata uma data no padrão brasileiro por extenso (ex.: "31 de julho de 2026"). */
-export function formatarDataLonga(data: Date): string {
-  return new Intl.DateTimeFormat('pt-BR', {
+/**
+ * Formata uma data por extenso, no padrão brasileiro por padrão (ex.: "31 de
+ * julho de 2026", ou "31 July 2026" em `en-GB`).
+ */
+export function formatarDataLonga(data: Date, locale = 'pt-BR'): string {
+  return new Intl.DateTimeFormat(locale, {
     day: '2-digit',
     month: 'long',
     year: 'numeric',

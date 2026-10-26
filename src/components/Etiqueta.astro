@@ -10,16 +10,21 @@
  */
 import { caminho } from '../utils/rotas';
 import { slugDaTag } from '../utils/posts';
+import type { Idioma } from '../config/idiomas';
 
 interface Props {
   tag: string;
+  /** Idioma da página: leva à página da tag nesse idioma. O nome da tag é sempre em português. */
+  idioma?: Idioma;
 }
 
-const { tag } = Astro.props;
+const { tag, idioma = 'pt' } = Astro.props;
+const prefixo = idioma === 'en' ? '/en' : '';
 ---
 
 <a
-  href={caminho(`/tags/${slugDaTag(tag)}/`)}
+  href={caminho(`${prefixo}/tags/${slugDaTag(tag)}/`)}
+  lang={idioma === 'en' ? 'pt-BR' : undefined}
   class="inline-block rounded-full border border-purple-500/25 bg-purple-500/10 px-2.5 py-0.5 text-xs font-medium text-felixo-purple transition hover:border-purple-400/50 hover:bg-purple-500/20"
 >
   {tag}

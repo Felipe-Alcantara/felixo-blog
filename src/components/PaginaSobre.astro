@@ -1,0 +1,70 @@
+---
+/**
+ * Página Sobre, a mesma nos dois idiomas: `src/pages/sobre.astro` (português) e
+ * `src/pages/en/about.astro` (inglês) só escolhem o idioma. O texto é o da
+ * apresentação da home (`TEXTOS.<idioma>.home.apresentacao`), do dono.
+ */
+import { caminho } from '../utils/rotas';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BotaoAssinatura from './BotaoAssinatura.astro';
+import { TEXTOS, type Idioma } from '../config/idiomas';
+
+interface Props {
+  idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const textos = TEXTOS[idioma];
+---
+
+<BaseLayout titulo={textos.sobre.titulo} descricao={textos.sobre.descricao}>
+  <section class="grid items-start gap-8 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-10">
+    <!-- Foto sem halos de brilho nem moldura dupla: numa página sobre uma
+         pessoa, o retrato não precisa de efeito para chamar atenção. -->
+    <img
+      src={caminho('/imagens/foto-felipe.jpg')}
+      alt={textos.sobre.retrato}
+      width="720"
+      height="1089"
+      loading="eager"
+      decoding="async"
+      class="aspect-square w-40 rounded-2xl border border-white/10 object-cover object-top sm:w-full"
+    />
+
+    <div>
+      <h1 class="felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl">
+        {textos.sobre.titulo}
+      </h1>
+
+      <div class="conteudo-post mt-8">
+        <!-- Os mesmos parágrafos da home, ditados pelo dono (2026-10-26): o Sobre e a
+             home dizem a mesma coisa porque o texto é um só. -->
+        {textos.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
+
+        <h2>{textos.sobre.ondeMais}</h2>
+
+        <ul>
+          <li>
+            {textos.sobre.portfolio}: <a
+              href="https://felixo.com.br/"
+              target="_blank"
+              rel="noopener noreferrer">felixo.com.br</a
+            >
+          </li>
+          <li>
+            {textos.sobre.github}: <a
+              href="https://github.com/Felipe-Alcantara"
+              target="_blank"
+              rel="noopener noreferrer">@Felipe-Alcantara</a
+            >
+          </li>
+          <li>
+            {textos.sobre.rss}: <a href={caminho('/rss.xml')}>/rss.xml</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <BotaoAssinatura idioma={idioma} variante="chamada" class="mt-14" />
+</BaseLayout>

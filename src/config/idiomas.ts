@@ -3,9 +3,10 @@
  *
  * Todo texto da interface que muda de idioma mora aqui, para que traduzir
  * seja editar um arquivo só. O conteúdo dos posts continua só em português:
- * a versão em inglês de um post entra depois que ele estiver completo em
- * português (decisão do dono, 2026-09-30). Até lá, a home em inglês lista os
- * posts com o aviso de que estão em português.
+ * a tradução de um post entra depois que ele estiver completo em português
+ * (decisão do dono, 2026-09-30). Até lá, `/en/posts/<post>/` é a cópia com a
+ * interface em inglês, o texto em português e um aviso (decisão do dono,
+ * 2026-10-26), e as listas em inglês marcam cada post como "In Portuguese".
  */
 import { SITE } from './site';
 
@@ -15,13 +16,16 @@ export type Idioma = 'pt' | 'en';
 export const CHAVE_IDIOMA = 'felixo-blog:idioma';
 
 /**
- * Páginas que existem nos dois idiomas, pelo caminho em português. Uma página
- * fora desta lista existe só em português: o seletor PT | EN leva para a home
- * em inglês, e a pergunta da primeira visita não troca de página.
+ * Como uma página em português vira a página em inglês: a home, as tags e os
+ * posts ganham só o prefixo `/en`; as de nome diferente ficam neste mapa
+ * (caminho em português → em inglês). Uma página fora das duas regras existe
+ * só em português (a 404): o seletor PT | EN leva para a home do outro idioma,
+ * e a pergunta da primeira visita não troca de página.
  */
-const PAGINAS_EM_INGLES: Record<string, string> = {
-  '/': '/en/',
+const NOMES_EM_INGLES: Record<string, string> = {
+  '/sobre/': '/en/about/',
 };
+const SO_COM_PREFIXO = /^\/(tags|posts)\//;
 
 type Link = { rotulo: string; href: string };
 
@@ -73,6 +77,38 @@ export const TEXTOS = {
     },
     /** Selo para post que não está no idioma da página. */
     postEmOutroIdioma: '',
+    /** Página do post (`PostLayout.astro`); o aviso só aparece na cópia em inglês. */
+    post: {
+      minLeitura: 'min de leitura',
+      atualizadoEm: 'atualizado em',
+      voltar: 'Voltar para todos os posts',
+      avisoSoPortugues: '',
+    },
+    comentarios: {
+      titulo: 'Comentários',
+      antes: 'Os comentários usam sua conta do GitHub e ficam salvos como uma',
+      link: 'Discussion pública do repositório',
+      semJs:
+        'Ative o JavaScript para ver e deixar comentários (via giscus/GitHub Discussions).',
+    },
+    tags: {
+      titulo: 'Tags',
+      chamada: 'Navegue pelos assuntos do blog.',
+      descricao: 'Todos os assuntos abordados no blog do Felixo.',
+      nenhuma: 'Nenhuma tag ainda.',
+      todas: 'Todas as tags',
+      postsSobre: 'Posts do blog do Felixo sobre',
+      post: { singular: 'post', plural: 'posts' },
+    },
+    sobre: {
+      titulo: 'Sobre',
+      descricao: `Sobre ${SITE.autor} e o ${SITE.titulo}.`,
+      retrato: `Retrato de ${SITE.autor}`,
+      ondeMais: 'Onde mais me encontrar',
+      portfolio: 'Portfólio',
+      github: 'GitHub',
+      rss: 'Feed RSS',
+    },
     /**
      * Número de acessos no cabeçalho do post (ver `AcessosDoPost.astro`).
      * `indisponivel` aparece quando a leitura do contador falha.
@@ -123,8 +159,11 @@ export const TEXTOS = {
     pularParaConteudo: 'Skip to content',
     navegacaoPrincipal: 'Main navigation',
     seletorIdioma: 'Language',
-    // Tags e Sobre ainda não existem em inglês; entram junto com os posts.
-    navegacao: [{ rotulo: 'Posts', href: '/en/' }] as Link[],
+    navegacao: [
+      { rotulo: 'Posts', href: '/en/' },
+      { rotulo: 'Tags', href: '/en/tags' },
+      { rotulo: 'About', href: '/en/about' },
+    ] as Link[],
     linksExternos: [
       { rotulo: 'Portfolio', href: 'https://felixo.com.br/' },
       { rotulo: 'GitHub', href: 'https://github.com/Felipe-Alcantara' },
@@ -156,6 +195,37 @@ export const TEXTOS = {
       nenhumResultado: 'No posts found.',
     },
     postEmOutroIdioma: 'In Portuguese',
+    post: {
+      minLeitura: 'min read',
+      atualizadoEm: 'updated',
+      voltar: 'Back to all posts',
+      avisoSoPortugues: 'This post is only available in Portuguese for now.',
+    },
+    comentarios: {
+      titulo: 'Comments',
+      antes: 'Comments use your GitHub account and are saved as a',
+      link: 'public Discussion in the repository',
+      semJs:
+        'Enable JavaScript to see and leave comments (via giscus/GitHub Discussions).',
+    },
+    tags: {
+      titulo: 'Tags',
+      chamada: "Browse the blog's topics.",
+      descricao: "All the topics covered on Felixo's blog.",
+      nenhuma: 'No tags yet.',
+      todas: 'All tags',
+      postsSobre: "Posts from Felixo's blog about",
+      post: { singular: 'post', plural: 'posts' },
+    },
+    sobre: {
+      titulo: 'About',
+      descricao: `About ${SITE.autor} and Felixo's Blog.`,
+      retrato: `Portrait of ${SITE.autor}`,
+      ondeMais: 'Where else to find me',
+      portfolio: 'Portfolio',
+      github: 'GitHub',
+      rss: 'RSS feed',
+    },
     acessos: {
       singular: 'view',
       plural: 'views',
@@ -206,8 +276,17 @@ export function paginaEquivalente(
 ): string | undefined {
   const atual = normalizar(caminhoSemBase);
   if (idiomaDoCaminho(atual) === alvo) return atual;
-  if (alvo === 'en') return PAGINAS_EM_INGLES[atual];
-  return Object.entries(PAGINAS_EM_INGLES).find(([, en]) => en === atual)?.[0];
+  if (alvo === 'en') {
+    return atual === '/' || SO_COM_PREFIXO.test(atual)
+      ? `/en${atual}`
+      : NOMES_EM_INGLES[atual];
+  }
+  const nomeEmPortugues = Object.entries(NOMES_EM_INGLES).find(
+    ([, en]) => en === atual,
+  )?.[0];
+  if (nomeEmPortugues) return nomeEmPortugues;
+  const semPrefixo = atual.slice('/en'.length);
+  return semPrefixo === '/' || SO_COM_PREFIXO.test(semPrefixo) ? semPrefixo : undefined;
 }
 
 /** Para o seletor PT | EN: a página equivalente ou, se não houver, a home do idioma. */

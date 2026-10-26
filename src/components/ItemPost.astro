@@ -48,7 +48,7 @@ const Titulo = nivelTitulo;
   <div>
     <Titulo class="text-lg font-semibold leading-snug">
       <a
-        href={caminho(`/posts/${post.id}/`)}
+        href={caminho(`${idioma === 'en' ? '/en' : ''}/posts/${post.id}/`)}
         class="text-zinc-100 underline decoration-purple-400/35 decoration-1 underline-offset-[5px] transition after:absolute after:-inset-x-3 after:-inset-y-3.5 group-hover:text-white group-hover:decoration-felixo-purple"
       >
         {titulo}
@@ -70,7 +70,7 @@ const Titulo = nivelTitulo;
           )}
           {tags.map((tag) => (
             <li class="pointer-events-auto">
-              <Etiqueta tag={tag} />
+              <Etiqueta tag={tag} idioma={idioma} />
             </li>
           ))}
         </ul>

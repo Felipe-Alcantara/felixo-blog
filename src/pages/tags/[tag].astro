@@ -1,29 +1,13 @@
 ---
-import { caminho } from '../../utils/rotas';
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ItemPost from '../../components/ItemPost.astro';
-import Icone from '../../components/Icone.astro';
-import { listarPosts, slugDaTag, type Post } from '../../utils/posts';
+import PaginaDaTag from '../../components/PaginaDaTag.astro';
+import { agruparPorTag, type Post } from '../../utils/posts';
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await listarPosts();
-  const porTag = new Map<string, { nome: string; posts: Post[] }>();
-
-  for (const post of posts) {
-    for (const tag of post.data.tags) {
-      const slug = slugDaTag(tag);
-      const grupo = porTag.get(slug) ?? { nome: tag, posts: [] };
-      grupo.posts.push(post);
-      porTag.set(slug, grupo);
-    }
-  }
-
-  return [...porTag.entries()].map(([slug, grupo]) => ({
+export const getStaticPaths: GetStaticPaths = async () =>
+  (await agruparPorTag()).map(({ slug, nome, posts }) => ({
     params: { tag: slug },
-    props: grupo,
+    props: { nome, posts },
   }));
-};
 
 interface Props {
   nome: string;
@@ -31,30 +15,6 @@ interface Props {
 }
 
 const { nome, posts } = Astro.props as Props;
-const rotuloQuantidade = `${posts.length} ${posts.length === 1 ? 'post' : 'posts'}`;
 ---
 
-<BaseLayout titulo={`Tag: ${nome}`} descricao={`Posts do blog do Felixo sobre ${nome}.`}>
-  <h1 class="felixo-text-glow text-3xl font-bold leading-tight sm:text-4xl">{nome}</h1>
-  <p class="mt-3 text-zinc-400">{rotuloQuantidade}</p>
-
-  <ul class="mt-10 space-y-9">
-    {
-      posts.map((post) => (
-        <li>
-          <ItemPost post={post} nivelTitulo="h2" />
-        </li>
-      ))
-    }
-  </ul>
-
-  <nav class="mt-12 text-sm">
-    <a
-      href={caminho('/tags')}
-      class="inline-flex items-center gap-2 text-felixo-purple transition hover:text-white"
-    >
-      <Icone nome="seta-esquerda" />
-      <span>Todas as tags</span>
-    </a>
-  </nav>
-</BaseLayout>
+<PaginaDaTag idioma="pt" nome={nome} posts={posts} />
