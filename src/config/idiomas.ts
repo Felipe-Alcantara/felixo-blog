@@ -119,7 +119,7 @@ export const TEXTOS = {
     localeDatas: 'en-GB',
     tituloSite: "Felixo's Blog",
     descricao:
-      "Here I write about my story and what I've been building and learning along the way.",
+      "Here, I write about my story, what I've learned along the way, and what I've been building in the meantime.",
     pularParaConteudo: 'Skip to content',
     navegacaoPrincipal: 'Main navigation',
     seletorIdioma: 'Language',
@@ -133,13 +133,13 @@ export const TEXTOS = {
     feitoCom: 'Made with Astro.',
     home: {
       titulo: "Hi, I'm Felixo!",
-      // Tradução do texto do dono, para ele revisar.
+      // Tradução do texto do dono, revisada por ele em 2026-10-26.
       apresentacao: [
         "I'm a developer, AI engineer and audio engineer.",
         "I'm the creator of a few Brazilian startups, an enthusiast of creative assets like blogs, videos and content production, and I spend most of my time studying Artificial Intelligence.",
-        "Here, I write about my story, what I've learned along the way, and what I've been building in the meantime. Here, you won't find just news, much less tutorials: it's my take on the field and how my learning got me to where I am today. And I'd like to pass it on and record my take and everything I saw along the way, and I decided to make all of this public!",
+        "Here, I write about my story, what I've learned along the way, and what I've been building in the meantime. Here, you won't find just news, much less tutorials. It's my take on the industry and how my learning got me to where I am today. And I'd like to share it and record my take and everything I saw along the way, and I decided to make all of this public!",
       ],
-      minhasRedes: 'My social networks',
+      minhasRedes: 'My socials',
       redes: {
         email: 'Email',
         github: 'GitHub',
