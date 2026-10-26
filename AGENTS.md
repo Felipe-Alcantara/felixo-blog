@@ -18,7 +18,9 @@ histórico de decisões.
   prefira HTML/CSS primeiro.
 - **Acessibilidade é obrigatória**: contraste AA, foco visível, `aria-current` na
   navegação, link de pular para o conteúdo, `prefers-reduced-motion` respeitado.
-  Não regrida nenhum desses pontos.
+  Animação que se repete sozinha por mais de 5 s (WCAG 2.2.2) para com "reduzir
+  movimento" e com o botão "Pausar animações" do rodapé: o seletor entra nas duas
+  listas no fim de `src/styles/global.css`. Não regrida nenhum desses pontos.
 - **O texto do post é do Felipe.** Antes de escrever ou revisar conteúdo, leia
   [`LINGUAGEM-NATURAL.md`](LINGUAGEM-NATURAL.md): a IA corrige e pergunta, não
   reescreve com palavras "mais bonitas" nem inventa o que ele não disse.
@@ -35,6 +37,8 @@ histórico de decisões.
 | Textos da interface, navegação, rodapé, PT/EN | `src/config/idiomas.ts`                                                                            |
 | Pergunta de idioma da primeira visita         | `src/components/EscolhaDeIdioma.astro`                                                             |
 | Abertura com o gatinho (a cada carregamento)  | `src/components/Abertura.astro`                                                                    |
+| Gatinho do cabeçalho (hover e foco)           | `GatinhoDoCabecalho.astro` (usa os `@keyframes` do `Abertura.astro`)                               |
+| Botão "Pausar animações" do rodapé            | `PausarAnimacoes.astro`, `CHAVE_ANIMACOES` em `src/config/animacoes.ts`, fim de `global.css`       |
 | Home (as duas versões: `/` e `/en/`)          | `src/components/PaginaInicial.astro`                                                               |
 | Redes do dono na home (ícones e endereços)    | `Redes.astro`, `REDES` em `src/config/site.ts`, `Icone.astro`                                      |
 | Cores, fontes, tipografia do corpo do post    | `src/styles/global.css`                                                                            |

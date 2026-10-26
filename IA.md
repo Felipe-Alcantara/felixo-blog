@@ -24,8 +24,8 @@
   menu — não entra no bundle do site.
 - **JavaScript no cliente**: o site **não é "zero JS"**. Cada script abaixo
   existe de propósito; quem for mexer não deve removê-los por estranhamento. O que
-  dá para fazer só com HTML/CSS continua sem script: a abertura do gatinho, o
-  ícone do cabeçalho e abrir/fechar a janela de assinatura (`popover` nativo).
+  dá para fazer só com HTML/CSS continua sem script: a abertura do gatinho e
+  abrir/fechar a janela de assinatura (`popover` nativo).
   - `Comentarios.astro`: script do giscus (terceiro), os comentários.
   - `ContagemDeAcessos.astro`: `count.js` do GoatCounter (terceiro), em toda
     página, só no build de produção; pixel em `<noscript>` para quem está sem
@@ -41,6 +41,12 @@
   - `Assinatura.astro`: só a forma da animação da janela de assinatura, que cresce
     a partir do botão (a do modal do portfólio). Sem JavaScript a janela abre só
     com o esmaecimento.
+  - `GatinhoDoCabecalho.astro`: o gatinho do cabeçalho (SVG inline), parado; o
+    script dá 3 piscadas completas quando o mouse ou o foco do teclado chega no
+    nome do blog (2026-10-26).
+  - `PausarAnimacoes.astro` e o script inline do `<head>` do `BaseLayout`: o botão
+    "Pausar animações" do rodapé (`data-animacoes="pausadas"` no `<html>`, escolha
+    no `localStorage`) e o atributo devolvido antes da primeira pintura.
   - `PaginaInicial.astro`: o filtro da barra de pesquisa de posts.
 - **Dois idiomas** (2026-09-30): português na raiz, inglês em `/en/`. Texto de
   interface em `TEXTOS` de `src/config/idiomas.ts`; `PAGINAS_EM_INGLES` hoje só
@@ -54,9 +60,14 @@
   (cerca de 2 s) a cada carregamento. É só CSS, decorativa (`aria-hidden`) e some
   com "reduzir movimento" e na impressão. Limite conhecido: voltar pelo histórico
   pode restaurar a página do cache (bfcache) e a abertura não repete. O ícone do
-  cabeçalho é o mesmo gatinho em loop, `public/imagens/gatinho-piscando-headbang.svg`
-  usado como `<img>`; o `logo-felixo.png` continua no repositório porque o
-  `scripts/gerar-og-image.py` usa ele.
+  cabeçalho é o mesmo gatinho, parado, com 3 piscadas quando o mouse ou o foco do
+  teclado chega (cópia inline em `GatinhoDoCabecalho.astro`; o SVG original
+  continua em `public/imagens/gatinho-piscando-headbang.svg`, sem retoque). As
+  animações que se repetem sozinhas (partículas e brilho do fundo, brilho dos
+  títulos e dos ícones das redes) param com "reduzir movimento" e com o botão
+  "Pausar animações" do rodapé (WCAG 2.2.2, registro de 2026-10-26). O
+  `logo-felixo.png` continua no repositório porque o `scripts/gerar-og-image.py`
+  usa ele.
 - **Home e layout** (2026-09-30 a 2026-10-22): sem caixas. Lista de posts em
   coluna única (`max-w-3xl`), cada `ItemPost` inteiro clicável, brilho só no hover
   e no foco, títulos com gradiente e botões em pílula como no felixo.com.br. A
@@ -1958,3 +1969,120 @@ Não medido:
 - O `skipgc` (`localStorage.setItem('skipgc', 't')`, que o dono pode ligar nos
   navegadores sem bloqueador para não contar as próprias visitas) não foi
   aplicado.
+
+[2026-10-26] **Gatinho do cabeçalho só com mouse ou teclado, e botão "Pausar
+animações".** Decisão do dono sobre a pendência de acessibilidade aberta em
+2026-10-16. A regra 2.2.2 do WCAG (nível A) pede um jeito de pausar, parar ou
+esconder animação que começa sozinha, passa de 5 s e aparece junto com outro
+conteúdo. O gatinho do cabeçalho (`<img>` com o SVG do dono) piscava a cada 3,5
+s para sempre. Era uma decisão de produto: o loop é charme da marca, e eu não
+decidi sozinho.
+
+Perguntas e respostas (as opções que não foram escolhidas estão entre
+parênteses):
+
+- O que o gatinho do cabeçalho deve fazer? **Piscar só com mouse ou teclado em
+  cima** (parar depois de algumas piscadas, que era a recomendada; manter o
+  loop; ficar sempre parado).
+- Quantas piscadas? **3 piscadas**, e, na segunda rodada, **3 completas mesmo se
+  o mouse sair** (e não só enquanto o mouse estiver em cima).
+- Posso editar o SVG do dono? **Fazer uma cópia só para o cabeçalho**; o
+  original continua intocado em `public/imagens/`.
+- As outras animações infinitas entram? **Revisar todas agora, nesta mesma
+  task**; e como atender a regra? **Botão "Pausar animações" no rodapé** (que as
+  animações parem sozinhas depois de uns 5 s, ou deixar como estão).
+
+O que a investigação mediu, no site publicado (Chrome 156, amostrando o ícone a
+cada ~100 ms): o gatinho piscava a cada 3,5 s; a primeira piscada, a ~0,6 s,
+acontecia atrás da camada de abertura e ninguém a via, a primeira visível
+começava a ~4,1 s. O CSS global tem outras quatro animações infinitas que também
+passam de 5 s: as partículas do fundo (20 s), o brilho do fundo (18 s), o brilho
+dos títulos (7,5 s) e o brilho dos ícones das redes (5,5 s), mais o pulso do
+item de post no hover (3 s). Achado no caminho: com "reduzir movimento" o brilho
+dos títulos continuava com uma animação `running`, infinita, de 0,01 ms, e a
+posição do gradiente saiu diferente em 2 de 30 quadros (um tremor ocasional,
+justamente para quem pediu menos movimento); o pulso do item de post no hover
+tem a mesma configuração (infinito, só com a duração zerada), que eu li no CSS e
+não medi.
+
+Como ficou:
+
+- `GatinhoDoCabecalho.astro` (novo): cópia inline do desenho, com o `id` do
+  gradiente renomeado (`gatinho-rosa-cabecalho`, para não repetir o
+  `gatinho-rosa` da abertura). Fica parado; um script dá 3 ciclos de 3,5 s (a
+  piscadinha nos primeiros 40% de cada um) quando o mouse ou o foco de teclado
+  chega no nome do blog, e termina mesmo que o mouse saia. No toque o gatinho
+  fica parado (o gesto já leva para a home), e também com "reduzir movimento" e
+  com o botão ligado. Os `@keyframes` `gatinho-*` são os do `Abertura.astro`,
+  que está em toda página; renomear lá exige mexer aqui.
+- `PausarAnimacoes.astro` (novo) no rodapé, entre RSS e E-mail: "Pausar
+  animações" / "Retomar animações" (e "Pause animations" / "Resume animations"
+  em inglês). Põe `data-animacoes="pausadas"` no `<html>` e guarda a escolha no
+  `localStorage` (`CHAVE_ANIMACOES`, em `src/config/animacoes.ts`); um script
+  inline no `<head>` do `BaseLayout` devolve o atributo antes da primeira
+  pintura, para a abertura nem começar em quem já pausou. Fica escondido sem
+  JavaScript e com "reduzir movimento" no sistema (as animações já estão
+  paradas).
+- `global.css`: duas listas de seletores iguais, a de "reduzir movimento" e a do
+  atributo, com `animation: none` nas partículas e no brilho do fundo, nos
+  títulos, nos ícones das redes e no pulso do item de post (no repouso, o título
+  fica no quadro de repouso e o item de post, com o contorno estático). Quem
+  criar uma animação infinita nova põe o seletor nas duas. Isso também tirou o
+  tremor de 0,01 ms. A abertura some com o atributo, como some com "reduzir
+  movimento".
+- `Cabecalho.astro` passou a usar o componente novo; `AGENTS.md` ganhou a regra
+  e as linhas na tabela.
+
+Validado (build local servido em 127.0.0.1; Chrome 156, Firefox 157, WebKit 27.2
+e Pixel 7 e iPhone 15 emulados):
+
+- Em repouso o gatinho não se mexe: 0 piscadas em 7 s (317 a 333 quadros do
+  ícone).
+- Com o mouse em cima, as animações do gatinho rodam de ~0,05 s a 10,5 s, com a
+  terceira iteração alcançada (Chrome, Firefox 10,507 s, WebKit 10,461 s). Se o
+  mouse sai em 1 s, termina igual, em 10,5 s. Os quadros do meio das piscadas
+  diferem do repouso (olho fechado em arco, cabeça inclinada), as pausas voltam
+  ao mesmo quadro, e depois do fim o ícone volta exatamente ao quadro de
+  repouso, sem animação sobrando. Tab até a marca também pisca (Chrome e
+  Firefox).
+- "Reduzir movimento": 0 animações no ícone com hover e com Tab, o recorte
+  idêntico ao repouso em 25 quadros, e o botão escondido. Toque (evento `touch`)
+  não pisca.
+- Botão: para as partículas, o brilho do fundo, o brilho dos títulos e, na home,
+  os 5 ícones das redes (de `running` para 0 animações); o atributo e a chave
+  ficam gravados; depois de recarregar o atributo já está lá e a abertura fica
+  em `display: none`; "Retomar" devolve todas as animações e apaga a chave.
+  Enter e Espaço alternam, o contorno de foco é de 2 px, o nome acessível é o
+  texto visível e não há `id` duplicado na página. Nos três motores o
+  comportamento foi o mesmo (no iPhone emulado, por toque).
+- Regressão: a conferência da abertura e da pergunta de idioma de hoje deu os
+  mesmos números no build novo (camada some em 2,2 a 2,5 s, fundo da pergunta 16
+  a 92 ms depois do começo da saída da camada, pergunta fecha em 256 a 414 ms,
+  Esc, "reduzir movimento", recarga, cinco ícones das redes).
+- `npm run check`: 0 erros, 0 avisos, 0 dicas (37 arquivos); `npm run build`: 8
+  páginas; ensaio do CI com Node 22.23.3 numa cópia limpa: `astro check` e
+  `astro build` passaram.
+- Produção (deploy 40274734528, do commit `86aa9ad`): o HTML traz o botão e
+  o gatinho inline com os dois `id` de gradiente distintos, as seis URLs
+  conferidas respondem 200, e o mesmo roteiro rodou no site publicado com os
+  mesmos resultados: 0 piscadas em repouso; animações do gatinho de ~0,04 a
+  10,5 s com a terceira iteração alcançada, inclusive com o mouse saindo em 1 s;
+  foco de teclado pisca; "reduzir movimento" esconde o botão; o botão para,
+  lembra, esconde a abertura depois de recarregar e retoma; "Pause animations"
+  em inglês.
+
+Limites e o que não foi medido:
+
+- No Safari, `Tab` pula os links (só para em botões, a menos que a opção
+  "Pressione Tab para realçar cada item" esteja ligada ou se use Option+Tab): lá
+  o gatinho só pisca pelo teclado nesses casos. Vale para qualquer link do site.
+  O botão de pausa, sendo botão, é alcançável.
+- No celular o gatinho não pisca (o toque já leva para a home). Safari e Chrome
+  de aparelho de verdade não foram testados (só emulação).
+- Sem `localStorage` (aba anônima com bloqueio), a pausa vale só para a página
+  aberta.
+- O botão cobre as animações que se repetem sozinhas; não mexe nas transições
+  que a própria pessoa dispara (a janela de assinatura, a pergunta de idioma),
+  que são curtas.
+- A conta dos 5 s: o botão é o mecanismo exigido, então a duração deixa de
+  importar; sem ele, o limite seria o movimento acabar em 5 s.
