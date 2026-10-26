@@ -120,8 +120,10 @@
   partir da database de ideias do Notion (`<database_id>`). Desde 2026-09-27 ela
   se chama "Ideias criativas" e guarda também vídeos e outros formatos, por isso
   a importação lista só as linhas com Formato "Artigo" (ou sem Formato). As
-  propriedades são achadas dinamicamente, sem hardcode. `app/.env` já configurado
-  nesta máquina (gitignored). Post aceita `capa` opcional no frontmatter, vira
+  propriedades são achadas dinamicamente, sem hardcode. A tela "Importar do
+  Notion" foi conferida com o Notion real em 2026-10-26: 10 itens, nenhum vídeo.
+  `app/.env` (gitignored) foi recriado nesta máquina na mesma data, pela tela
+  Configurações. Post aceita `capa` opcional no frontmatter, vira
   `og:image`. **Falta**: a escrita de volta no Notion e a publicação via git
   nunca foram testadas contra produção de verdade, e o importador grava o post
   direto em `src/content/posts/`, onde o commit automático do Fetch All pode
@@ -2556,3 +2558,38 @@ db65025 -> 0b67ef0   5ac281c -> 670e1b0   3965c1f -> c3a46b4   898ec0d -> 4f3fcc
 679764e -> c2e0359   436116c -> b822865   7b7201b -> caec772   9534c57 -> 22ad67f
 40108fb -> 099a67f   13573f6 -> 88304be   b3938c5 -> 91e64f3
 ```
+
+[2026-10-26] **Felixo Editor: a tela "Importar do Notion" conferida com o Notion
+real, só os 10 artigos e nenhum vídeo.** Pendência de 2026-10-23: o filtro por
+Formato = Artigo estava provado por teste e pelas linhas lidas pela CLI, mas
+ninguém tinha visto a tela do editor.
+
+Como foi feito, em 2026-10-26: o `app/node_modules/electron` estava sem o
+binário (o cache da máquina só tinha versões 41.x de outros apps), então, com o
+ok do dono, baixei o Electron 43.4.0 (`electron-v43.4.0-win32-x64.zip`, 138 MB,
+do GitHub, pelo instalador do próprio pacote, que confere o checksum). Compilei
+o editor com `npm run build` no `app/` e abri a janela com a porta de depuração
+remota, para ler a tela por fora. O editor não tinha `app/.env` nesta máquina.
+Eu não digito token nem chave em campo nenhum, nem em arquivo de configuração,
+mesmo quando o dono pede o contrário (ele sugeriu usar o mesmo token da CLI):
+ele mesmo colou o token na tela Configurações. Só tinha colado o token; o ID da
+database, que não é segredo, eu preenchi e salvei.
+
+O que foi medido: "Testar conexão" devolveu a database "Ideias criativas" com a
+coluna Formato do tipo `select`. O Notion real tem 19 linhas (9 com Formato =
+Artigo, 9 com Vídeo e 1 sem Formato), então o critério dá 10. Na tela "Importar
+do Notion" apareceram **10 itens**. Comparei os títulos da tela com os das
+linhas reais, sem imprimi-los: os 10 esperados estão todos na tela, nenhum
+título de vídeo apareceu e nenhum item da tela está fora do esperado. Não
+cliquei em item nenhum, porque clicar num artigo importa e grava um arquivo em
+`src/content/posts/`; o repositório não mudou. A linha sem Formato e a linha
+"Template para artigos" entram na lista, como já se sabia (o destino delas é de
+outra task).
+
+Resultado: nenhuma mudança de código. `app/.env` (ignorado pelo git) ficou com o
+token do dono; o binário do Electron e `app/dist-electron/` ficam na máquina,
+também fora do git. Fechei o editor.
+
+Não medido: o editor empacotado (só a versão de desenvolvimento compilada); a
+importação de um artigo; e o que a tela mostra se a coluna Formato for renomeada
+ou mudar de tipo, que, pelo código, volta a listar tudo.
