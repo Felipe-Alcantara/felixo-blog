@@ -15,6 +15,8 @@ Depois de um tempo estudando e, principalmente, **construindo coisas**, comecei 
 
 Blog é justamente isso: o lugar onde a explicação para de morar só na minha cabeça.
 
+![O gatinho do blog na boca de uma caverna, de mão na cintura e com cara de apuro, estendendo um braço para apresentar uma pilha enorme de livros, como no meme do Bob Esponja.](./ola-mundo/gatinho-e-os-livros.webp)
+
 ## O que você vai encontrar aqui
 
 - **Computação descomplicada.** De um jeito que até a sua tia vai entender. Ligando conceitos de uma forma interessante pra quem tá começando.
