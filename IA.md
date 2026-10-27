@@ -2960,3 +2960,46 @@ rola na horizontal.
 
 Não medido: Firefox e Safari, leitor de tela, e como o buscador e os cartões de
 compartilhamento tratam o parágrafo novo (a descrição do site não mudou).
+
+[2026-10-27] **Texto do Felipe: travessão (—) nunca, e a regra entra no guia.**
+Pedido do dono no chat: ao revisar o trecho "O que mudou" do post, ele notou os
+travessões e pediu que isso virasse regra, com esses traços jamais aparecendo
+nos textos dele. Isso responde à pergunta que estava em "Em aberto" no
+`LINGUAGEM-NATURAL.md` ("Travessão: banir de vez ou só limitar?"): banir.
+
+O que mudou nos guias: o `LINGUAGEM-NATURAL.md` ganhou a seção "Regra fixa"
+(travessão nunca em texto do Felipe: post, apresentação, tradução, nota; onde
+houver um, trocar por vírgula, que é o jeito dele de emendar, por ponto ou por
+parênteses, sem mexer nas palavras, e perguntar se nenhuma das três servir);
+tirar travessão entrou na lista do que a IA pode fazer, escrever travessão
+entrou na do que não pode, e a pergunta saiu de "Em aberto". O `AGENTS.md`
+ganhou a mesma frase na regra "O texto do post é do Felipe", que é onde os
+agentes olham primeiro.
+
+O que mudou no texto já publicado: havia três travessões no post "Olá, mundo" e
+três na tradução em inglês. Troquei só a pontuação, nenhuma palavra: "na minha
+cabeça, só não estava em lugar nenhum", "ele leva três parágrafos, não trinta" e
+"daqui a seis meses, e, melhor ainda, pode ser lido". O último ficou com duas
+vírgulas seguidas e é o ponto mais torto; reescrever a frase é decisão do dono.
+Na tradução, o primeiro virou ponto ("ready in my head. It just wasn't
+anywhere."), porque uma vírgula ali emendaria duas orações em inglês; os outros
+dois viraram vírgula.
+
+Também saiu um travessão que não era de texto do dono, mas ia ao ar: o metadado
+`og:image:alt` de todas as páginas, que o `BaseLayout` montava com " — " entre o
+título e a descrição do site, passou a usar ": ".
+
+O que não mudou, por leitura minha da regra: os travessões em comentários de
+código, no `AGENTS.md`, no `IA.md` e em mensagens de commit, que são texto
+técnico meu, e não texto do dono. Também não há trava automática: o
+`npm run check` não falha se um travessão entrar num post (os posts ficam fora
+do Prettier, de propósito), e uma checagem assim poderia barrar o botão
+"Publicar" do Felixo Editor; não foi pedida.
+
+Medido, em 2026-10-27: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. Depois da troca no post, o único travessão que restava
+no `dist` era o do `og:image:alt`, nas 13 páginas; depois da troca dele, nenhum
+arquivo HTML ou XML do `dist` tem "—".
+
+Não medido: como os buscadores e os cartões de compartilhamento passam a mostrar
+o texto alternativo da imagem.
