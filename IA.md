@@ -3037,3 +3037,40 @@ Não medido: Firefox e Safari, leitor de tela (o texto alternativo é meu), e a
 opinião do dono sobre o desenho, que é a primeira versão. A fonte Ink Free só
 existe no Windows: editar o SVG em outra máquina troca a letra, e o WebP não
 muda.
+
+[2026-10-27] **Post "Olá, mundo": segunda ilustração, o gatinho apresentando uma
+pilha de livros, em referência a um meme do Bob Esponja.** Pedido do dono no
+chat, com o print do trecho "O que mudou" e uma imagem do meme: abaixo desse
+texto, uma imagem do gatinho com alguns livros, dando a entender que ele
+acumulou muito conteúdo, fazendo referência ao meme. No meme, o Bob Esponja está
+na boca de uma caverna de pedra, de mão na cintura e com cara de apuro, com o
+outro braço estendido apresentando o que há lá dentro. Não identifiquei o nome
+do meme nem o episódio; fiz a composição pelo que vi na imagem.
+
+O que fiz: um desenho próprio em SVG, na mesma técnica da primeira ilustração e
+com o rosto do gatinho do blog. Não reproduzi o quadro original nem usei a
+imagem do meme. A cena tem a caverna de pedra com o céu e o campo vistos pela
+abertura, estrelas-do-mar nas pedras, o gatinho de mão na cintura e com o braço
+estendido, de mão aberta, meias listradas e sapatinhos pretos (um aceno ao Bob
+Esponja), uma torre de livros mais alta que a cabeça dele e duas pilhas menores,
+com lombadas variadas ("decisões", "boas práticas", "scripts", "IA",
+"automações", "FelixoVerse") e um livrinho "post 1" no chão. Para a cara de
+apuro, o rosto ganhou sobrancelhas inclinadas, uma boquinha de "o" no lugar do
+sorriso e uma gota de suor; olhos, orelhas, contorno e bigodes são os do
+mascote. Essa é a única mudança no rosto, e vale só nesta imagem.
+
+Onde está: `src/content/posts/ola-mundo/gatinho-e-os-livros.webp` (2000×1125,
+115 KB) e, ao lado, o `gatinho-e-os-livros.svg` editável, que o post não
+referencia. A imagem entra logo depois de "Blog é justamente isso…" e antes de
+"O que você vai encontrar aqui", em português e em inglês, com o mesmo arquivo e
+textos alternativos próprios, que citam o meme.
+
+Medido, em 2026-10-27: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. Num script de Playwright (Chrome), 20 conferências
+passam, em português e em inglês, a 1000 px e a 360 px: as duas imagens do post
+carregam, a segunda fica entre o fecho de "O que mudou" e o título da seção
+seguinte, e a página não rola na horizontal.
+
+Não medido: Firefox e Safari, leitor de tela (os textos alternativos são meus),
+se a referência ao meme é a que o dono tinha em mente, e a legibilidade das
+lombadas no celular (a 328 px, os títulos ficam pequenos; são decorativos).
