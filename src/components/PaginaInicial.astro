@@ -11,6 +11,7 @@ import BotaoAssinatura from './BotaoAssinatura.astro';
 import Redes from './Redes.astro';
 import { caminho } from '../utils/rotas';
 import { TEXTOS, type Idioma } from '../config/idiomas';
+import { REDES } from '../config/site';
 import { buscarTraducao, listarPosts, versaoDoPost } from '../utils/posts';
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 const { idioma } = Astro.props;
 const textos = TEXTOS[idioma];
 const posts = await listarPosts();
+const github = REDES.find(({ id }) => id === 'github')!;
 // O filtro de pesquisa procura no texto que o leitor vê: o da tradução, em inglês.
 const versoes = await Promise.all(
   posts.map(async (post) => ({
@@ -39,6 +41,15 @@ const versoes = await Promise.all(
     </h1>
     <div class="mt-4 space-y-3 text-lg leading-relaxed text-zinc-400">
       {textos.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
+      <p>
+        {textos.home.convite.antes}<a
+          href={github.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-felixo-purple underline decoration-purple-400/35 underline-offset-4 transition hover:text-white"
+          >{textos.home.convite.link}</a
+        >{textos.home.convite.depois}
+      </p>
     </div>
 
     <!-- "Minhas redes" é frase do dono, e a linha de ícones com a linha roxa

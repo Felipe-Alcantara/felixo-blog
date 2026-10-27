@@ -61,6 +61,14 @@ export const TEXTOS = {
         'Sou criador de algumas startups brasileiras, entusiasta de ativos criativos, como blogs, vídeos e produção de conteúdo, e passo a maior parte do meu tempo estudando Inteligência Artificial.',
         'Aqui, eu escrevo sobre a minha história, o que eu aprendi ao longo da jornada, e o que ando construindo nesse tempo. Aqui, você não encontrará apenas notícias, muito menos tutoriais, é a minha visão sobre a área, e como foi meu aprendizado até chegar aonde cheguei. E gostaria de passar pra frente e registrar minha visão e tudo que eu vi no caminho e resolvi deixar tudo isso público!',
       ],
+      // Convite do dono (2026-10-27), depois da apresentação; o link vai entre
+      // `antes` e `depois` e aponta para o GitHub de `REDES`.
+      convite: {
+        antes:
+          'Dediquei várias das minhas preciosas horas para construir este blog para ajudar você a entrar nesse mundo! E só te peço que, se você gostar e se interessar pelo assunto, me siga no meu ',
+        link: 'GitHub',
+        depois: '.',
+      },
       minhasRedes: 'Minhas redes',
       // Nome de cada rede para leitor de tela e dica (ver `REDES` em `site.ts`).
       redes: {
@@ -183,6 +191,13 @@ export const TEXTOS = {
         "I'm the creator of a few Brazilian startups, an enthusiast of creative assets like blogs, videos and content production, and I spend most of my time studying Artificial Intelligence.",
         "Here, I write about my story, what I've learned along the way, and what I've been building in the meantime. Here, you won't find just news, much less tutorials. It's my take on the industry and how my learning got me to where I am today. And I'd like to share it and record my take and everything I saw along the way, and I decided to make all of this public!",
       ],
+      // Tradução do convite, feita por IA e ainda sem revisão do dono.
+      convite: {
+        antes:
+          "I've dedicated several of my precious hours to building this blog to help you get into this world! And all I ask is that, if you like it and are interested in the subject, you follow me on my ",
+        link: 'GitHub',
+        depois: '.',
+      },
       minhasRedes: 'My socials',
       redes: {
         email: 'Email',
