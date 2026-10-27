@@ -15,7 +15,7 @@ A blog is exactly that: the place where the explanation stops living only in my 
 
 ## What you'll find here
 
-- **Uncomplicated programming.** Direct explanation, no frills. If a concept needs three paragraphs to be clear, it takes three paragraphs, not thirty.
+- **Uncomplicated computing.** In a way that even your aunt will understand. Direct explanation, no frills. If a concept needs three paragraphs to be clear, it takes three paragraphs, not thirty.
 - **Tested best practices.** No rules copied from a thread. What shows up here I use in my own projects, and I know where it hurts.
 - **Automations and tools.** A good part of my time goes into building things that do the boring work for me. I'll show how they work.
 - **FelixoVerse.** Behind the scenes of the development, including the ARGs.
