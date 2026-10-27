@@ -3160,3 +3160,17 @@ seguinte, e a página não rola na horizontal.
 
 Não medido: Firefox e Safari, leitor de tela (os textos alternativos são meus),
 e se o dono aprova esta versão.
+
+[2026-10-27] **Post "Olá, mundo": retirada da pata e da pilha frontal
+da segunda ilustração.** Retorno do dono: a pata levantada era a quinta, e
+escondê-la com livros piorou a composição. Retirei o braço e a mão que eu havia
+desenhado e removi a pilha baixa que cobria as patas; a arte-base agora mostra
+as quatro patas, e a pilha principal ao lado permanece.
+
+Os textos alternativos em português e inglês agora descrevem o gato sentado
+diante dos livros. Regenerei o WebP a partir do SVG com `sharp`, em 2000×1125.
+`npm run check` e `npm run build` passam; o build otimiza a imagem de 93 KB
+para 62 KB. A revisão visual da renderização local passou.
+
+Não medido: Firefox, Safari e leitor de tela. Estado: aguardando revisão do
+dono, sem novo deploy.
