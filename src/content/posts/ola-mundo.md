@@ -15,7 +15,7 @@ Depois de um tempo estudando e, principalmente, **construindo coisas**, comecei 
 
 Blog é justamente isso: o lugar onde a explicação para de morar só na minha cabeça.
 
-![O gatinho do blog sentado, de sobrancelhas levantadas, olhar de lado e uma gota de suor na testa, erguendo uma pata para apresentar uma pilha enorme de livros, como no meme do Bob Esponja.](./ola-mundo/gatinho-e-os-livros.webp)
+![O gatinho do blog sentado atrás de uma pilha baixa de livros, de sobrancelhas levantadas, olhar de lado e uma gota de suor na testa, erguendo uma pata para apresentar outra pilha enorme de livros, como no meme do Bob Esponja.](./ola-mundo/gatinho-e-os-livros.webp)
 
 ## O que você vai encontrar aqui
 
