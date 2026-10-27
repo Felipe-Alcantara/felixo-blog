@@ -24,11 +24,11 @@ Blog é justamente isso: o lugar onde a explicação para de morar só na minha 
 
 Se eu tivesse que resumir o que aprendi nos últimos anos em uma frase só, seria esta:
 
-> Prefira sempre um script a uma mudança manual.
+> Na era da IA, prefira sempre um script a uma mudança manual. Código é barato, e use-o a seu favor!
 
-Parece pequeno, mas muda tudo. Uma mudança manual resolve o problema de hoje e não deixa rastro. Um script resolve o problema de hoje **e** o de daqui a seis meses, e, melhor ainda, pode ser lido, corrigido e estendido depois, por você ou por qualquer ferramenta que você use para te ajudar.
+Parece pequeno, mas muda toda forma de pensar. Uma mudança manual, além de mais lenta, resolve o problema de hoje e não deixa rastro. Um script resolve o problema de hoje, de amanhã, e o de daqui a seis meses, e, melhor ainda, pode ser lido, corrigido e estendido depois, por você ou por qualquer ferramenta que você use para te ajudar. Com IA, o seu repertório de código, diz quem você é! Código, Tokens, Tempo, tudo isso é dinheiro, e quando você entender que escrever um código bom, e reutilizável estará economizando estes 4 pilares.
 
-Na prática, isso significa que quando eu preciso mexer em muitos dados, o primeiro instinto não é abrir a interface e clicar: é escrever algo como isto.
+Na prática, isso significa que quando eu preciso mexer em muitos dados, ou realizar qualquer ação manual, o primeiro instinto não é abrir a interface e clicar: é escrever (ou pedir) algo como isto.
 
 ```python
 def renomear_em_lote(itens: list[str], prefixo: str) -> list[str]:
@@ -36,7 +36,7 @@ def renomear_em_lote(itens: list[str], prefixo: str) -> list[str]:
     return [f"{prefixo}{item}" for item in itens]
 ```
 
-Trinta segundos a mais para escrever. Reutilizável para sempre.
+Trinta segundos a mais para escrever. Reutilizável para sempre, e muito útil depois.
 
 ## E agora?
 
