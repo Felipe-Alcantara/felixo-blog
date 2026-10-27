@@ -3074,3 +3074,49 @@ seguinte, e a página não rola na horizontal.
 Não medido: Firefox e Safari, leitor de tela (os textos alternativos são meus),
 se a referência ao meme é a que o dono tinha em mente, e a legibilidade das
 lombadas no celular (a 328 px, os títulos ficam pequenos; são decorativos).
+
+[2026-10-27] **Post "Olá, mundo": a segunda ilustração foi refeita, porque o
+dono recusou a primeira versão.** Retorno do dono no chat: ficou muito ruim,
+porque misturei a estética do blog com um cenário do Bob Esponja, o corpo do
+gato ficou "completamente asqueiroso" e os livros ficaram coloridos demais. Ele
+pediu o corpo baseado nas imagens base da pasta "FelixoVerse Imagens", o cenário
+parecido com o da primeira ilustração (sem precisar ser igual ao do desenho), os
+livros mais sóbrios e atenção às expressões faciais do Bob Esponja no meme. A
+entrada anterior, sobre a versão com a caverna, fica como histórico.
+
+O que errei, e que vale para qualquer imagem futura do gatinho: desenhei o corpo
+em vetor, do zero, em vez de usar o das imagens base; copiei o cenário do meme
+(céu, campo e caverna), que brigava com o tema escuro do blog; e usei livros em
+todas as cores.
+
+O que mudou, nos mesmos arquivos (`gatinho-e-os-livros.webp` e `.svg`):
+
+- **Corpo:** é o do gatinho sentado de `Posições/Sentado/gato.png`. Recortei o
+  fundo azul por código (a transparência sai da distância até a cor do fundo, e
+  as bordas viram contorno rosa, sem fiapo azul), espelhei (o rabo fica à
+  esquerda) e embuti no SVG. Só o braço direito é desenho novo, no mesmo traço e
+  nas mesmas cores do gato (rosa `#d14e74` e creme `#f8efeb`), saindo de trás do
+  ombro.
+- **Expressão, tirada do meme:** sobrancelhas finas levantadas no meio, brilhos
+  dos olhos levados para o lado do braço (olhar de lado), biquinho de
+  constrangimento no lugar do sorriso, bochechas coradas e uma gota de suor. O
+  resto do rosto é o original.
+- **Cenário:** o da primeira ilustração (fundo roxo escuro com estrelas, o
+  painel da parede com post-its e a mesa), sem caverna.
+- **Livros:** só roxos, o rosa do gatinho e creme.
+
+O que não ficou igual ao meme: o gato vira o rosto para o lado do braço, e o Bob
+Esponja vira para o lado oposto. Espelhei porque, sem espelhar, o rabo ficava
+colado ao braço e o braço parecia um segundo rabo; os olhos olham para o braço,
+como no meme. Também não há a mão na cintura.
+
+Medido, em 2026-10-27: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. Num script de Playwright (Chrome), 20 conferências
+passam, em português e em inglês, a 1000 px e a 360 px: as duas imagens do post
+carregam, a segunda fica entre o fecho de "O que mudou" e o título da seção
+seguinte, e a página não rola na horizontal. O WebP tem 2000×1125 e 197 KB, e o
+SVG, que embute o recorte do gato, 289 KB.
+
+Não medido: Firefox e Safari, leitor de tela (os textos alternativos são meus),
+se o dono aprova esta versão e uma mancha quase imperceptível num dos olhos (o
+remendo do brilho antigo), que só aparece com zoom.
