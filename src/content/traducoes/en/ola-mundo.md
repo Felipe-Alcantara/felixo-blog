@@ -9,13 +9,13 @@ It really has been years since I started planning to create a blog to get my ide
 
 ## What changed
 
-After a while studying and, mainly, **building things**, I started to accumulate decisions that I make over and over without ever having written down why. Every time I explained one of them to someone, I realized the explanation was already ready in my head — it just wasn't anywhere.
+After a while studying and, mainly, **building things**, I started to accumulate decisions that I make over and over without ever having written down why. Every time I explained one of them to someone, I realized the explanation was already ready in my head. It just wasn't anywhere.
 
 A blog is exactly that: the place where the explanation stops living only in your head.
 
 ## What you'll find here
 
-- **Uncomplicated programming.** Direct explanation, no frills. If a concept needs three paragraphs to be clear, it takes three paragraphs — not thirty.
+- **Uncomplicated programming.** Direct explanation, no frills. If a concept needs three paragraphs to be clear, it takes three paragraphs, not thirty.
 - **Tested best practices.** No rules copied from a thread. What shows up here I use in my own projects, and I know where it hurts.
 - **Automations and tools.** A good part of my time goes into building things that do the boring work for me. I'll show how they work.
 - **FelixoVerse.** Behind the scenes of the development, including the ARGs.
@@ -26,7 +26,7 @@ If I had to sum up what I've learned in the last few years in a single sentence,
 
 > Always prefer a script to a manual change.
 
-It seems small, but it changes everything. A manual change solves today's problem and leaves no trace. A script solves today's problem **and** the one six months from now — and, even better, it can be read, fixed and extended later, by you or by any tool you use to help you.
+It seems small, but it changes everything. A manual change solves today's problem and leaves no trace. A script solves today's problem **and** the one six months from now, and, even better, it can be read, fixed and extended later, by you or by any tool you use to help you.
 
 In practice, this means that when I need to change a lot of data, my first instinct is not to open the interface and click: it's to write something like this.
 

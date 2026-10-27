@@ -24,6 +24,7 @@ histórico de decisões.
 - **O texto do post é do Felipe.** Antes de escrever ou revisar conteúdo, leia
   [`LINGUAGEM-NATURAL.md`](LINGUAGEM-NATURAL.md): a IA corrige e pergunta, não
   reescreve com palavras "mais bonitas" nem inventa o que ele não disse.
+  **Travessão (—) nunca** aparece em texto dele (post, apresentação, tradução).
 
 ## Onde mexer
 

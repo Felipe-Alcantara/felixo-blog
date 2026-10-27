@@ -9,6 +9,14 @@ Este guia vale para o Felipe escrevendo e para qualquer IA que ajude a escrever
 ou revisar um post. O objetivo é um só: quem lê o blog tem que ouvir o Felipe,
 não um assistente.
 
+## Regra fixa
+
+- **Travessão (—) nunca.** Não aparece em nenhum texto do Felipe: post,
+  apresentação, tradução, nota. Decisão dele em 27/10/2026, vale para quem
+  escreve e para qualquer IA. Ao revisar, onde houver um, troque por vírgula (o
+  jeito dele de emendar), ponto ou parênteses, sem mexer nas palavras; se
+  nenhuma das três servir, pergunte.
+
 ## Como o Felipe escreve (preservar)
 
 - **Conversa, não palestra.** Primeira pessoa, frase que vai emendando com
@@ -46,14 +54,16 @@ não um assistente.
 - corrigir digitação, acentuação e concordância;
 - apontar trecho confuso e perguntar o que ele quis dizer;
 - sugerir outra ordem de seções;
-- checar fato, data, link e número.
+- checar fato, data, link e número;
+- tirar travessão, pela regra fixa acima.
 
 **Não pode:**
 
 - trocar palavra dele por uma "mais bonita";
 - inventar motivação, detalhe ou sentimento;
 - acrescentar frase de efeito, abertura ou fecho;
-- reescrever parágrafo inteiro sem ele pedir.
+- reescrever parágrafo inteiro sem ele pedir;
+- escrever travessão em texto dele.
 
 Mudança de sentido vira **pergunta**, nunca reescrita silenciosa.
 
@@ -71,6 +81,5 @@ Mudança de sentido vira **pergunta**, nunca reescrita silenciosa.
 ## Em aberto (decidir com o Felipe)
 
 - Coloquial no texto publicado: "pra" e "tá" ficam, ou viram "para" e "está"?
-- Travessão: banir de vez ou só limitar?
 - Negrito no meio do parágrafo: quanto é demais?
 - Tamanho de parágrafo: parágrafo de uma frase só, bem longa, quebra ou fica?
