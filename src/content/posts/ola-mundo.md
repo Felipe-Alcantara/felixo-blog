@@ -11,7 +11,7 @@ Faz realmente anos que eu planejo criar um blog para colocar minhas ideias em di
 
 Depois de um tempo estudando e, principalmente, **construindo coisas**, comecei a acumular decisões que eu tomo repetidamente sem nunca ter escrito o porquê. Toda vez que eu explicava alguma delas para alguém, percebia que a explicação já estava pronta na minha cabeça, só não estava em lugar nenhum.
 
-Blog é justamente isso: o lugar onde a explicação para de morar só na sua cabeça.
+Blog é justamente isso: o lugar onde a explicação para de morar só na minha cabeça.
 
 ## O que você vai encontrar aqui
 

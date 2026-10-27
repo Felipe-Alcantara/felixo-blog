@@ -11,7 +11,7 @@ It really has been years since I started planning to create a blog to get my ide
 
 After a while studying and, mainly, **building things**, I started to accumulate decisions that I make over and over without ever having written down why. Every time I explained one of them to someone, I realized the explanation was already ready in my head. It just wasn't anywhere.
 
-A blog is exactly that: the place where the explanation stops living only in your head.
+A blog is exactly that: the place where the explanation stops living only in my head.
 
 ## What you'll find here
 
