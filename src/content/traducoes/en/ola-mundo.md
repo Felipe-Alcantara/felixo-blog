@@ -26,7 +26,7 @@ If I had to sum up what I've learned in the last few years in a single sentence,
 
 > In the age of AI, always prefer a script to a manual change. Code is cheap, so use it to your advantage!
 
-It seems small, but it changes the whole way of thinking. A manual change, besides being slower, solves today's problem and leaves no trace. A script solves the problem of today, of tomorrow, and the one six months from now, and, even better, it can be read, fixed and extended later, by you or by any tool you use to help you. With AI, your code repertoire says who you are! Code, tokens, time, all of this is money, and when you understand that by writing good, reusable code you will be saving these 4 pillars.
+It seems small, but it changes the whole way of thinking. A manual change, besides being slower, solves today's problem and leaves no trace. A script solves the problem of today, of tomorrow, and the one six months from now, and, even better, it can be read, fixed and extended later, by you or by any tool you use to help you. With AI, your code repertoire says who you are! Code, tokens, time, all of this is money, and when you understand the importance of writing good, reusable code, you will be saving these 4 pillars.
 
 In practice, this means that when I need to change a lot of data, or perform any manual action, my first instinct is not to open the interface and click: it's to write (or ask for) something like this.
 

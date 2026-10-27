@@ -26,7 +26,7 @@ Se eu tivesse que resumir o que aprendi nos últimos anos em uma frase só, seri
 
 > Na era da IA, prefira sempre um script a uma mudança manual. Código é barato, e use-o a seu favor!
 
-Parece pequeno, mas muda toda forma de pensar. Uma mudança manual, além de mais lenta, resolve o problema de hoje e não deixa rastro. Um script resolve o problema de hoje, de amanhã, e o de daqui a seis meses, e, melhor ainda, pode ser lido, corrigido e estendido depois, por você ou por qualquer ferramenta que você use para te ajudar. Com IA, o seu repertório de código, diz quem você é! Código, Tokens, Tempo, tudo isso é dinheiro, e quando você entender que escrever um código bom, e reutilizável estará economizando estes 4 pilares.
+Parece pequeno, mas muda toda forma de pensar. Uma mudança manual, além de mais lenta, resolve o problema de hoje e não deixa rastro. Um script resolve o problema de hoje, de amanhã, e o de daqui a seis meses, e, melhor ainda, pode ser lido, corrigido e estendido depois, por você ou por qualquer ferramenta que você use para te ajudar. Com IA, o seu repertório de código, diz quem você é! Código, Tokens, Tempo, tudo isso é dinheiro, e quando você entender a importância de escrever um código bom, e reutilizável, estará economizando estes 4 pilares.
 
 Na prática, isso significa que quando eu preciso mexer em muitos dados, ou realizar qualquer ação manual, o primeiro instinto não é abrir a interface e clicar: é escrever (ou pedir) algo como isto.
 
