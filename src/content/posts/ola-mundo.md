@@ -15,7 +15,7 @@ Blog é justamente isso: o lugar onde a explicação para de morar só na minha 
 
 ## O que você vai encontrar aqui
 
-- **Computação descomplicada.** De um jeito que até a sua tia vai entender. Explicação direta, sem enfeite. Se um conceito precisa de três parágrafos para ficar claro, ele leva três parágrafos, não trinta.
+- **Computação descomplicada.** De um jeito que até a sua tia vai entender. Ligando conceitos de uma forma interessante pra quem tá começando.
 - **Boas práticas testadas.** Nada de regra copiada de thread. O que aparece aqui eu uso nos meus próprios projetos e sei onde dói.
 - **Automações e ferramentas.** Boa parte do meu tempo vai em construir coisas que fazem o trabalho chato por mim. Vou mostrar como elas funcionam.
 - **FelixoVerse.** Bastidores do desenvolvimento, incluindo os ARGs.
