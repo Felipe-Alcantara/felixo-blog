@@ -7,6 +7,8 @@ revisado: false
 
 It really has been years since I started planning to create a blog to get my ideas in order. I never lacked the will, but I always lacked a subject I thought was worth writing about, and a place I'd like to look at every day. Both things changed this year.
 
+![The blog's cat peeking over a desk full of papers, sticky notes, lists, a calendar and drafts, with a pencil in its paw, organizing everything to write the blog.](../../posts/ola-mundo/organizando-o-blog.webp)
+
 ## What changed
 
 After a while studying and, mainly, **building things**, I started to accumulate decisions that I make over and over without ever having written down why. Every time I explained one of them to someone, I realized the explanation was already ready in my head. It just wasn't anywhere.

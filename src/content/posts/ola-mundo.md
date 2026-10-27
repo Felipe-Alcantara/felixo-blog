@@ -7,6 +7,8 @@ tags: ['Meta', 'Boas Práticas']
 
 Faz realmente anos que eu planejo criar um blog para colocar minhas ideias em dia. Nunca faltou vontade, mas sempre faltava assunto que eu achasse que valia a pena ser escrito, e um lugar que eu gostasse de olhar todo dia. As duas coisas mudaram este ano.
 
+![O gatinho do blog espiando por cima de uma mesa cheia de papéis, post-its, listas, um calendário e rascunhos, com um lápis na pata, organizando tudo para escrever o blog.](./ola-mundo/organizando-o-blog.webp)
+
 ## O que mudou
 
 Depois de um tempo estudando e, principalmente, **construindo coisas**, comecei a acumular decisões que eu tomo repetidamente sem nunca ter escrito o porquê. Toda vez que eu explicava alguma delas para alguém, percebia que a explicação já estava pronta na minha cabeça, só não estava em lugar nenhum.
