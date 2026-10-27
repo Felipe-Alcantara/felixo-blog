@@ -16,9 +16,9 @@ Blog é justamente isso: o lugar onde a explicação para de morar só na minha 
 ## O que você vai encontrar aqui
 
 - **Computação descomplicada.** De um jeito que até a sua tia vai entender. Ligando conceitos de uma forma interessante pra quem tá começando.
-- **Boas práticas testadas.** Nada de regra copiada de thread. O que aparece aqui eu uso nos meus próprios projetos e sei onde dói.
-- **Automações e ferramentas.** Boa parte do meu tempo vai em construir coisas que fazem o trabalho chato por mim. Vou mostrar como elas funcionam.
-- **FelixoVerse.** Bastidores do desenvolvimento, incluindo os ARGs.
+- **Boas práticas testadas.** Eu sempre me importei em ser organizado e caprichado, dados os meus limites. Em programação o cuidado é redobrado e muitas coisas podem passar despercebidas, então eu vou tentar reunir tudo que eu aprendi de boas práticas desde o começo até onde cheguei.
+- **Automações e ferramentas.** Boa parte do meu tempo vai em construir coisas que fazem o trabalho chato por mim. Problemas que eu mesmo criei e eu mesmo resolvo, e é isso que me faz evoluir. E vou mostrar como elas funcionam.
+- **FelixoVerse.** Meu maior projeto pessoal, um pouco ambicioso demais, porém com anos de planejamento.
 
 ## Um princípio que guia quase tudo por aqui
 

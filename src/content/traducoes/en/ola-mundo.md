@@ -16,9 +16,9 @@ A blog is exactly that: the place where the explanation stops living only in my 
 ## What you'll find here
 
 - **Uncomplicated computing.** In a way that even your aunt will understand. Linking concepts in an interesting way for those who are just starting out.
-- **Tested best practices.** No rules copied from a thread. What shows up here I use in my own projects, and I know where it hurts.
-- **Automations and tools.** A good part of my time goes into building things that do the boring work for me. I'll show how they work.
-- **FelixoVerse.** Behind the scenes of the development, including the ARGs.
+- **Tested best practices.** I've always cared about being organized and meticulous, given my limits. In programming the care is redoubled and many things can go unnoticed, so I'll try to gather everything I've learned about best practices, from the beginning up to where I've got to.
+- **Automations and tools.** A good part of my time goes into building things that do the boring work for me. Problems I created myself and solve myself, and that's what makes me grow. And I'll show how they work.
+- **FelixoVerse.** My biggest personal project, a bit too ambitious, but with years of planning.
 
 ## A principle that guides almost everything here
 
