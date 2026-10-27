@@ -62,7 +62,8 @@
   troca a qualquer hora, ficando na mesma página. A apresentação da home em
   inglês, o rótulo "My socials" e a descrição do site em inglês foram revisados
   pelo dono em 2026-10-26; o resto dos textos da interface em inglês (os de Tags,
-  Sobre e post incluídos) e a tradução do post seguem sem revisão.
+  Sobre e post incluídos), a tradução do post e a do convite da home (2026-10-27)
+  seguem sem revisão.
 - **Abertura e gatinho** (2026-10-16): `Abertura.astro`, primeiro filho do
   `<body>` no `BaseLayout`, mostra o gatinho do FelixoVerse piscando uma vez
   (cerca de 2 s) a cada carregamento. É só CSS, decorativa (`aria-hidden`) e some
@@ -2920,3 +2921,42 @@ páginas do post. Ficam como estavam: os acessos e os comentários da página em
 inglês contam à parte; o Felixo Editor não conhece a pasta `traducoes` (escrever
 e publicar traduções pelo editor é outra tarefa); a tradução do título e do
 texto não passou pelo dono, e o aviso na página diz isso.
+
+[2026-10-27] **Home: um convite, no fim da apresentação, para seguir o dono no
+GitHub.** Pedido do dono no chat: acrescentar, em algum lugar da apresentação,
+uma frase dizendo que dedicou várias das suas horas a construir o blog para
+ajudar o leitor a entrar nesse mundo e pedindo que, se o leitor gostar e se
+interessar pelo assunto, o siga no GitHub, com a palavra "GitHub" ligada ao
+perfil dele. O texto é do dono: usei as palavras dele, e só corrigi o que o guia
+de linguagem natural permite (concordância e regência), sem mudar o sentido.
+
+O que mudou no texto: "ajudar a você" virou "ajudar você"; "que se você goste e
+se interesse pelo assunto, que me siga" virou "que, se você gostar e se
+interessar pelo assunto, me siga" (o "goste" não concordava com o "se", e o
+"que" estava repetido); "github" virou "GitHub", como o nome é escrito no resto
+do site.
+
+Onde fica: é o quarto parágrafo da apresentação da home, depois dos três já
+existentes e antes de "Minhas redes". O texto está em
+`TEXTOS.<idioma>.home.convite`, partido em `antes`, `link` e `depois`, porque o
+link fica no meio da frase. O endereço sai de `REDES` (`src/config/site.ts`), o
+mesmo do ícone do GitHub abaixo, então não há um segundo lugar para mudar; o
+link abre em nova aba, como os outros links externos.
+
+Só a home ganhou o parágrafo. A página Sobre repete os três parágrafos da
+apresentação (decisão do dono de 2026-10-26) e não tem o convite, porque ele não
+pediu. A versão em inglês também tem o convite (`/en/`), traduzido por mim,
+**sem revisão do dono**; ao contrário do post traduzido, a home não tem aviso de
+tradução, então a revisão fica por conta da task de revisão do inglês da
+interface.
+
+Medido, em 2026-10-27: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. Num script de Playwright (Chrome) sobre o `dist`, 16
+conferências passam, em português e em inglês, a 1000 px e a 360 px: o parágrafo
+é o quarto da apresentação e está visível, "GitHub" leva a
+`https://github.com/Felipe-Alcantara` em nova aba com
+`rel="noopener noreferrer"`, o ponto final fica colado no link, e a página não
+rola na horizontal.
+
+Não medido: Firefox e Safari, leitor de tela, e como o buscador e os cartões de
+compartilhamento tratam o parágrafo novo (a descrição do site não mudou).
