@@ -3120,3 +3120,43 @@ SVG, que embute o recorte do gato, 289 KB.
 Não medido: Firefox e Safari, leitor de tela (os textos alternativos são meus),
 se o dono aprova esta versão e uma mancha quase imperceptível num dos olhos (o
 remendo do brilho antigo), que só aparece com zoom.
+
+[2026-10-27] **Post "Olá, mundo": três ajustes na segunda ilustração a pedido do
+dono, e a correção de um número da entrada anterior.** Depois de ver a versão
+refeita no ar, o dono apontou, com capturas: (1) os post-its da parede já tinham
+sido usados na outra imagem; (2) o gato estava com 5 patas; (3) a boquinha
+estava muito perto do nariz.
+
+O que mudou, nos mesmos arquivos (`gatinho-e-os-livros.webp` e `.svg`):
+
+- **Post-its:** saíram. A parede agora tem um relógio, um quadro com o rosto do
+  gatinho (o mesmo desenho do SVG do blog) e uma prateleira com uma planta roxa
+  e dois livrinhos. Nada se repete da primeira imagem.
+- **Patas:** a arte-base do gatinho sentado já mostra quatro patas no chão, e a
+  patinha levantada era a quinta. Em vez de mexer na arte do dono, o gato agora
+  senta atrás de uma pilha baixa de livros, sem frestas, que esconde as patas do
+  chão. Só a patinha levantada aparece. O desenho dos livros que esconde as
+  patas é o mesmo estilo das outras pilhas.
+- **Boquinha:** desceu e encolheu um pouco; agora há espaço entre o nariz e o
+  biquinho.
+- **Detalhe do braço:** o creme do braço passou a começar só depois do contorno
+  do corpo, para a borda do recorte não deixá-lo aparecer; sobra um fio de pixel
+  que só se vê com o dobro de zoom.
+- **Textos alternativos:** passaram a citar a pilha baixa na frente do gato, em
+  português e em inglês.
+
+Correção de um número: a entrada anterior diz que o WebP tem 197 KB. Está
+errado. Li a coluna errada da listagem de arquivos (era o número do grupo do
+arquivo, e o nome do dono do arquivo tem um espaço, o que deslocou as colunas).
+O WebP daquela versão tinha 87 KB, e o desta tem 86,5 KB (86.506 bytes); o SVG,
+que embute o recorte do gato, tem 296 KB. O arquivo servido no ar já era o de 71
+KB, que o Astro recodifica, e esse número estava certo.
+
+Medido, em 2026-10-27: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. Num script de Playwright (Chrome), 20 conferências
+passam, em português e em inglês, a 1000 px e a 360 px: as duas imagens do post
+carregam, a segunda fica entre o fecho de "O que mudou" e o título da seção
+seguinte, e a página não rola na horizontal.
+
+Não medido: Firefox e Safari, leitor de tela (os textos alternativos são meus),
+e se o dono aprova esta versão.
