@@ -3003,3 +3003,37 @@ arquivo HTML ou XML do `dist` tem "—".
 
 Não medido: como os buscadores e os cartões de compartilhamento passam a mostrar
 o texto alternativo da imagem.
+
+[2026-10-27] **Post "Olá, mundo": ilustração do gatinho organizando o blog, logo
+depois do primeiro parágrafo.** Pedido do dono no chat, com a pasta de imagens
+do FelixoVerse: uma imagem do mascote do blog, com vários papéis e anotações,
+dando a entender que ele organizava tudo para construir e escrever o blog,
+abaixo do primeiro parágrafo do post.
+
+O mascote é o rosto do gatinho do blog. Usei o próprio desenho do
+`public/imagens/gatinho-piscando-headbang.svg`, parado e sem retoque, e montei a
+cena em volta dele, em SVG: um mural com post-its ("ideias", "assunto?",
+"lugar", "pauta", "tags" e "Olá, mundo!"), uma lista "a fazer" (domínio e tema
+marcados, "post 1" por fazer), o esboço de uma página do blog, e uma mesa com
+rascunhos, um calendário de julho (o mês do post), uma caneca e o gatinho
+espiando por cima, de patas sobre uma folha e com um lápis. As anotações são
+palavras soltas, nenhum trecho de post. Não usei gerador de imagem externo: nada
+saiu da máquina.
+
+Onde está: `src/content/posts/ola-mundo/organizando-o-blog.webp` (2000×1125, 108
+KB, renderizado no Chrome, com a letra de mão Ink Free) e, ao lado,
+`organizando-o-blog.svg`, a fonte editável, que o post não referencia. O texto
+alternativo existe em português e em inglês, e a tradução usa o mesmo arquivo
+(`../../posts/ola-mundo/organizando-o-blog.webp`), então o Astro gera uma imagem
+só. O desenho não tem cantos arredondados porque o CSS do post
+(`.conteudo-post img`) já arredonda e emoldura as imagens.
+
+Medido, em 2026-10-27: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. Num script de Playwright (Chrome), 12 conferências
+passam, em português e em inglês, a 1000 px e a 360 px: a imagem carrega, fica
+entre o primeiro parágrafo e "O que mudou" e a página não rola na horizontal.
+
+Não medido: Firefox e Safari, leitor de tela (o texto alternativo é meu), e a
+opinião do dono sobre o desenho, que é a primeira versão. A fonte Ink Free só
+existe no Windows: editar o SVG em outra máquina troca a letra, e o WebP não
+muda.
