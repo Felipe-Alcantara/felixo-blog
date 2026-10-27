@@ -15,7 +15,7 @@ After a while studying and, mainly, **building things**, I started to accumulate
 
 A blog is exactly that: the place where the explanation stops living only in my head.
 
-![The blog's cat at the mouth of a cave, one paw on its hip and a worried look, stretching out an arm to present a huge pile of books, like in the SpongeBob meme.](../../posts/ola-mundo/gatinho-e-os-livros.webp)
+![The blog's cat sitting with raised eyebrows, a sideways glance and a drop of sweat on its forehead, raising a paw to present a huge pile of books, like in the SpongeBob meme.](../../posts/ola-mundo/gatinho-e-os-livros.webp)
 
 ## What you'll find here
 
