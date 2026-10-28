@@ -4,6 +4,7 @@
 // inglês e um aviso (ver `PostLayout.astro`).
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
+import AnimacaoGatinhoTchau from '../../../components/AnimacaoGatinhoTchau.astro';
 import PostLayout from '../../../layouts/PostLayout.astro';
 import { buscarTraducao, listarPosts, type Post } from '../../../utils/posts';
 
@@ -23,4 +24,5 @@ const { Content } = await render(conteudo);
 
 <PostLayout post={post} corpo={conteudo.body ?? ''}>
   <Content />
+  {post.id === 'ola-mundo' && <AnimacaoGatinhoTchau idioma="en" />}
 </PostLayout>

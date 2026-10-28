@@ -1,0 +1,22 @@
+{
+  "name": "gatinho-dando-tchau",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Quadros Remotion do gatinho dando tchau no post inicial.",
+  "scripts": {
+    "renderizar-quadros": "remotion render src/index.ts GatinhoTchau out/quadros --sequence --image-sequence-pattern=quadro-[frame].[ext] --image-format=png --frames=0-48 --scale=0.5 --overwrite",
+    "montar-sprite": "node scripts/montar-sprite.mjs",
+    "gerar": "npm run renderizar-quadros && npm run montar-sprite",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.539",
+    "@types/react": "19.2.7",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.539",
+    "sharp": "0.35.5",
+    "typescript": "5.9.3"
+  }
+}

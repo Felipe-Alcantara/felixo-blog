@@ -1,0 +1,18 @@
+---
+import sprite from '../content/posts/ola-mundo/gatinho-tchau-sprite.png';
+
+interface Props {
+  idioma: 'pt' | 'en';
+}
+
+const { idioma } = Astro.props;
+const descricao =
+  idioma === 'pt' ? 'Gatinho dando tchau com a pata' : 'A cat waving goodbye';
+---
+
+<div class="animacao-gatinho-tchau" role="img" aria-label={descricao}>
+  <span
+    class="animacao-gatinho-tchau__figura"
+    style={`background-image: url("${sprite.src}")`}
+    aria-hidden="true"></span>
+</div>

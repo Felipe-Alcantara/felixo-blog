@@ -490,6 +490,342 @@
     0 0 34px rgb(168 85 247 / 0.28);
 }
 
+.animacao-renomear-lote {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(0.875rem, 3.2vw, 1.5rem);
+  overflow: hidden;
+  border: 1px solid rgb(192 132 252 / 0.18);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at 84% 8%, rgb(168 85 247 / 0.13), transparent 40%),
+    radial-gradient(ellipse at 8% 96%, rgb(34 211 238 / 0.07), transparent 38%),
+    linear-gradient(145deg, rgb(8 12 19 / 0.98), rgb(11 12 20 / 0.98));
+  box-shadow:
+    0 0 0 1px rgb(168 85 247 / 0.06),
+    0 14px 42px rgb(0 0 0 / 0.25);
+  color: rgb(244 239 248);
+}
+
+.animacao-renomear-lote__estado {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.animacao-renomear-lote__codigo {
+  padding: clamp(0.75rem, 2.4vw, 1.35rem);
+  border: 1px solid rgb(81 124 150 / 0.24);
+  border-radius: 1.1rem;
+  background: linear-gradient(145deg, rgb(2 25 39 / 0.98), rgb(4 17 29 / 0.98));
+}
+
+.animacao-renomear-lote__barra {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.07);
+}
+
+.animacao-renomear-lote__ponto {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.animacao-renomear-lote__ponto--rosa {
+  background: #ed718b;
+}
+
+.animacao-renomear-lote__ponto--amarelo {
+  background: #edc66d;
+}
+
+.animacao-renomear-lote__ponto--verde {
+  background: #72d9a1;
+}
+
+.animacao-renomear-lote__linguagem {
+  margin-left: 0.35rem;
+  color: rgb(148 163 184);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.animacao-renomear-lote__linhas {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.65rem;
+  min-width: 0;
+}
+
+.conteudo-post .animacao-renomear-lote code {
+  display: block;
+  min-width: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #d8e6ee;
+  font-family: var(--font-mono);
+  font-size: clamp(0.55rem, 1.8vw, 0.82rem);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.animacao-renomear-lote__palavra-chave {
+  color: #d78bf4;
+}
+
+.animacao-renomear-lote__funcao {
+  color: #8ec9f5;
+}
+
+.animacao-renomear-lote__tipo {
+  color: #93d6b5;
+}
+
+.animacao-renomear-lote__string {
+  color: #e5bd7a;
+}
+
+.animacao-renomear-lote__comentario {
+  color: rgb(148 163 184);
+  font-style: italic;
+}
+
+.animacao-renomear-lote__retorno {
+  padding-inline: 0.25rem !important;
+  border-radius: 0.25rem !important;
+  transition:
+    background-color 0.8s ease-out,
+    box-shadow 0.8s ease-out;
+}
+
+.animacao-renomear-lote__lista {
+  --atraso-entrada: 0s;
+  --atraso-saida: 0.28s;
+
+  margin-top: clamp(0.9rem, 2.8vw, 1.25rem);
+}
+
+.animacao-renomear-lote__cabecalho,
+.animacao-renomear-lote__linha-lista {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.35rem minmax(0, 1.25fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.animacao-renomear-lote__cabecalho {
+  margin-bottom: 0.45rem;
+  color: rgb(161 161 170);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.animacao-renomear-lote__executar {
+  display: inline-flex;
+  min-width: 5.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid rgb(192 132 252 / 0.36);
+  border-radius: 999px;
+  background: rgb(168 85 247 / 0.1);
+  color: #eadbfa;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.animacao-renomear-lote__icone-executar,
+.animacao-renomear-lote__icone-reiniciar {
+  color: #d9a7ff;
+  font-size: 0.6rem;
+}
+
+.animacao-renomear-lote__icone-reiniciar,
+.animacao-renomear-lote__rotulo-reiniciar {
+  display: none;
+}
+
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__icone-executar,
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__rotulo-executar {
+  display: none;
+}
+
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__icone-reiniciar,
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__rotulo-reiniciar {
+  display: inline;
+}
+
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__executar {
+  border-color: rgb(192 132 252 / 0.58);
+  background: rgb(168 85 247 / 0.2);
+}
+
+.animacao-renomear-lote__estado:focus-visible
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__executar {
+  outline: 2px solid #c084fc;
+  outline-offset: 3px;
+}
+
+.animacao-renomear-lote__linha-lista {
+  min-height: 2.65rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgb(113 128 150 / 0.19);
+  border-radius: 0.8rem;
+  background: rgb(13 18 27 / 0.88);
+  font-family: var(--font-mono);
+  font-size: clamp(0.58rem, 1.9vw, 0.92rem);
+}
+
+.animacao-renomear-lote__linha-lista + .animacao-renomear-lote__linha-lista {
+  margin-top: 0.4rem;
+}
+
+.animacao-renomear-lote__item,
+.animacao-renomear-lote__resultado {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.animacao-renomear-lote__item::before {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.55rem;
+  border-radius: 0.18rem;
+  background: rgb(148 163 184 / 0.8);
+  content: '';
+  vertical-align: 0.08em;
+}
+
+.animacao-renomear-lote__seta {
+  color: #c084fc;
+  text-align: center;
+}
+
+.animacao-renomear-lote__resultado {
+  color: #e9e6ef;
+}
+
+.animacao-renomear-lote__prefixo {
+  color: #c084fc;
+}
+
+.animacao-renomear-lote__linha-lista--dois {
+  --atraso-entrada: 0.14s;
+  --atraso-saida: 0.14s;
+}
+
+.animacao-renomear-lote__linha-lista--tres {
+  --atraso-entrada: 0.28s;
+  --atraso-saida: 0s;
+}
+
+.animacao-renomear-lote__animada {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(0.3rem);
+  transition-property: opacity, transform, visibility;
+  transition-duration: 0.45s, 0.45s, 0s;
+  transition-timing-function: ease-out, ease-out, linear;
+  transition-delay:
+    var(--atraso-saida), var(--atraso-saida), calc(var(--atraso-saida) + 0.45s);
+}
+
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__animada {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: var(--atraso-entrada), var(--atraso-entrada), 0s;
+}
+
+.animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__codigo
+  .animacao-renomear-lote__retorno {
+  background-color: rgb(168 85 247 / 0.16);
+  box-shadow: 0 0 1rem rgb(168 85 247 / 0.12);
+}
+
+@media (max-width: 480px) {
+  .animacao-renomear-lote {
+    padding: 0.75rem;
+    border-radius: 1.1rem;
+  }
+
+  .animacao-renomear-lote__codigo {
+    padding: 0.7rem;
+    border-radius: 0.85rem;
+  }
+
+  .conteudo-post .animacao-renomear-lote code {
+    font-size: 0.5rem;
+  }
+
+  .animacao-renomear-lote__cabecalho,
+  .animacao-renomear-lote__linha-lista {
+    grid-template-columns: minmax(0, 1fr) 1.1rem minmax(0, 1.25fr) auto;
+    gap: 0.25rem;
+  }
+
+  .animacao-renomear-lote__cabecalho {
+    font-size: 0.58rem;
+  }
+
+  .animacao-renomear-lote__executar {
+    min-width: 5rem;
+    padding: 0.35rem 0.45rem;
+  }
+
+  .animacao-renomear-lote__linha-lista {
+    min-height: 2.35rem;
+    padding: 0.35rem 0.45rem;
+    font-size: 0.56rem;
+  }
+
+  .animacao-renomear-lote__item::before {
+    width: 0.35rem;
+    height: 0.35rem;
+    margin-right: 0.3rem;
+  }
+}
+
 .conteudo-post hr {
   border-color: rgb(255 255 255 / 0.08);
   margin-block: 2.5rem;
@@ -515,6 +851,88 @@
   color: rgb(250 250 250);
 }
 
+.animacao-gatinho-tchau {
+  display: grid;
+  place-items: center;
+  margin: 1.5rem auto 0;
+  padding: 1rem;
+  overflow: hidden;
+  border: 1px solid rgb(192 132 252 / 0.18);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgb(168 85 247 / 0.1), transparent 48%),
+    linear-gradient(145deg, rgb(8 12 19 / 0.92), rgb(11 12 20 / 0.92));
+}
+
+.animacao-gatinho-tchau__figura {
+  display: block;
+  width: min(100%, 13rem);
+  aspect-ratio: 602 / 640;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 700% 700%;
+  filter: drop-shadow(0 0.8rem 1.5rem rgb(168 85 247 / 0.13));
+  animation: animacao-gatinho-tchau 2s infinite;
+}
+
+@keyframes animacao-gatinho-tchau {
+  0% {
+    background-position: 0% 0%;
+    animation-timing-function: steps(6, end);
+  }
+  12.5% {
+    background-position: 100% 0%;
+    animation-timing-function: steps(1, end);
+  }
+  14.583333% {
+    background-position: 0% 16.666667%;
+    animation-timing-function: steps(6, end);
+  }
+  27.083333% {
+    background-position: 100% 16.666667%;
+    animation-timing-function: steps(1, end);
+  }
+  29.166667% {
+    background-position: 0% 33.333333%;
+    animation-timing-function: steps(6, end);
+  }
+  41.666667% {
+    background-position: 100% 33.333333%;
+    animation-timing-function: steps(1, end);
+  }
+  43.75% {
+    background-position: 0% 50%;
+    animation-timing-function: steps(6, end);
+  }
+  56.25% {
+    background-position: 100% 50%;
+    animation-timing-function: steps(1, end);
+  }
+  58.333333% {
+    background-position: 0% 66.666667%;
+    animation-timing-function: steps(6, end);
+  }
+  70.833333% {
+    background-position: 100% 66.666667%;
+    animation-timing-function: steps(1, end);
+  }
+  72.916667% {
+    background-position: 0% 83.333333%;
+    animation-timing-function: steps(6, end);
+  }
+  85.416667% {
+    background-position: 100% 83.333333%;
+    animation-timing-function: steps(1, end);
+  }
+  87.5% {
+    background-position: 0% 100%;
+    animation-timing-function: steps(6, end);
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
 /* Respeita quem prefere menos movimento (acessibilidade, seção 9 do design system). */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -537,8 +955,22 @@
   .felixo-icone-brilho,
   .felixo-text-glow,
   .felixo-item-post:hover::before,
-  .felixo-item-post:focus-within::before {
+  .felixo-item-post:focus-within::before,
+  .animacao-gatinho-tchau__figura {
     animation: none !important;
+  }
+
+  .animacao-renomear-lote__animada,
+  .animacao-renomear-lote__retorno {
+    transition: none !important;
+  }
+
+  .animacao-renomear-lote__estado:checked
+    ~ .animacao-renomear-lote__lista
+    .animacao-renomear-lote__animada {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
   }
 
   /* Sem animação, o brilho do título e o do item de post param no quadro de repouso. */
@@ -564,8 +996,23 @@ html[data-animacoes='pausadas'] .felixo-ambiente::after,
 html[data-animacoes='pausadas'] .felixo-icone-brilho,
 html[data-animacoes='pausadas'] .felixo-text-glow,
 html[data-animacoes='pausadas'] .felixo-item-post:hover::before,
-html[data-animacoes='pausadas'] .felixo-item-post:focus-within::before {
+html[data-animacoes='pausadas'] .felixo-item-post:focus-within::before,
+html[data-animacoes='pausadas'] .animacao-gatinho-tchau__figura {
   animation: none !important;
+}
+
+html[data-animacoes='pausadas'] .animacao-renomear-lote__animada,
+html[data-animacoes='pausadas'] .animacao-renomear-lote__retorno {
+  transition: none !important;
+}
+
+html[data-animacoes='pausadas']
+  .animacao-renomear-lote__estado:checked
+  ~ .animacao-renomear-lote__lista
+  .animacao-renomear-lote__animada {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
 }
 
 html[data-animacoes='pausadas'] .felixo-text-glow {

@@ -40,3 +40,8 @@ app/.env
 app/*.tsbuildinfo
 app/.notion-associacoes.json
 app/rascunhos/
+
+# Artefatos locais da versão em vídeo, substituída pela animação HTML/CSS.
+remotion/renomear-em-lote/
+public/videos/renomear-em-lote.mp4
+public/videos/renomear-em-lote-poster.jpg

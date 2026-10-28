@@ -24,6 +24,8 @@ A blog is exactly that: the place where the explanation stops living only in my 
 - **Automations and tools.** A good part of my time goes into building things that do the boring work for me. Problems I created myself and solve myself, and that's what makes me grow. And I'll show how they work.
 - **FelixoVerse.** My biggest personal project, a bit too ambitious, but with years of planning.
 
+![The blog's cat, wearing glasses and studying at a desk in front of four monitors filled with code.](../../posts/ola-mundo/gatinho-estudando-cena-invertida.webp)
+
 ## A principle that guides almost everything here
 
 If I had to sum up what I've learned in the last few years in a single sentence, it would be this:
@@ -34,11 +36,78 @@ It seems small, but it changes the whole way of thinking. A manual change, besid
 
 In practice, this means that when I need to change a lot of data, or perform any manual action, my first instinct is not to open the interface and click: it's to write (or ask for) something like this.
 
-```python
-def renomear_em_lote(itens: list[str], prefixo: str) -> list[str]:
-    """Applies a prefix to each item, preserving the original order."""
-    return [f"{prefixo}{item}" for item in itens]
-```
+<div
+  class="animacao-renomear-lote"
+  role="group"
+  aria-label="Interactive demonstration of the renomear_em_lote function."
+>
+  <input
+    class="animacao-renomear-lote__estado"
+    id="renomear-lote-en"
+    type="checkbox"
+  />
+  <div class="animacao-renomear-lote__codigo">
+    <div class="animacao-renomear-lote__barra">
+      <span class="animacao-renomear-lote__ponto animacao-renomear-lote__ponto--rosa" aria-hidden="true"></span>
+      <span class="animacao-renomear-lote__ponto animacao-renomear-lote__ponto--amarelo" aria-hidden="true"></span>
+      <span class="animacao-renomear-lote__ponto animacao-renomear-lote__ponto--verde" aria-hidden="true"></span>
+      <span class="animacao-renomear-lote__linguagem">Python</span>
+    </div>
+    <div class="animacao-renomear-lote__linhas">
+      <code class="animacao-renomear-lote__linha">
+        <span class="animacao-renomear-lote__palavra-chave">def</span>
+        <span class="animacao-renomear-lote__funcao">renomear_em_lote</span>(itens:
+        <span class="animacao-renomear-lote__tipo">list[str]</span>, prefixo:
+        <span class="animacao-renomear-lote__tipo">str</span>) -&gt;
+        <span class="animacao-renomear-lote__tipo">list[str]</span>:
+      </code>
+      <code class="animacao-renomear-lote__linha animacao-renomear-lote__comentario">
+        """Applies a prefix to each item, preserving the original order."""
+      </code>
+      <code class="animacao-renomear-lote__linha animacao-renomear-lote__retorno">
+        <span>return [f"</span><span class="animacao-renomear-lote__string">{prefixo}</span><span>{item}" for item in itens]</span>
+      </code>
+    </div>
+  </div>
+
+  <div class="animacao-renomear-lote__lista" aria-live="polite">
+    <div class="animacao-renomear-lote__cabecalho">
+      <span>items</span>
+      <span></span>
+      <span>result</span>
+      <label class="animacao-renomear-lote__executar" for="renomear-lote-en">
+        <span class="animacao-renomear-lote__icone-executar" aria-hidden="true">▶</span>
+        <span class="animacao-renomear-lote__rotulo-executar">run</span>
+        <span class="animacao-renomear-lote__icone-reiniciar" aria-hidden="true">↻</span>
+        <span class="animacao-renomear-lote__rotulo-reiniciar">reset</span>
+      </label>
+    </div>
+    <div class="animacao-renomear-lote__linha-lista animacao-renomear-lote__linha-lista--um">
+      <span class="animacao-renomear-lote__item">relatorio.pdf</span>
+      <span class="animacao-renomear-lote__seta animacao-renomear-lote__animada">→</span>
+      <span class="animacao-renomear-lote__resultado animacao-renomear-lote__animada animacao-renomear-lote__resultado--um">
+        <span class="animacao-renomear-lote__prefixo">prefixo_</span>relatorio.pdf
+      </span>
+      <span></span>
+    </div>
+    <div class="animacao-renomear-lote__linha-lista animacao-renomear-lote__linha-lista--dois">
+      <span class="animacao-renomear-lote__item">notas.txt</span>
+      <span class="animacao-renomear-lote__seta animacao-renomear-lote__animada">→</span>
+      <span class="animacao-renomear-lote__resultado animacao-renomear-lote__animada animacao-renomear-lote__resultado--dois">
+        <span class="animacao-renomear-lote__prefixo">prefixo_</span>notas.txt
+      </span>
+      <span></span>
+    </div>
+    <div class="animacao-renomear-lote__linha-lista animacao-renomear-lote__linha-lista--tres">
+      <span class="animacao-renomear-lote__item">fotos.zip</span>
+      <span class="animacao-renomear-lote__seta animacao-renomear-lote__animada">→</span>
+      <span class="animacao-renomear-lote__resultado animacao-renomear-lote__animada animacao-renomear-lote__resultado--tres">
+        <span class="animacao-renomear-lote__prefixo">prefixo_</span>fotos.zip
+      </span>
+      <span></span>
+    </div>
+  </div>
+</div>
 
 Thirty seconds more to write. Reusable forever, and very useful later.
 

@@ -11,7 +11,7 @@
 
 ## 📊 ESTADO ATUAL (RESUMO VIVO)
 
-Última atualização: [2026-10-25]
+Última atualização: [2026-10-27]
 
 - **Fase**: v1 entregue e em evolução. Blog estático funcionando ponta a ponta —
   home, post, tags, sobre, RSS, sitemap, 404, comentários, contagem de acessos,
@@ -88,19 +88,20 @@
   usam as mesmas frases da home, escolhidas pelo dono em 2026-10-26; o cartão
   `public/og-image.jpg` foi regerado com o título "Blog do Felixo".
 - **Gate**: `npm run check` (0 erros, mais `prettier --check .`, que deixa de
-  fora `app/` e os posts) + `npm run build` (8 páginas: `/`, `/en/`,
-  Sobre, Tags, as duas páginas de tag, o post `ola-mundo` e a 404) — verdes em
-  2026-10-26. `npm audit` do blog em 2026-10-26: **0 vulnerabilidades** (eram 12
+  fora `app/` e os posts) + `npm run build` (13 páginas) — verdes em
+  2026-10-27. `npm audit` do blog em 2026-10-26: **0 vulnerabilidades** (eram 12
   em 2026-10-25). O `astro` está preso em `~7.3.8` de propósito: a 7.4 exige Node
   22.23.4 e o `setup-node` do CI ainda entrega a 22.23.3 (registro de
   2026-10-26). O `app/` (Felixo Editor) tem `package.json` próprio e, em
   2026-10-26, 10 vulnerabilidades (2 críticas, 7 altas, 1 moderada): ficam fora do
   build do blog e ainda sem atualização.
-- **Conteúdo** (atualizado em 2026-09-30): nenhum post pronto. O
+- **Conteúdo** (atualizado em 2026-10-27): nenhum post pronto. O
   `ola-mundo.md` no ar foi um teste e ainda vai ser revisado, assim como o
   site. Rascunho e post futuro não entram no repositório, que é público (ver
   `AGENTS.md`); rascunho vive só no Notion. Os que estavam rastreados saíram do
-  repositório e do histórico em 2026-09-30.
+  repositório e do histórico em 2026-09-30. A terceira ilustração do post fica
+  após a lista "O que você vai encontrar aqui", com o gato ao centro e duas
+  telas de cada lado, e aguarda revisão do dono, sem deploy.
 - **Comentários**: giscus (GitHub Discussions), sem back-end próprio. Ver seção
   "🔗 INTEGRAÇÕES E SERVIÇOS EXTERNOS" para IDs, categoria e tema customizado.
   Em 2026-10-26 o fluxo de escrita (entrar, comentar, responder e reagir) foi
@@ -3174,3 +3175,169 @@ para 62 KB. A revisão visual da renderização local passou.
 
 Não medido: Firefox, Safari e leitor de tela. Estado: aguardando revisão do
 dono, sem novo deploy.
+
+[2026-10-27] **Post "Olá, mundo": terceira ilustração, o gatinho estudando
+diante de quatro monitores.** A pedido do dono, a cena ficou abaixo do parágrafo
+sobre estudar e construir coisas, nas versões em português e inglês.
+
+Reaproveitei o recorte transparente do gatinho sentado que já estava embutido
+na ilustração dos livros, e acrescentei os óculos, a mesa e quatro monitores
+separados, cada um com código. O SVG editável é
+`src/content/posts/ola-mundo/gatinho-estudando.svg`; a arte-base extraída fica
+em `gatinho-base-sentado.png`, e o WebP usado no post tem 2000×1125.
+
+Medido: `npm run check` sem erros ou avisos; `npm run build` gera 13 páginas e
+otimiza a imagem para 60 KB. Conferi a renderização em 2000×1125 e confirmei
+nos HTML gerados que as versões PT e EN usam o mesmo WebP depois do parágrafo
+correto.
+
+Não medido: visualização do post em navegador e em telas menores, Firefox,
+Safari e leitor de tela. Estado: aguardando revisão do dono, sem novo deploy.
+
+[2026-10-27] **Post "Olá, mundo": correção da posição da terceira ilustração.**
+A captura enviada pelo dono mostrava a lista inteira "O que você vai encontrar
+aqui". Mudei a imagem para depois do último item e antes de "Um princípio que
+guia quase tudo por aqui"; na tradução, depois de "What you'll find here" e
+antes de "A principle that guides almost everything here". A inserção após o
+parágrafo sobre estudar e construir coisas foi removida.
+
+Estado: imagem posicionada nas duas versões, aguardando revisão do dono, sem
+deploy.
+
+[2026-10-27] **Post "Olá, mundo": inversão horizontal da terceira ilustração.**
+O dono apontou que a composição estava parecida com a imagem anterior. Inverto
+o arranjo, com as quatro telas à esquerda e o gatinho à direita; movi o
+caderno e o teclado junto, mantendo o código legível. A posição após a lista nas
+duas versões continua a mesma.
+
+Estado: composição invertida, aguardando revisão do dono, sem deploy.
+
+[2026-10-27] **Validação da terceira ilustração após a inversão.**
+`npm run check` passou sem erros ou avisos; `npm run build` gerou 13 páginas e
+otimizou o WebP de 75 KB para 62 KB. Conferi nos HTML gerados que, em
+português e em inglês, a imagem aparece após o último item da lista e antes da
+seção seguinte, com a mesma URL de imagem. Revisei a renderização em 2000×1125.
+
+Não medido: layout em telas menores, Firefox, Safari e leitor de tela. Estado:
+aguardando revisão do dono, sem deploy.
+
+[2026-10-27] **Post "Olá, mundo": nova composição da terceira ilustração.**
+O dono apontou que a versão espelhada ainda parecia a imagem anterior. Refiz o
+cenário com o gatinho no centro, duas telas de cada lado, uma janela roxa ao
+fundo e uma mesa curva; removi a moldura e as estrelas que repetiam as outras
+ilustrações. O código continua legível. A posição após a lista foi mantida.
+
+Medido: `npm run check` passou sem erros ou avisos; `npm run build` gerou 13
+páginas e otimizou o WebP de 78 KB para 65 KB. Os HTML gerados mantêm a imagem
+depois do último item da lista nas versões PT e EN. Revisei a renderização em
+2000×1125.
+
+Não medido: layout em telas menores, Firefox, Safari e leitor de tela. Estado:
+aguardando revisão do dono, sem deploy.
+
+[2026-10-27] **Post "Olá, mundo": gatinho à direita na terceira ilustração.**
+Mudar o lado do gatinho: o dono apontou que a composição ainda parecia com a
+imagem anterior. Coloquei o gato no lado direito e agrupei os quatro monitores
+à esquerda, em duas colunas; a janela acompanha o gato. O SVG editável e o
+WebP do post foram atualizados, preservando a posição da imagem no texto.
+
+Medido: revisei o WebP renderizado; `npm run check` passou sem erros ou
+avisos, e `npm run build` gerou 13 páginas. Estado: aguardando revisão do
+dono, sem deploy.
+
+[2026-10-27] **Post "Olá, mundo": inversão horizontal da ilustração.**
+Mudar o lado do gatinho: o dono esclareceu que havia pedido a inversão da
+imagem. A composição anterior foi espelhada inteira horizontalmente no SVG,
+incluindo os textos das telas, e o WebP foi gerado novamente. Estado: aguardando
+revisão do dono, sem deploy.
+
+[2026-10-27] **Post "Olá, mundo": animação curta em Remotion após o código de renomeação.**
+O vídeo de 7,5 segundos mostra a função `renomear_em_lote` e a aplicação do
+prefixo aos itens. A composição está em `remotion/renomear-em-lote/`; o MP4 e o
+quadro JPEG ficam em `public/videos/`. O player com controles, sem reprodução
+automática, aparece depois do parágrafo do código nas versões PT e EN.
+
+Medido: `npm run check` sem erros ou avisos e `npm run build` com 13 páginas.
+Conferi o player no HTML final, os arquivos servidos e a resolução dos caminhos
+relativos no build com `BASE_PATH=/felixo-blog`. O MP4 tem 1280×720, 30 fps,
+7,5 segundos e 291 KB; a capa JPEG tem 77 KB. A checagem
+`npm audit --omit=dev` do subprojeto não relata vulnerabilidades; o audit
+completo registra 10 alertas altos em dependências de desenvolvimento do
+Remotion 4.0.539 e do Zod 4.5.4 exigido por ele. Estado: aguardando revisão do
+dono, sem deploy.
+
+[2026-10-28] **Post "Olá, mundo": troca do vídeo por animação HTML/CSS.**
+A pedido do dono, substituí o player de vídeo por uma composição HTML/CSS no
+próprio post, em português e inglês. O código e os três itens permanecem; a
+animação mostra a execução do prefixo em ciclos de 6,2 segundos. Não requer
+JavaScript novo nem dependência.
+
+A classe `.animacao-renomear-lote__animada` entrou nas listas de "reduzir
+movimento" e "Pausar animações". Em ambos os casos o quadro final fica visível.
+O código se compacta em telas estreitas.
+
+Medido: `npm run check` sem erros ou avisos; `npm run build` gera 13 páginas.
+Conferi que o HTML do post contém a composição nas duas línguas e não contém um
+player `<video>`. Os arquivos da tentativa anterior continuam localmente, sem
+referência no post, e estão ignorados pelo Git. Estado: aguardando revisão do
+dono, sem deploy.
+
+[2026-10-28] **Post "Olá, mundo": código e demonstração no mesmo cartão.**
+O bloco Python duplicado saiu do texto, e a função completa ficou dentro do
+cartão interativo nas versões PT e EN. A caixa de seleção começa desmarcada,
+revela os resultados e anima a execução uma vez ao marcar, troca o controle
+para "reiniciar" ou "reset" e esconde os resultados ao desmarcar. A solução
+usa HTML e CSS, sem JavaScript ou dependências novas. Com
+`prefers-reduced-motion` ou o botão de pausa do rodapé, os resultados aparecem
+sem animação.
+
+Medido: `npm run check` sem erros, avisos ou hints; `npm run build` com 13
+páginas. Conferi no HTML gerado que cada idioma tem um cartão, um checkbox
+associado ao rótulo, uma única função e nenhum player de vídeo; o CSS contém
+os estados de execução, movimento reduzido e pausa.
+
+Não medido: interação visual em navegador, telas menores, Firefox, Safari e
+leitor de tela. Estado: aguardando revisão do dono, sem deploy.
+
+[2026-10-28] **Post "Olá, mundo": reinício da demonstração em sentido inverso.**
+O controle "reiniciar" recolhe os resultados de baixo para cima, com
+transições reversíveis; o destaque da linha de retorno também desaparece.
+A execução continua sob demanda. prefers-reduced-motion e o botão de pausa
+do rodapé desativam as transições e exibem o resultado sem movimento.
+
+Medido: npm run check e npm run build; conferi no CSS a ordem reversa
+das transições e os estados de movimento reduzido e pausa.
+
+Não medido: interação visual em navegador, telas menores, Firefox, Safari e
+leitor de tela. Estado: aguardando revisão do dono, sem deploy.
+
+[2026-10-28] **Post "Olá, mundo": gatinho dando tchau.**
+A animação aparece depois do encerramento do post em português e inglês. A pata
+do gatinho é animada em 49 quadros renderizados com Remotion e reunidos em um
+sprite PNG em grade 7 × 7, dentro dos limites de textura dos navegadores. CSS reproduz o loop; nenhum vídeo ou script novo vai ao site. O
+primeiro e o último quadro são iguais. A figura tem rótulo acessível e para
+com `prefers-reduced-motion` e com o botão de pausa do rodapé.
+
+O subprojeto `remotion/gatinho-dando-tchau/` guarda a composição, a arte-base,
+o renderizador de sprite e as dependências de desenvolvimento. `npm ci` avisou
+10 vulnerabilidades altas nesse conjunto de ferramentas de desenvolvimento;
+nada dele entra nas dependências de produção ou no bundle do site.
+
+Medido: `npm run check` no blog e no subprojeto; `npm run build` gerou 13
+páginas. Verifiquei que o HTML PT/EN contém a figura após a frase de encerramento
+e que o CSS aponta para o sprite e inclui os dois estados de pausa.
+
+Não medido: interação visual em navegador, telas menores, Firefox, Safari e
+leitor de tela. Estado: aguardando revisão do dono, sem deploy.
+
+[2026-10-28] **Post "Olá, mundo": correção do sprite no desenvolvimento.**
+Mudar o lado do gatinho: o quadro da animação aparecia vazio no preview de
+desenvolvimento. A URL relativa do sprite no CSS era resolvida a partir da URL
+do post e retornava 404. O componente agora importa o arquivo pelo Astro e
+aplica a URL resolvida ao fundo da figura.
+
+Medido: no Chrome, a URL do sprite retornou 200 e a figura apareceu no quadro.
+A animação ficou desativada tanto com o atributo de pausa quanto com a
+preferência de movimento reduzido. `npm run check` passou sem erros ou avisos;
+`npm run build` gerou 13 páginas e os HTMLs PT e EN apontam para o sprite.
+Estado: aguardando revisão do dono, sem deploy.
