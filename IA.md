@@ -3362,3 +3362,20 @@ Medido: quadros extremos renderizados e olhados de perto; no Chrome, sprite
 com 200, figura em 240 × 160 e animação rodando; `npm run check` e
 `npm run build` (13 páginas) passaram. Não medido: telas menores, Firefox,
 Safari e leitor de tela. Estado: o dono pediu para subir em 2026-10-29.
+
+[2026-10-29] **Deploy vermelho desde as animações do "Olá, mundo".**
+O run do commit `b5c2dcb` e o do tchau refeito (`2d91648`) falharam no
+`npm run check` do CI: o `tsconfig.json` da raiz inclui `**/*`, então o
+`astro check` tipava `remotion/gatinho-dando-tchau/`, cujas dependências
+(`remotion`, `@remotion/cli`, tipos do React) só existem no `npm ci` do
+próprio subprojeto. Aqui passava porque a pasta tinha `node_modules`; no CI,
+15 erros `ts(2307)`/`ts(2503)`/`ts(7026)`. Até este conserto o site ficou no
+`c02ce06`, sem as ilustrações nem o gatinho do commit `b5c2dcb`.
+
+`remotion` entrou no `exclude` do `tsconfig.json`, como `app/`: subprojeto com
+dependências próprias é checado por ele mesmo (`npm run check` dentro da pasta
+roda `tsc --noEmit`). Medido: com o `node_modules` do subprojeto movido para
+fora do repositório, `astro check` deu 3 erros antes e 0 depois; com ele de
+volta, o check do subprojeto, o `npm run check` e o `npm run build`
+(13 páginas) da raiz passaram. Lição: ensaiar o CI sem dependências locais de
+subprojeto antes de push, como já vale para as versões do Node e do npm.
