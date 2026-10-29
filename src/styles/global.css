@@ -855,19 +855,20 @@
   display: grid;
   place-items: center;
   margin: 1.5rem auto 0;
-  padding: 1rem;
+  /* Sem respiro embaixo: o gatinho espia por cima da borda do quadro. */
+  padding: 1.5rem 1rem 0;
   overflow: hidden;
-  border: 1px solid rgb(192 132 252 / 0.18);
+  border: 1px solid rgb(192 132 252 / 0.08);
   border-radius: 1.25rem;
   background:
-    radial-gradient(ellipse at 50% 38%, rgb(168 85 247 / 0.1), transparent 48%),
-    linear-gradient(145deg, rgb(8 12 19 / 0.92), rgb(11 12 20 / 0.92));
+    radial-gradient(ellipse at 50% 38%, rgb(168 85 247 / 0.05), transparent 48%),
+    linear-gradient(145deg, rgb(8 12 19 / 0.35), rgb(11 12 20 / 0.35));
 }
 
 .animacao-gatinho-tchau__figura {
   display: block;
-  width: min(100%, 13rem);
-  aspect-ratio: 602 / 640;
+  width: min(100%, 15rem);
+  aspect-ratio: 704 / 470;
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 700% 700%;

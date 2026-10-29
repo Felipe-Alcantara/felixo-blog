@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const diretorio = path.dirname(fileURLToPath(import.meta.url));
 const quadros = 49;
-const larguraDoQuadro = 301;
-const alturaDoQuadro = 320;
+const larguraDoQuadro = 352;
+const alturaDoQuadro = 235;
 const colunas = 7;
 const linhas = 7;
 const caminhoDosQuadros = path.join(diretorio, '..', 'out', 'quadros');

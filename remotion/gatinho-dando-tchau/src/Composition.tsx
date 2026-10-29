@@ -1,12 +1,26 @@
 import { AbsoluteFill, Composition, Img, staticFile, useCurrentFrame } from 'remotion';
 
 const QUADROS = 49;
-const AMPLITUDE_DA_PATA = 20;
+// O gatinho aparece da cintura para cima, atrás da borda de baixo do quadro: as
+// patas do chão ficam escondidas e a levantada não vira a quinta pata.
+const LARGURA = 704;
+const ALTURA = 470;
+const MARGEM_ESQUERDA = 24;
+const ROSA = '#d14e74';
+const CREME = '#f8f1eb';
+const CONTORNO = 15;
+// O cotovelo fica apoiado na borda; o braço gira em torno dele e a pata balança
+// ao lado da cabeça, sem cobrir o olho.
+const COTOVELO = { x: 485, y: 455 };
+const COMPRIMENTO_DO_BRACO = 190;
+const INCLINACAO = 34;
+const AMPLITUDE_DO_TCHAU = 8;
 
 const GatinhoDandoTchau: React.FC = () => {
   const quadro = useCurrentFrame();
   const fase = (quadro / (QUADROS - 1)) * Math.PI * 4;
-  const giro = Math.sin(fase) * AMPLITUDE_DA_PATA;
+  const giro = INCLINACAO + Math.sin(fase) * AMPLITUDE_DO_TCHAU;
+  const pata = -COMPRIMENTO_DO_BRACO;
 
   return (
     <AbsoluteFill style={{ backgroundColor: 'transparent' }}>
@@ -14,49 +28,45 @@ const GatinhoDandoTchau: React.FC = () => {
         src={staticFile('gatinho-base-sentado.png')}
         style={{
           position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
+          top: 0,
+          left: MARGEM_ESQUERDA,
+          width: 602,
+          height: 640,
         }}
       />
 
       <svg
         aria-hidden="true"
-        viewBox="0 0 602 640"
+        viewBox={`${-MARGEM_ESQUERDA} 0 ${LARGURA} ${ALTURA}`}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
-        <path
-          d="M 418 466 C 451 442, 481 405, 512 357"
-          fill="none"
-          stroke="#d3426c"
-          strokeLinecap="round"
-          strokeWidth="66"
-        />
-        <path
-          d="M 418 466 C 451 442, 481 405, 512 357"
-          fill="none"
-          stroke="#fff8f0"
-          strokeLinecap="round"
-          strokeWidth="50"
-        />
-
-        <g transform={`rotate(${giro} 512 357)`}>
-          <path
-            d="M 506 365 C 493 361, 485 352, 488 339 L 493 315 C 495 303, 509 303, 512 315 L 515 289 C 517 276, 532 278, 534 291 L 532 310 L 540 286 C 544 275, 558 281, 555 294 L 548 317 L 559 307 C 569 300, 579 311, 573 322 L 562 347 C 556 360, 543 367, 529 367 Z"
-            fill="#fff8f0"
-            stroke="#d3426c"
-            strokeLinejoin="round"
-            strokeWidth="9"
+        <g transform={`translate(${COTOVELO.x} ${COTOVELO.y}) rotate(${giro})`}>
+          {/* Contorno do braço e da pata juntos, para não ficar risco na emenda. O
+              braço desce até abaixo da borda em qualquer ângulo. */}
+          <line
+            x1={0}
+            y1={60}
+            x2={0}
+            y2={pata}
+            stroke={ROSA}
+            strokeWidth={64 + CONTORNO * 2}
           />
-          <circle cx="502" cy="323" r="4.5" fill="#d3426c" />
-          <circle cx="525" cy="300" r="4.5" fill="#d3426c" />
-          <circle cx="546" cy="298" r="4.5" fill="#d3426c" />
-          <circle cx="563" cy="318" r="4.5" fill="#d3426c" />
-          <path
-            d="M 516 342 C 510 335, 515 327, 522 331 C 527 325, 536 330, 533 337 C 531 343, 524 348, 524 348 Z"
-            fill="#d3426c"
-          />
+          <ellipse cx={0} cy={pata} rx={44 + CONTORNO} ry={50 + CONTORNO} fill={ROSA} />
+          <line x1={0} y1={60} x2={0} y2={pata} stroke={CREME} strokeWidth={64} />
+          <ellipse cx={0} cy={pata} rx={44} ry={50} fill={CREME} />
+          {/* Dedinhos como os das patas da arte-base. */}
+          {[-17, 17].map((x) => (
+            <line
+              key={x}
+              x1={x}
+              y1={pata - 49}
+              x2={x * 0.8}
+              y2={pata - 28}
+              stroke={ROSA}
+              strokeWidth={8}
+              strokeLinecap="round"
+            />
+          ))}
         </g>
       </svg>
     </AbsoluteFill>
@@ -69,7 +79,7 @@ export const ComposicaoGatinhoTchau: React.FC = () => (
     component={GatinhoDandoTchau}
     durationInFrames={QUADROS}
     fps={24}
-    width={602}
-    height={640}
+    width={LARGURA}
+    height={ALTURA}
   />
 );
