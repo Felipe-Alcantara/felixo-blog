@@ -36,20 +36,31 @@ const versoes = await Promise.all(
     <!-- Apresentação em primeira pessoa, no lugar do slogan "Programação
          descomplicada", que servia para qualquer blog (2026-09-30). O texto é
          do dono, em `TEXTOS.<idioma>.home`. -->
+    <!-- A apresentação começa fechada e abre no clique no nome, para quem
+         volta ao blog não ler o resumo inteiro toda vez (2026-10-29). -->
     <h1 class="felixo-text-glow text-4xl font-bold leading-tight sm:text-5xl">
-      {textos.home.titulo}
+      {textos.home.titulo.antes}<button
+        type="button"
+        class="felixo-nome"
+        aria-expanded="false"
+        aria-controls="apresentacao">{textos.home.titulo.nome}</button
+      >{textos.home.titulo.depois}
     </h1>
-    <div class="mt-4 space-y-3 text-lg leading-relaxed text-zinc-400">
-      {textos.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
-      <p>
-        {textos.home.convite.antes}<a
-          href={github.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-felixo-purple underline decoration-purple-400/35 underline-offset-4 transition hover:text-white"
-          >{textos.home.convite.link}</a
-        >{textos.home.convite.depois}
-      </p>
+    <div id="apresentacao" class="felixo-apresentacao">
+      <div>
+        <div class="space-y-3 pt-4 text-lg leading-relaxed text-zinc-400">
+          {textos.home.apresentacao.map((paragrafo) => <p>{paragrafo}</p>)}
+          <p>
+            {textos.home.convite.antes}<a
+              href={github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-felixo-purple underline decoration-purple-400/35 underline-offset-4 transition hover:text-white"
+              >{textos.home.convite.link}</a
+            >{textos.home.convite.depois}
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- "Minhas redes" é frase do dono, e a linha de ícones com a linha roxa
@@ -140,6 +151,13 @@ const versoes = await Promise.all(
 </BaseLayout>
 
 <script>
+  // O nome no título abre e fecha a apresentação; o CSS lê o `aria-expanded`.
+  const nome = document.querySelector<HTMLButtonElement>('.felixo-nome');
+  nome?.addEventListener('click', () => {
+    const aberta = nome.getAttribute('aria-expanded') === 'true';
+    nome.setAttribute('aria-expanded', String(!aberta));
+  });
+
   // Filtro client-side dos posts já renderizados: sem framework, sem
   // dependência nova, só o vanilla JS necessário para a barra de pesquisa.
   const campo = document.querySelector<HTMLInputElement>('#busca-posts');

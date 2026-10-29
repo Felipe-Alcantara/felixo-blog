@@ -165,6 +165,70 @@
     }
   }
 
+  /* Nome no título da home: o roxo com brilho que pulsa do nome no
+     felixo.com.br (`.text-felixo-purple-glow`). É um botão que abre a
+     apresentação logo abaixo. Para com "reduzir movimento", no fim do arquivo. */
+  .felixo-nome {
+    color: #a855f7;
+    cursor: pointer;
+    /* Sublinhado do link da apresentação, mais grosso no tamanho do título:
+       avisa que o nome é clicável. */
+    text-decoration: underline;
+    text-decoration-color: rgb(192 132 252 / 0.4);
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color 0.2s ease;
+    text-shadow:
+      0 0 8px rgb(168 85 247 / 0.55),
+      0 0 44px rgb(168 85 247 / 0.32);
+    animation: felixo-nome-respirar 5.5s ease-in-out infinite;
+  }
+
+  .felixo-nome:hover {
+    text-decoration-color: rgb(192 132 252 / 0.9);
+  }
+
+  @keyframes felixo-nome-respirar {
+    0%,
+    100% {
+      text-shadow:
+        0 0 8px rgb(168 85 247 / 0.45),
+        0 0 44px rgb(168 85 247 / 0.28);
+      filter: drop-shadow(0 0 26px rgb(168 85 247 / 0.28));
+    }
+    50% {
+      text-shadow:
+        0 0 18px rgb(168 85 247 / 0.9),
+        0 0 68px rgb(168 85 247 / 0.6);
+      filter: drop-shadow(0 0 56px rgb(168 85 247 / 0.6));
+    }
+  }
+
+  /* Apresentação da home: fechada, ocupa altura zero; aberta, cresce até a
+     altura do texto e empurra as redes e a linha para baixo. A `visibility`
+     tira o link de dentro do Tab enquanto está fechada. */
+  .felixo-apresentacao {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      grid-template-rows 0.45s ease,
+      opacity 0.45s ease,
+      visibility 0.45s;
+  }
+
+  .felixo-apresentacao > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  h1:has(.felixo-nome[aria-expanded='true']) + .felixo-apresentacao {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    opacity: 1;
+  }
+
   /* Ícone das redes da home: o roxo e o brilho que pulsa são os do portfólio
      (`.text-felixo-purple-glow`, só a parte do `drop-shadow`, a que vale para
      SVG). Para com "reduzir movimento", no fim deste arquivo. */
@@ -955,6 +1019,7 @@
   .felixo-ambiente::after,
   .felixo-icone-brilho,
   .felixo-text-glow,
+  .felixo-nome,
   .felixo-item-post:hover::before,
   .felixo-item-post:focus-within::before,
   .animacao-gatinho-tchau__figura {
@@ -996,6 +1061,7 @@ html[data-animacoes='pausadas'] .felixo-ambiente::before,
 html[data-animacoes='pausadas'] .felixo-ambiente::after,
 html[data-animacoes='pausadas'] .felixo-icone-brilho,
 html[data-animacoes='pausadas'] .felixo-text-glow,
+html[data-animacoes='pausadas'] .felixo-nome,
 html[data-animacoes='pausadas'] .felixo-item-post:hover::before,
 html[data-animacoes='pausadas'] .felixo-item-post:focus-within::before,
 html[data-animacoes='pausadas'] .animacao-gatinho-tchau__figura {

@@ -11,7 +11,7 @@
 
 ## 📊 ESTADO ATUAL (RESUMO VIVO)
 
-Última atualização: [2026-10-27]
+Última atualização: [2026-10-29]
 
 - **Fase**: v1 entregue e em evolução. Blog estático funcionando ponta a ponta —
   home, post, tags, sobre, RSS, sitemap, 404, comentários, contagem de acessos,
@@ -80,8 +80,9 @@
 - **Home e layout** (2026-09-30 a 2026-10-22): sem caixas. Lista de posts em
   coluna única (`max-w-3xl`), cada `ItemPost` inteiro clicável, brilho só no hover
   e no foco, títulos com gradiente e botões em pílula como no felixo.com.br. A
-  home abre com a apresentação em primeira pessoa, com as palavras do dono
-  (`TEXTOS.<idioma>.home.apresentacao`), depois "Minhas redes", uma linha de cinco
+  home abre com o título, e a apresentação em primeira pessoa, com as palavras do
+  dono (`TEXTOS.<idioma>.home.apresentacao`), fica fechada até o clique no nome
+  "Felixo" (2026-10-29). Depois vêm "Minhas redes", uma linha de cinco
   ícones (e-mail, GitHub, LinkedIn, Discord e Twitter: `Redes.astro`, `REDES` em
   `src/config/site.ts`) e os botões do blog (portfólio, RSS, e-mail). A
   `SITE.descricao` (buscador, cartão de compartilhamento, RSS) e a página Sobre
@@ -3379,3 +3380,34 @@ fora do repositório, `astro check` deu 3 erros antes e 0 depois; com ele de
 volta, o check do subprojeto, o `npm run check` e o `npm run build`
 (13 páginas) da raiz passaram. Lição: ensaiar o CI sem dependências locais de
 subprojeto antes de push, como já vale para as versões do Node e do npm.
+
+[2026-10-29] **Home: a apresentação abre no clique no nome.** O dono recebeu a
+sugestão de não fazer quem volta ao blog passar pelo resumo inteiro toda vez, e
+pediu o nome brilhando como os brilhos do felixo.com.br e, no clique, a descrição
+abrindo embaixo e empurrando a linha que separa. Depois pediu sublinhado no nome,
+para indicar a ação.
+
+Como ficou: no título, "Felixo" é um `<button>` com `aria-expanded` (o resto da
+frase continua no `h1`, que segue sendo o título da página). O texto está em
+`TEXTOS.<idioma>.home.titulo`, partido em `antes`, `nome` e `depois`, sem mudar
+nenhuma palavra. O brilho é o do nome no portfólio (`.text-felixo-purple-glow`:
+roxo `#a855f7` com `text-shadow` e `drop-shadow` pulsando em 5,5 s), em
+`.felixo-nome` de `src/styles/global.css`, mais o sublinhado roxo translúcido do
+link do GitHub, mais grosso no tamanho do título. A apresentação e o convite
+ficam em `.felixo-apresentacao`, fechada ao carregar: `grid-template-rows` vai de
+`0fr` a `1fr` em 0,45 s, e as redes, a linha e os botões descem junto. A
+`visibility` tira o link do GitHub do Tab enquanto está fechada. Um script de
+quatro linhas em `PaginaInicial.astro` troca o `aria-expanded`, e o CSS lê o
+estado com `:has()`. O brilho do nome entrou nas duas listas de "reduzir
+movimento" e "Pausar animações"; a abertura usa a regra geral de transição
+curta.
+
+Medido, em 2026-10-29: `npm run check` (0 erros, Prettier limpo) e
+`npm run build` passam. No Chrome, no localhost: a home abre fechada; o clique no
+nome deixa `aria-expanded="true"`, a apresentação com 403 px e visível; outro
+clique volta a `false`, 0 px e `hidden`. `/en/` tem o nome clicável em
+"Hi, I'm Felixo!".
+
+Não medido: Firefox, Safari, celular e leitor de tela. Sem JavaScript, a
+apresentação fica escondida. A única dica de que o nome é clicável é o brilho, o
+sublinhado e o cursor.

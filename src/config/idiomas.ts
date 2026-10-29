@@ -54,7 +54,8 @@ export const TEXTOS = {
     ] as Link[],
     feitoCom: 'Feito com Astro.',
     home: {
-      titulo: 'Oi, eu sou o Felixo!',
+      // O nome é o botão que abre a apresentação (2026-10-29).
+      titulo: { antes: 'Oi, eu sou o ', nome: 'Felixo', depois: '!' },
       // Texto do dono, ditado por ele (ver `LINGUAGEM-NATURAL.md`).
       apresentacao: [
         'Sou desenvolvedor, engenheiro de IA e engenheiro de áudio.',
@@ -184,7 +185,7 @@ export const TEXTOS = {
     ] as Link[],
     feitoCom: 'Made with Astro.',
     home: {
-      titulo: "Hi, I'm Felixo!",
+      titulo: { antes: "Hi, I'm ", nome: 'Felixo', depois: '!' },
       // Tradução do texto do dono, revisada por ele em 2026-10-26.
       apresentacao: [
         "I'm a developer, AI engineer and audio engineer.",
