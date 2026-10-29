@@ -3341,3 +3341,24 @@ A animação ficou desativada tanto com o atributo de pausa quanto com a
 preferência de movimento reduzido. `npm run check` passou sem erros ou avisos;
 `npm run build` gerou 13 páginas e os HTMLs PT e EN apontam para o sprite.
 Estado: aguardando revisão do dono, sem deploy.
+
+[2026-10-28] **Post "Olá, mundo": tchau do gatinho refeito.**
+O dono achou a animação horrível. Problemas: a arte sentada já mostra as patas
+no chão, então a pata levantada virava a quinta; o braço era um tubo fino colado
+por cima do corpo, com contorno mais fino que o da arte; e só a patinha
+balançava na ponta de um braço parado.
+
+Agora o gatinho aparece da cintura para cima, espiando por cima da borda de
+baixo do quadro (o cartão perdeu o respiro de baixo), e as patas do chão ficam
+escondidas. O braço tem o contorno de 15 px e as cores da arte-base (`#d14e74`
+e `#f8f1eb`), a pata leva os riscos de dedo das patas do desenho, e o braço
+inteiro gira em torno do cotovelo apoiado na borda, de 26° a 42°, sem a pata
+cobrir o olho. Composição em 704 × 470; o sprite continua 7 × 7 com 49 quadros
+(352 × 235 cada), e o CSS só mudou a proporção e a largura (15rem). A pedido
+do dono, o fundo do cartão ficou mais discreto: borda a 0,08, fundo a 0,35 e
+brilho roxo a 0,05.
+
+Medido: quadros extremos renderizados e olhados de perto; no Chrome, sprite
+com 200, figura em 240 × 160 e animação rodando; `npm run check` e
+`npm run build` (13 páginas) passaram. Não medido: telas menores, Firefox,
+Safari e leitor de tela. Estado: o dono pediu para subir em 2026-10-29.
